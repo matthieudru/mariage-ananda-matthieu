@@ -442,34 +442,33 @@ export default function Infos() {
           align-items: center;
           justify-content: center;
           text-decoration: none;
-          font-size: clamp(12px, 1.2vw, 15px);
-          font-weight: 500;
+          font-size: clamp(14px, 1.6vw, 20px);
+          font-weight: 400;
           letter-spacing: 0.2em;
           text-transform: uppercase;
           border: 1.5px solid;
-          padding: 22px 0;
-          width: clamp(180px, 18vw, 260px);
-          min-height: 60px;
+          padding: 24px 0;
+          width: clamp(200px, 22vw, 300px);
+          min-height: 64px;
           font-family: 'FT Aktual', Georgia, serif;
+          background: ${BG};
           transition: background 0.2s ease-out, color 0.2s ease-out, border-color 0.2s ease-out;
         }
         .cta-rsvp {
-          color: ${BG};
-          background: ${COLOR};
+          color: ${COLOR};
           border-color: ${COLOR};
         }
         .cta-rsvp:hover, .cta-rsvp:active {
-          background: #6B1A1A;
-          border-color: #6B1A1A;
+          background: ${COLOR};
+          color: ${BG};
         }
         .cta-weddinglist {
-          color: #f3ecdc;
-          background: #6B1A1A;
+          color: #6B1A1A;
           border-color: #6B1A1A;
         }
         .cta-weddinglist:hover, .cta-weddinglist:active {
-          background: #4e1212;
-          border-color: #4e1212;
+          background: #6B1A1A;
+          color: ${BG};
         }
         a { -webkit-tap-highlight-color: transparent; }
         .hotel-row:active > div:last-child { opacity: 1 !important; }
