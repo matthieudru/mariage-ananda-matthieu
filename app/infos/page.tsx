@@ -110,6 +110,8 @@ function ProgrammePanel({
 /* ── Ligne hôtel ── */
 type Hotel = { nom: string; detail: string; email: string; url: string; photo: string };
 
+type Hotel = { nom: string; detail: string; booking?: string; email: string; url: string; photo: string };
+
 function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -127,6 +129,7 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
           display: "block",
           borderTop: `1px solid rgba(36,59,113,0.15)`,
           padding: "24px 40px",
+          height: "100px",
           textDecoration: "none", color: COLOR,
           position: "relative", overflow: "hidden",
         }}
@@ -144,16 +147,19 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
           opacity: hovered ? 1 : 0,
           transition: "opacity 0.55s cubic-bezier(0,0,0.2,1)",
         }} />
-        <div className="hotel-row-inner" style={{ position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", alignItems: "center" }}>
+        <div className="hotel-row-inner" style={{ position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", alignItems: "center", height: "100%" }}>
           <p style={{ fontSize: "clamp(15px, 1.8vw, 22px)", fontWeight: 500, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
             {hotel.nom}
           </p>
           <div>
-            <p style={{ fontSize: "clamp(12px, 1vw, 15px)", opacity: hovered ? 0.75 : 0.55, lineHeight: 1.6, fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s, opacity 0.4s" }}>
+            <p style={{ fontSize: "clamp(12px, 1vw, 15px)", opacity: hovered ? 0.75 : 0.55, lineHeight: 1.5, fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s, opacity 0.4s" }}>
               {hotel.detail}
             </p>
+            {hotel.booking && <p style={{ fontSize: "11px", opacity: hovered ? 0.7 : 0.45, marginTop: "4px", fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s", lineHeight: 1.5 }}>
+              {hotel.booking}
+            </p>}
             {hotel.email && <p style={{ fontSize: "11px", opacity: 0.5, marginTop: "4px", fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
-              {hotel.email} · Réserver en direct
+              {hotel.email}
             </p>}
           </div>
         </div>
@@ -163,10 +169,10 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
 }
 
 const HOTELS: Hotel[] = [
-  { nom: "Baglio di Scopello", detail: "Centre du village de Scopello, 5 min de la Tonnara. Réservez en direct en mentionnant notre mariage pour bénéficier de 5% de remise.", email: "info@hotelbagliodiscopello.it", url: "https://www.hotelbagliodiscopello.com/", photo: "https://www.hotelbagliodiscopello.com/img/about-1.jpg" },
-  { nom: "Baglio dello Zingaro", detail: "À proximité du lieu du mariage. Réservez en direct en mentionnant notre mariage pour bénéficier d'un prix fixe.", email: "info@bagliodellozingaro.it", url: "https://www.bagliodellozingaro.it/", photo: "/zingaro.jpg" },
+  { nom: "Baglio di Scopello", detail: "Centre du village de Scopello, 5 min de la Tonnara.", booking: "Réservez en direct en mentionnant notre mariage pour 5% de remise.", email: "info@hotelbagliodiscopello.it", url: "https://www.hotelbagliodiscopello.com/", photo: "https://www.hotelbagliodiscopello.com/img/about-1.jpg" },
+  { nom: "Baglio dello Zingaro", detail: "À proximité du lieu du mariage.", booking: "Réservez en direct en mentionnant notre mariage pour un prix fixe.", email: "info@bagliodellozingaro.it", url: "https://www.bagliodellozingaro.it/", photo: "/zingaro.jpg" },
   { nom: "La Tavernetta", detail: "Centre du village de Scopello, 5 min de la Tonnara.", email: "info@albertolatavernetta.it", url: "https://www.albergolatavernetta.it/it/", photo: "/la-tavernetta.jpg" },
-  { nom: "Tenute Plaia", detail: "Sur la route de Scopello, 4 min de la Tonnara.", email: "info@agriturismotenuteplaia.it", url: "https://www.agriturismotenuteplaia.it/", photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg" },
+  { nom: "Tenute Plaia", detail: "Sur la route de Scopello, 4 min de la Tonnara.", booking: "Réservez sur leur site avec le code ANDMTE26 pour 12% de remise. Indiquez nos prénoms dans les demandes spéciales.", email: "info@agriturismotenuteplaia.it", url: "https://www.agriturismotenuteplaia.it/", photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg" },
 ];
 
 const MAISONS = [
@@ -225,10 +231,8 @@ export default function Infos() {
         <div className="hero-title-wrap" style={{ width: "min(688px, 88vw)", flexShrink: 0 }}>
           <svg viewBox="0 0 1000 472" style={{ width: "100%", display: "block", overflow: "visible" }}>
             <g transform="scale(1, 1.6)">
-              <text y="148" textLength="1000" lengthAdjust="spacingAndGlyphs" fill="#f3ecdc">
-                <tspan fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148">ANANDA </tspan>
-                <tspan fontFamily="'La Belle Aurore', cursive" fontSize="90">et</tspan>
-              </text>
+              <text x="0" y="148" textLength="770" lengthAdjust="spacingAndGlyphs" fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" fill="#f3ecdc">ANANDA</text>
+              <text x="770" y="148" textLength="230" lengthAdjust="spacingAndGlyphs" fontFamily="'La Belle Aurore', cursive" fontSize="90" fill="#f3ecdc">et</text>
               <text x="0" y="293" textLength="1000" lengthAdjust="spacingAndGlyphs"
                 fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" fill="#f3ecdc">
                 MATTHIEU
