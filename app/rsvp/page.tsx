@@ -76,18 +76,19 @@ export default function RSVP() {
     if (!validate()) return;
     setStatus("loading");
     try {
+      const params = new URLSearchParams({
+        date: new Date().toLocaleString("fr-FR"),
+        email: form.personnes[0]?.email ?? "",
+        jours: form.jours.join(", "),
+        nb_personnes: String(form.personnes.length),
+        personnes: form.personnes.map((p, i) => `${i + 1}. ${p.prenom} ${p.nom}${p.enfant ? " (enfant)" : ""}${p.email ? ` <${p.email}>` : ""}${p.allergies ? ` — ${p.allergies}` : ""}`).join(" | "),
+        message: form.message,
+      });
       await fetch(SHEET_URL, {
         method: "POST",
         mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          date: new Date().toLocaleString("fr-FR"),
-          email: form.personnes[0]?.email,
-          jours: form.jours.join(", "),
-          nb_personnes: form.personnes.length,
-          personnes: form.personnes.map((p, i) => `${i + 1}. ${p.prenom} ${p.nom}${p.enfant ? " (enfant)" : ""}${p.email ? ` <${p.email}>` : ""}${p.allergies ? ` — ${p.allergies}` : ""}`).join(" | "),
-          message: form.message,
-        }),
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params.toString(),
       });
       setStatus("success");
     } catch {
