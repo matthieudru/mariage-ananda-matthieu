@@ -14,12 +14,11 @@ const JOURS = [
   { id: "dimanche", label: "Dimanche 11", sublabel: "The After Party" },
 ];
 
-type Personne = { prenom: string; nom: string; allergies: string; enfant: boolean };
+type Personne = { prenom: string; nom: string; email: string; allergies: string; enfant: boolean };
 
-const personneVide = (): Personne => ({ prenom: "", nom: "", allergies: "", enfant: false });
+const personneVide = (): Personne => ({ prenom: "", nom: "", email: "", allergies: "", enfant: false });
 
 type FormData = {
-  email: string;
   jours: string[];
   personnes: Personne[];
   message: string;
@@ -27,7 +26,6 @@ type FormData = {
 
 export default function RSVP() {
   const [form, setForm] = useState<FormData>({
-    email: "",
     jours: [],
     personnes: [personneVide()],
     message: "",
@@ -63,11 +61,11 @@ export default function RSVP() {
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!form.email.trim() || !form.email.includes("@")) e.email = "Email invalide";
     if (form.jours.length === 0) e.jours = "Choisissez au moins un jour";
     form.personnes.forEach((p, i) => {
       if (!p.prenom.trim()) e[`prenom_${i}`] = "Requis";
       if (!p.nom.trim()) e[`nom_${i}`] = "Requis";
+      if ((i === 0 || !p.enfant) && (!p.email.trim() || !p.email.includes("@"))) e[`email_${i}`] = "Email invalide";
     });
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -84,10 +82,10 @@ export default function RSVP() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           date: new Date().toLocaleString("fr-FR"),
-          email: form.email,
+          email: form.personnes[0]?.email,
           jours: form.jours.join(", "),
           nb_personnes: form.personnes.length,
-          personnes: form.personnes.map((p, i) => `${i + 1}. ${p.prenom} ${p.nom}${p.allergies ? ` (${p.allergies})` : ""}`).join(" | "),
+          personnes: form.personnes.map((p, i) => `${i + 1}. ${p.prenom} ${p.nom}${p.enfant ? " (enfant)" : ""}${p.email ? ` <${p.email}>` : ""}${p.allergies ? ` — ${p.allergies}` : ""}`).join(" | "),
           message: form.message,
         }),
       });
@@ -171,19 +169,6 @@ export default function RSVP() {
 
       {/* Formulaire */}
       <form onSubmit={handleSubmit} style={{ maxWidth: "720px", margin: "0 auto", padding: "64px 40px 120px" }}>
-
-        {/* Email */}
-        <div style={{ marginBottom: "56px" }}>
-          <label style={labelStyle}>Email de contact</label>
-          <input
-            type="email"
-            value={form.email}
-            onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-            placeholder="votre@email.com"
-            style={inputStyle(!!errors.email)}
-          />
-          {errors.email && <p style={errorStyle}>{errors.email}</p>}
-        </div>
 
         {/* Jours */}
         <div style={{ marginBottom: "56px" }}>
@@ -274,30 +259,21 @@ export default function RSVP() {
             <p style={{ fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.4, marginBottom: "24px", fontWeight: 400 }}>
               {i === 0 ? "Vous" : `Personne ${i + 1}`}
             </p>
+
+            {/* Prénom / Nom */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
               <div>
                 <label style={labelStyle}>Prénom</label>
-                <input
-                  type="text"
-                  value={p.prenom}
-                  onChange={e => updatePersonne(i, "prenom", e.target.value)}
-                  placeholder="Prénom"
-                  style={inputStyle(!!errors[`prenom_${i}`])}
-                />
+                <input type="text" value={p.prenom} onChange={e => updatePersonne(i, "prenom", e.target.value)} placeholder="Prénom" style={inputStyle(!!errors[`prenom_${i}`])} />
                 {errors[`prenom_${i}`] && <p style={errorStyle}>{errors[`prenom_${i}`]}</p>}
               </div>
               <div>
                 <label style={labelStyle}>Nom</label>
-                <input
-                  type="text"
-                  value={p.nom}
-                  onChange={e => updatePersonne(i, "nom", e.target.value)}
-                  placeholder="Nom"
-                  style={inputStyle(!!errors[`nom_${i}`])}
-                />
+                <input type="text" value={p.nom} onChange={e => updatePersonne(i, "nom", e.target.value)} placeholder="Nom" style={inputStyle(!!errors[`nom_${i}`])} />
                 {errors[`nom_${i}`] && <p style={errorStyle}>{errors[`nom_${i}`]}</p>}
               </div>
             </div>
+
             {/* Adulte / Enfant — uniquement pour les accompagnants */}
             {i > 0 && (
               <div style={{ marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
@@ -306,58 +282,40 @@ export default function RSVP() {
                   {([{ val: false, label: "Adulte" }, { val: true, label: "Enfant" }] as { val: boolean; label: string }[]).map(({ val, label }, idx) => {
                     const active = p.enfant === val;
                     return (
-                      <label
-                        key={label}
-                        htmlFor={`enfant-${i}-${label}`}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          padding: "6px 16px",
-                          border: `1.5px solid ${active ? COLOR : "rgba(36,59,113,0.25)"}`,
-                          borderRight: idx === 0 ? "none" : `1.5px solid ${active ? COLOR : "rgba(36,59,113,0.25)"}`,
-                          background: active ? COLOR : "transparent",
-                          color: active ? BG : COLOR,
-                          fontFamily: "'FT Aktual', Georgia, serif",
-                          fontSize: "11px", letterSpacing: "0.1em", fontWeight: 400,
-                          cursor: "pointer", transition: "all 0.2s ease-out",
-                          WebkitTapHighlightColor: "transparent",
-                          userSelect: "none",
-                        }}
-                      >
-                        <input
-                          type="radio"
-                          id={`enfant-${i}-${label}`}
-                          name={`enfant-${i}`}
-                          checked={active}
-                          onChange={() => {
-                            const personnes = [...form.personnes];
-                            personnes[i] = { ...personnes[i], enfant: val };
-                            setForm(f => ({ ...f, personnes }));
-                          }}
-                          style={{ position: "absolute", opacity: 0, width: 0, height: 0, pointerEvents: "none" }} tabIndex={-1}
-                        />
+                      <label key={label} htmlFor={`enfant-${i}-${label}`} style={{
+                        display: "flex", alignItems: "center", padding: "6px 16px",
+                        border: `1.5px solid ${active ? COLOR : "rgba(36,59,113,0.25)"}`,
+                        borderRight: idx === 0 ? "none" : `1.5px solid ${active ? COLOR : "rgba(36,59,113,0.25)"}`,
+                        background: active ? COLOR : "transparent", color: active ? BG : COLOR,
+                        fontFamily: "'FT Aktual', Georgia, serif", fontSize: "11px", letterSpacing: "0.1em", fontWeight: 400,
+                        cursor: "pointer", transition: "all 0.2s ease-out",
+                        WebkitTapHighlightColor: "transparent", userSelect: "none",
+                      }}>
+                        <input type="radio" id={`enfant-${i}-${label}`} name={`enfant-${i}`} checked={active}
+                          onChange={() => { const personnes = [...form.personnes]; personnes[i] = { ...personnes[i], enfant: val }; setForm(f => ({ ...f, personnes })); }}
+                          style={{ position: "absolute", opacity: 0, width: 0, height: 0, pointerEvents: "none" }} tabIndex={-1} />
                         {label}
                       </label>
                     );
                   })}
                 </div>
-                {p.enfant && (
-                  <p style={{ fontSize: "11px", color: "#8B1515", letterSpacing: "0.05em" }}>
-                    Pas d'enfant le soir du mariage.
-                  </p>
-                )}
+                {p.enfant && <p style={{ fontSize: "11px", color: "#8B1515", letterSpacing: "0.05em" }}>Pas d'enfant le soir du mariage.</p>}
               </div>
             )}
 
+            {/* Email — pas pour les enfants */}
+            {(i === 0 || !p.enfant) && (
+              <div style={{ marginBottom: "24px" }}>
+                <label style={labelStyle}>Email{i > 0 ? "" : " de contact"}</label>
+                <input type="email" value={p.email} onChange={e => updatePersonne(i, "email", e.target.value)} placeholder="votre@email.com" style={inputStyle(!!errors[`email_${i}`])} />
+                {errors[`email_${i}`] && <p style={errorStyle}>{errors[`email_${i}`]}</p>}
+              </div>
+            )}
+
+            {/* Allergies */}
             <div>
               <label style={labelStyle}>Allergies / régime alimentaire <span style={{ opacity: 0.4 }}>(optionnel)</span></label>
-              <input
-                type="text"
-                value={p.allergies}
-                onChange={e => updatePersonne(i, "allergies", e.target.value)}
-                placeholder="Végétarien, sans gluten, noix, OM..."
-                style={inputStyle(false)}
-              />
+              <input type="text" value={p.allergies} onChange={e => updatePersonne(i, "allergies", e.target.value)} placeholder="Végétarien, sans gluten, noix, OM..." style={inputStyle(false)} />
             </div>
           </div>
         ))}
