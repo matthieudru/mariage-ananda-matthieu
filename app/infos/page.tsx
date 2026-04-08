@@ -289,12 +289,12 @@ export default function Infos() {
           </Reveal>
         </div>
 
-        {/* Venir : Lieu (gauche) | Avion + Voiture (droite) */}
-        <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 1fr" }} className="venir-grid">
+        {/* Venir : 2 lignes, même hauteur */}
+        <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateRows: "1fr 1fr" }} className="venir-outer">
 
-          {/* Lieu */}
-          <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)`, display: "flex", flexDirection: "column", gap: "20px" }}>
-            <div>
+          {/* Ligne 1 : Lieu du mariage (pleine largeur) */}
+          <div className="section-pad venir-lieu" style={{ paddingTop: "32px", paddingBottom: "40px", borderBottom: `1px solid rgba(36,59,113,0.15)`, display: "flex", gap: "32px", alignItems: "flex-start" }}>
+            <div style={{ flex: 1 }}>
               <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "8px" }}>Lieu du mariage</p>
               <p style={{ fontSize: "clamp(12px, 1vw, 14px)", letterSpacing: "0.08em", textTransform: "uppercase", opacity: 0.45, marginBottom: "16px" }}>Tonnara di Scopello</p>
               <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.75, fontWeight: 400 }}>
@@ -305,18 +305,18 @@ export default function Infos() {
             <img
               src="/scopellopicture.png"
               alt="Tonnara di Scopello"
-              style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "2px", display: "block" }}
+              style={{ width: "28%", height: "180px", objectFit: "cover", borderRadius: "2px", flexShrink: 0 }}
             />
             <a
               href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: "block", textDecoration: "none", borderRadius: "2px", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)` }}
+              style={{ display: "block", textDecoration: "none", borderRadius: "2px", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)`, width: "28%", flexShrink: 0 }}
             >
               <iframe
                 src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 width="100%"
-                height="200"
+                height="144"
                 style={{ border: 0, display: "block", filter: "grayscale(1) contrast(1.1) opacity(0.85)" }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -327,15 +327,15 @@ export default function Infos() {
             </a>
           </div>
 
-          {/* Avion + Voiture empilés */}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "32px", borderBottom: `1px solid rgba(36,59,113,0.15)`, flex: 1 }}>
+          {/* Ligne 2 : Avion | Voiture */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }} className="venir-grid">
+            <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)` }}>
               <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Avion</p>
               <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
                 Le meilleur moyen pour rejoindre Scopello est d'atterrir à l'aéroport de Palerme, il se situe ensuite à 40 minutes de voiture de Scopello.
               </p>
             </div>
-            <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", flex: 1 }}>
+            <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px" }}>
               <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Voiture</p>
               <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginBottom: "24px" }}>
                 La Tonnara di Scopello se trouve à 40 minutes de route de l'aéroport de Palerme. Il est facile de louer une voiture directement depuis l'aéroport.
@@ -516,7 +516,14 @@ export default function Infos() {
             gap: 8px !important;
           }
 
-          /* Venir : une colonne sur mobile */
+          /* Venir mobile */
+          .venir-lieu {
+            flex-direction: column !important;
+          }
+          .venir-lieu img, .venir-lieu a {
+            width: 100% !important;
+            height: auto !important;
+          }
           .venir-grid {
             grid-template-columns: 1fr !important;
           }
