@@ -189,14 +189,9 @@ export default function Infos() {
   const [heroVisible, setHeroVisible] = useState(true);
 
   useEffect(() => {
-    const el = heroRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => setHeroVisible(entry.isIntersecting),
-      { threshold: 0.01 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    const onScroll = () => setHeroVisible(window.scrollY < 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const HERO_COLOR = "#6B1A1A";

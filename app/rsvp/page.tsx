@@ -133,10 +133,10 @@ export default function RSVP() {
 
       {/* Hero */}
       <section style={{ padding: "80px 40px 64px", borderBottom: `1px solid rgba(36,59,113,0.15)`, textAlign: "center" }}>
-        <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.88, marginBottom: "20px" }}>
+        <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.88, marginBottom: "12px" }}>
           RSVP
         </h1>
-        <p style={{ fontSize: "11px", letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.38, display: "inline-block" }}>
+        <p style={{ fontSize: "13px", letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.38, display: "inline-block" }}>
           10 · 10 · 26 — Tonnara di Scopello
         </p>
       </section>
