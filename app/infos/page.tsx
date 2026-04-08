@@ -289,31 +289,47 @@ export default function Infos() {
           </Reveal>
         </div>
 
-        <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }} className="venir-grid">
-
-          {/* Lieu */}
-          <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)` }}>
-            <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "8px" }}>Lieu</p>
-            <p style={{ fontSize: "clamp(12px, 1vw, 14px)", letterSpacing: "0.08em", textTransform: "uppercase", opacity: 0.45, marginBottom: "20px" }}>Tonnara di Scopello</p>
-            <a
-              href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: "block", textDecoration: "none", borderRadius: "2px", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)` }}
-            >
-              <iframe
-                src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                width="100%"
-                height="180"
-                style={{ border: 0, display: "block", filter: "grayscale(1) contrast(1.1) opacity(0.85)" }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
+        {/* Lieu — full width row */}
+        <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)` }} className="section-pad lieu-section">
+          <div style={{ paddingTop: "32px", paddingBottom: "40px" }}>
+            <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "8px" }}>Lieu du mariage</p>
+            <p style={{ fontSize: "clamp(12px, 1vw, 14px)", letterSpacing: "0.08em", textTransform: "uppercase", opacity: 0.45, marginBottom: "24px" }}>Tonnara di Scopello</p>
+            <p style={{ fontSize: "clamp(14px, 1.3vw, 17px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, maxWidth: "640px", marginBottom: "32px" }}>
+              La Tonnara di Scopello est une ancienne fabrique de thon du XVIIIe siècle, nichée au bord de la mer turquoise de Sicile. Entourée de falaises et de la réserve naturelle dello Zingaro, c'est l'un des endroits les plus préservés et magiques de l'île.
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }} className="lieu-media-grid">
+              {/* Photo */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/scopellopicture.png"
+                alt="Tonnara di Scopello"
+                style={{ width: "100%", height: "260px", objectFit: "cover", borderRadius: "2px", display: "block" }}
               />
-              <p style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.5, padding: "10px 12px", color: COLOR, fontFamily: "'FT Aktual', Georgia, serif" }}>
-                Ouvrir dans Maps ↗
-              </p>
-            </a>
+              {/* Carte */}
+              <a
+                href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: "block", textDecoration: "none", borderRadius: "2px", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)` }}
+              >
+                <iframe
+                  src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  width="100%"
+                  height="224"
+                  style={{ border: 0, display: "block", filter: "grayscale(1) contrast(1.1) opacity(0.85)" }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+                <p style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.5, padding: "10px 12px", color: COLOR, fontFamily: "'FT Aktual', Georgia, serif" }}>
+                  Ouvrir dans Maps ↗
+                </p>
+              </a>
+            </div>
           </div>
+        </div>
+
+        {/* Avion + Voiture — two columns */}
+        <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 1fr" }} className="venir-grid">
 
           {/* Avion */}
           <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)` }}>
@@ -505,7 +521,12 @@ export default function Infos() {
             gap: 8px !important;
           }
 
-          /* Venir : une colonne */
+          /* Lieu media : une colonne sur mobile */
+          .lieu-media-grid {
+            grid-template-columns: 1fr !important;
+          }
+
+          /* Avion / Voiture : une colonne */
           .venir-grid {
             grid-template-columns: 1fr !important;
           }
