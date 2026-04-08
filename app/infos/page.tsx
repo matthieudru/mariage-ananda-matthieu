@@ -281,6 +281,47 @@ export default function Infos() {
         </div>
       </section>
 
+      {/* ── LIEU ── */}
+      <section style={{ borderBottom: `1px solid rgba(36,59,113,0.15)` }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 40%" }} className="lieu-grid">
+          {/* Gauche : texte + carte */}
+          <div className="section-pad" style={{ paddingTop: "48px", paddingBottom: "48px", borderRight: `1px solid rgba(36,59,113,0.15)`, display: "flex", flexDirection: "column", gap: "24px" }}>
+            <div>
+              <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", textTransform: "uppercase", lineHeight: 1, marginBottom: "16px" }}>Tonnara di Scopello</p>
+              <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
+                La Tonnara di Scopello est une ancienne fabrique de thon du XVIIIe siècle, nichée au bord de la mer turquoise de Sicile. Entourée de falaises et de la réserve naturelle dello Zingaro, c'est l'un des endroits les plus préservés et magiques de l'île.
+              </p>
+            </div>
+            <a
+              href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: "block", textDecoration: "none", borderRadius: "2px", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)` }}
+            >
+              <iframe
+                src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="200"
+                style={{ border: 0, display: "block", filter: "grayscale(1) contrast(1.1) opacity(0.85)" }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+              <p style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.5, padding: "10px 12px", color: COLOR, fontFamily: "'FT Aktual', Georgia, serif" }}>
+                Ouvrir dans Maps ↗
+              </p>
+            </a>
+          </div>
+          {/* Droite : photo verticale */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/scopellopicture.jpg"
+            alt="Tonnara di Scopello"
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", maxHeight: "520px" }}
+            className="lieu-photo"
+          />
+        </div>
+      </section>
+
       {/* ── VENIR ── */}
       <section style={{ borderBottom: `1px solid rgba(36,59,113,0.15)` }}>
         <div className="section-pad">
@@ -468,6 +509,14 @@ export default function Infos() {
           .hotel-row-inner {
             grid-template-columns: 1fr !important;
             gap: 8px !important;
+          }
+
+          /* Lieu mobile */
+          .lieu-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .lieu-photo {
+            max-height: 260px !important;
           }
 
           /* Venir mobile */
