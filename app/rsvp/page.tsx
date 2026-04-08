@@ -139,16 +139,15 @@ export default function RSVP() {
 
       {/* Hero */}
       <section style={{ padding: "60px 40px 48px", borderBottom: `1px solid rgba(36,59,113,0.15)`, textAlign: "center" }}>
-        <div style={{ display: "inline-block" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginBottom: "6px" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Orange fond copie.png" alt="" style={{ width: "clamp(80px, 11vw, 150px)", height: "auto", display: "block" }} />
-            <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.88 }}>
-              RSVP
-            </h1>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Orange fond.png" alt="" style={{ width: "clamp(80px, 11vw, 150px)", height: "auto", display: "block" }} />
-          </div>
+        <div style={{ display: "inline-block", position: "relative" }}>
+          {/* Images positionnées en dehors du flux pour ne pas affecter la largeur */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/Orange fond copie.png" alt="" style={{ position: "absolute", right: "100%", top: "50%", transform: "translateY(-60%)", width: "clamp(80px, 11vw, 150px)", height: "auto", marginRight: "16px" }} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/Orange fond.png" alt="" style={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-60%)", width: "clamp(80px, 11vw, 150px)", height: "auto", marginLeft: "16px" }} />
+          <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "0.08em", lineHeight: 0.88, marginBottom: "4px" }}>
+            RSVP
+          </h1>
           <p style={{ fontSize: "13px", letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.38, width: "100%", textAlign: "center" }}>
             10 · 10 · 26 — Tonnara di Scopello
           </p>
