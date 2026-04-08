@@ -289,16 +289,41 @@ export default function Infos() {
           </Reveal>
         </div>
 
-        <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 1fr" }} className="venir-grid">
+        <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }} className="venir-grid">
+
+          {/* Lieu */}
+          <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)` }}>
+            <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "8px" }}>Lieu</p>
+            <p style={{ fontSize: "clamp(12px, 1vw, 14px)", letterSpacing: "0.08em", textTransform: "uppercase", opacity: 0.45, marginBottom: "20px" }}>Tonnara di Scopello</p>
+            <a
+              href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: "block", textDecoration: "none", borderRadius: "2px", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)` }}
+            >
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0!2d12.8273!3d38.0618!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1319f2a1b9a9e6a1%3A0x4e0b3e2c1a1b1c1d!2sTonnara%20di%20Scopello!5e0!3m2!1sfr!2sfr!4v1"
+                width="100%"
+                height="180"
+                style={{ border: 0, display: "block", filter: "grayscale(1) contrast(1.1) opacity(0.85)" }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+              <p style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.5, padding: "10px 12px", color: COLOR, fontFamily: "'FT Aktual', Georgia, serif" }}>
+                Ouvrir dans Maps ↗
+              </p>
+            </a>
+          </div>
+
+          {/* Avion */}
           <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)` }}>
             <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Avion</p>
             <p style={{ fontSize: "clamp(14px, 1.3vw, 17px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
-              Le meilleur moyen pour rejoindre Scopello est d'atterrir à l'aéroport de Palerme.
-              Il y a des vols directs depuis Marseille avec Ryanair ou Transavia,
-              et depuis Paris avec Transavia, EasyJet ou Air France.
-              L'aéroport de Palerme se situe ensuite à 40 minutes de voiture de Scopello.
+              Le meilleur moyen pour rejoindre Scopello est d'atterrir à l'aéroport de Palerme, il se situe ensuite à 40 minutes de voiture de Scopello.
             </p>
           </div>
+
+          {/* Voiture */}
           <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "48px" }}>
             <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Voiture</p>
             <p style={{ fontSize: "clamp(14px, 1.3vw, 17px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginBottom: "28px" }}>
@@ -314,6 +339,7 @@ export default function Infos() {
               ))}
             </div>
           </div>
+
         </div>
       </section>
 
@@ -321,8 +347,7 @@ export default function Infos() {
       <section style={{ borderBottom: `1px solid rgba(36,59,113,0.15)` }}>
         <div className="section-pad" style={{ paddingTop: "48px", paddingBottom: "32px" }}>
           <Reveal>
-            <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", lineHeight: 1, textTransform: "uppercase" }}>Dormir</p>
-            <p style={{ fontSize: "clamp(14px, 1.8vw, 20px)", letterSpacing: "0.04em", textTransform: "uppercase", opacity: 0.4, fontWeight: 400, marginTop: "10px" }}>Hôtels</p>
+            <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", lineHeight: 1, textTransform: "uppercase" }}>Hotel</p>
           </Reveal>
         </div>
         {HOTELS.map((h, i) => (
@@ -335,8 +360,7 @@ export default function Infos() {
       <section style={{ borderBottom: `1px solid rgba(36,59,113,0.15)` }}>
         <div className="section-pad" style={{ paddingTop: "48px", paddingBottom: "32px" }}>
           <Reveal>
-            <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", lineHeight: 1, textTransform: "uppercase" }}>Dormir</p>
-            <p style={{ fontSize: "clamp(14px, 1.8vw, 20px)", letterSpacing: "0.04em", textTransform: "uppercase", opacity: 0.4, fontWeight: 400, marginTop: "10px" }}>Airbnb / Maisons</p>
+            <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", lineHeight: 1, textTransform: "uppercase" }}>Maison</p>
           </Reveal>
         </div>
         {MAISONS.map((h, i) => (
@@ -485,9 +509,12 @@ export default function Infos() {
           .venir-grid {
             grid-template-columns: 1fr !important;
           }
-          .venir-grid > div:first-child {
+          .venir-grid > div {
             border-right: none !important;
             border-bottom: 1px solid rgba(36,59,113,0.15);
+          }
+          .venir-grid > div:last-child {
+            border-bottom: none !important;
           }
 
           /* Maisons : une colonne */
