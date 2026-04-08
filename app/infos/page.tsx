@@ -401,14 +401,14 @@ export default function Infos() {
           align-items: center;
           justify-content: center;
           text-decoration: none;
-          font-size: clamp(14px, 1.6vw, 20px);
+          font-size: clamp(16px, 2vw, 24px);
           font-weight: 400;
           letter-spacing: 0.2em;
           text-transform: uppercase;
           border: 1.5px solid;
-          padding: 24px 0;
-          width: clamp(200px, 22vw, 300px);
-          min-height: 64px;
+          padding: 14px 0;
+          width: clamp(160px, 16vw, 220px);
+          min-height: 52px;
           font-family: 'FT Aktual', Georgia, serif;
           background: ${BG};
           transition: background 0.2s ease-out, color 0.2s ease-out, border-color 0.2s ease-out;
