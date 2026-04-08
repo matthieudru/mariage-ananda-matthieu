@@ -302,7 +302,7 @@ export default function Infos() {
               style={{ display: "block", textDecoration: "none", borderRadius: "2px", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)` }}
             >
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0!2d12.8273!3d38.0618!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1319f2a1b9a9e6a1%3A0x4e0b3e2c1a1b1c1d!2sTonnara%20di%20Scopello!5e0!3m2!1sfr!2sfr!4v1"
+                src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="180"
                 style={{ border: 0, display: "block", filter: "grayscale(1) contrast(1.1) opacity(0.85)" }}
