@@ -175,7 +175,7 @@ const MAISONS = [
   { nom: "Villa Gaia", detail: "6 personnes · 2 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/27384846?adults=1&check_in=2026-10-09&check_out=2026-10-12", photo: "/villa-gaia.avif", email: "" },
   { nom: "Alla Riserva", detail: "7 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/casa-per-vacanze-riserva-dello-zingaro-scopello.fr.html", photo: "/alla-riserva.jpg", email: "" },
   { nom: "Palma Dello Zingaro", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/palma-dello-zingaro.fr.html", photo: "/palma-dello-zingaro.jpg", email: "" },
-  { nom: "Calabianca Villas", detail: "Liste de maisons situées à 20 minutes du lieu du mariage.", url: "https://linktr.ee/calabiancavillas", photo: "", email: "" },
+  { nom: "Calabianca Villas", detail: "Liste de maisons situées à 20 minutes du lieu du mariage.", url: "https://linktr.ee/calabiancavillas", photo: "/callabianvillas.png", email: "" },
 ];
 
 const PROGRAMME = [
