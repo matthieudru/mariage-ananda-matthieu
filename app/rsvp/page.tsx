@@ -6,7 +6,7 @@ import Link from "next/link";
 const COLOR = "#243b71";
 const BG = "#f3ecdc";
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbwZ5znLnaL7bfgg_V74vmhjtpSDydb9PCqOf3VQiLGEWUYJ27hshDAHVsxPrwBOdRqO/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbyPWyZHvxo3l6bQGfmeUY5MvkbO1_y9nnEPTdf-6r-JJuzWdt8d1Q_nowH4t0mCW6uQ/exec";
 
 const JOURS = [
   { id: "vendredi", label: "Vendredi 9", sublabel: "The Opening" },
