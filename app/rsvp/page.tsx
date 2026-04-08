@@ -102,18 +102,15 @@ export default function RSVP() {
     return (
       <div style={{ background: BG, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'FT Aktual', Georgia, serif" }}>
         <div style={{ textAlign: "center", padding: "40px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "24px", marginBottom: "32px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "24px", marginBottom: "48px" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Sun.png" alt="" style={{ width: "clamp(48px, 6vw, 80px)", height: "auto" }} />
+            <img src="/Sun.png" alt="" style={{ width: "clamp(96px, 12vw, 160px)", height: "auto" }} />
             <p style={{ fontSize: "clamp(40px, 7vw, 88px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.9, color: COLOR }}>
-              Grazie{prenom ? ` ${prenom}` : ""} !
+              Grazie{prenom ? ` ${prenom}` : ""}
             </p>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Sun.png" alt="" style={{ width: "clamp(48px, 6vw, 80px)", height: "auto" }} />
+            <img src="/Sun.png" alt="" style={{ width: "clamp(96px, 12vw, 160px)", height: "auto" }} />
           </div>
-          <p style={{ fontSize: "clamp(15px, 1.4vw, 18px)", opacity: 0.6, fontWeight: 400, marginBottom: "48px", lineHeight: 1.7 }}>
-            On a hâte de vous voir à Scopello.
-          </p>
           <Link href="/" style={{ color: COLOR, textDecoration: "none", fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", borderBottom: `1px solid ${COLOR}`, paddingBottom: "2px" }}>
             ← Retour à l'accueil
           </Link>
@@ -141,16 +138,16 @@ export default function RSVP() {
       </nav>
 
       {/* Hero */}
-      <section style={{ padding: "80px 40px 64px", borderBottom: `1px solid rgba(36,59,113,0.15)`, textAlign: "center" }}>
+      <section style={{ padding: "60px 40px 48px", borderBottom: `1px solid rgba(36,59,113,0.15)`, textAlign: "center" }}>
         <div style={{ display: "inline-block" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginBottom: "12px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginBottom: "6px" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Orange fond copie.png" alt="" style={{ width: "clamp(60px, 8vw, 110px)", height: "auto", display: "block" }} />
-            <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "0.18em", lineHeight: 0.88 }}>
+            <img src="/Orange fond copie.png" alt="" style={{ width: "clamp(80px, 11vw, 150px)", height: "auto", display: "block" }} />
+            <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.88 }}>
               RSVP
             </h1>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Orange fond.png" alt="" style={{ width: "clamp(60px, 8vw, 110px)", height: "auto", display: "block" }} />
+            <img src="/Orange fond.png" alt="" style={{ width: "clamp(80px, 11vw, 150px)", height: "auto", display: "block" }} />
           </div>
           <p style={{ fontSize: "13px", letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.38, width: "100%", textAlign: "center" }}>
             10 · 10 · 26 — Tonnara di Scopello
@@ -344,7 +341,7 @@ export default function RSVP() {
                 type="text"
                 value={p.allergies}
                 onChange={e => updatePersonne(i, "allergies", e.target.value)}
-                placeholder="Végétarien, sans gluten, noix..."
+                placeholder="Végétarien, sans gluten, noix, OM..."
                 style={inputStyle(false)}
               />
             </div>

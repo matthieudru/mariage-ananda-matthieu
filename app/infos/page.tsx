@@ -189,7 +189,11 @@ export default function Infos() {
   const [heroVisible, setHeroVisible] = useState(true);
 
   useEffect(() => {
-    const onScroll = () => setHeroVisible(window.scrollY < 10);
+    const onScroll = () => {
+      const el = heroRef.current;
+      if (!el) return;
+      setHeroVisible(el.getBoundingClientRect().bottom > 0);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -212,12 +216,12 @@ export default function Infos() {
         height: "100svh",
         background: "#6B1A1A",
         display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-        padding: "72px 24px 48px",
+        alignItems: "center",
+        padding: "72px 24px 60px",
         position: "relative",
         boxSizing: "border-box",
       }}>
-        <div style={{ width: "min(688px, 88vw)", marginBottom: "40px" }}>
+        <div style={{ width: "min(688px, 88vw)", flexShrink: 0 }}>
           <svg viewBox="0 0 1000 472" style={{ width: "100%", display: "block", overflow: "visible" }}>
             <g transform="scale(1, 1.6)">
               <text y="148" fill="#f3ecdc">
@@ -232,13 +236,15 @@ export default function Infos() {
           </svg>
         </div>
 
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/AnandaetMatthieu5.jpg"
-          alt="Ananda et Matthieu"
-          className="hero-photo"
-          style={{ objectFit: "cover", display: "block", flexShrink: 0 }}
-        />
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/AnandaetMatthieu5.jpg"
+            alt="Ananda et Matthieu"
+            className="hero-photo"
+            style={{ objectFit: "cover", display: "block", flexShrink: 0 }}
+          />
+        </div>
 
         <div style={{ position: "absolute", bottom: "12px", left: "50%", transform: "translateX(-50%)", animation: "bounce 2s ease-in-out infinite", opacity: 0.5 }}>
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
@@ -357,8 +363,8 @@ export default function Infos() {
         }
 
         .hero-photo {
-          width: clamp(180px, 40vw, 260px);
-          height: clamp(180px, 40vw, 260px);
+          width: clamp(144px, 32vw, 208px);
+          height: clamp(144px, 32vw, 208px);
         }
 
         .section-pad {
@@ -459,8 +465,8 @@ export default function Infos() {
           }
 
           .hero-photo {
-            width: clamp(140px, 45vw, 220px) !important;
-            height: clamp(140px, 45vw, 220px) !important;
+            width: clamp(112px, 36vw, 176px) !important;
+            height: clamp(112px, 36vw, 176px) !important;
           }
         }
       `}</style>
