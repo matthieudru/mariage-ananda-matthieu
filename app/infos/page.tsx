@@ -342,7 +342,7 @@ export default function Infos() {
 
 
       {/* ── RSVP + WEDDING LIST CTA ── */}
-      <section style={{ padding: "80px 24px 100px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}>
+      <section style={{ padding: "80px 24px 100px", textAlign: "center", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: "20px", flexWrap: "wrap" }}>
         <Reveal>
           <Link href="/rsvp" className="cta-rsvp">RSVP</Link>
         </Reveal>
