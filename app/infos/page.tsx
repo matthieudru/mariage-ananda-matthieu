@@ -108,8 +108,6 @@ function ProgrammePanel({
 }
 
 /* ── Ligne hôtel ── */
-type Hotel = { nom: string; detail: string; email: string; url: string; photo: string };
-
 type Hotel = { nom: string; detail: string; booking?: string; email: string; url: string; photo: string };
 
 function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
