@@ -228,7 +228,7 @@ export default function Infos() {
         position: "relative",
         boxSizing: "border-box",
       }}>
-        <div className="hero-title-wrap" style={{ width: "min(688px, 88vw)", flexShrink: 0 }}>
+        <div className="hero-title-wrap" style={{ width: "min(688px, 88vw, 80svh)", flexShrink: 0 }}>
           <svg viewBox="0 0 1000 472" style={{ width: "100%", display: "block", overflow: "visible" }}>
             <g transform="scale(1, 1.6)">
               <text x="0" y="148" textLength="740" lengthAdjust="spacingAndGlyphs" fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" fill="#f3ecdc">ANANDA</text>
@@ -241,7 +241,7 @@ export default function Infos() {
           </svg>
         </div>
 
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", paddingTop: "clamp(20px, 4svh, 56px)" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/AnandaetMatthieu5.jpg"
@@ -289,68 +289,28 @@ export default function Infos() {
           </Reveal>
         </div>
 
-        {/* Venir : 2 lignes, même hauteur */}
-        <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateRows: "1fr 1fr" }} className="venir-outer">
-
-          {/* Ligne 1 : Lieu du mariage (pleine largeur) */}
-          <div className="section-pad venir-lieu" style={{ paddingTop: "32px", paddingBottom: "40px", borderBottom: `1px solid rgba(36,59,113,0.15)`, display: "flex", gap: "32px", alignItems: "flex-start" }}>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "8px" }}>Lieu du mariage</p>
-              <p style={{ fontSize: "clamp(12px, 1vw, 14px)", letterSpacing: "0.08em", textTransform: "uppercase", opacity: 0.45, marginBottom: "16px" }}>Tonnara di Scopello</p>
-              <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.75, fontWeight: 400 }}>
-                La Tonnara di Scopello est une ancienne fabrique de thon du XVIIIe siècle, nichée au bord de la mer turquoise de Sicile. Entourée de falaises et de la réserve naturelle dello Zingaro, c'est l'un des endroits les plus préservés et magiques de l'île.
-              </p>
-            </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/scopellopicture.jpg"
-              alt="Tonnara di Scopello"
-              style={{ width: "28%", height: "180px", objectFit: "cover", borderRadius: "2px", flexShrink: 0 }}
-            />
-            <a
-              href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: "block", textDecoration: "none", borderRadius: "2px", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)`, width: "28%", flexShrink: 0 }}
-            >
-              <iframe
-                src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                width="100%"
-                height="144"
-                style={{ border: 0, display: "block", filter: "grayscale(1) contrast(1.1) opacity(0.85)" }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-              <p style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.5, padding: "10px 12px", color: COLOR, fontFamily: "'FT Aktual', Georgia, serif" }}>
-                Ouvrir dans Maps ↗
-              </p>
-            </a>
+        {/* Avion | Voiture */}
+        <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 1fr" }} className="venir-grid">
+          <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)` }}>
+            <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Avion</p>
+            <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
+              Le meilleur moyen pour rejoindre Scopello est d'atterrir à l'aéroport de Palerme, il se situe ensuite à 40 minutes de voiture de Scopello.
+            </p>
           </div>
-
-          {/* Ligne 2 : Avion | Voiture */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }} className="venir-grid">
-            <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)` }}>
-              <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Avion</p>
-              <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
-                Le meilleur moyen pour rejoindre Scopello est d'atterrir à l'aéroport de Palerme, il se situe ensuite à 40 minutes de voiture de Scopello.
-              </p>
-            </div>
-            <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px" }}>
-              <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Voiture</p>
-              <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginBottom: "24px" }}>
-                La Tonnara di Scopello se trouve à 40 minutes de route de l'aéroport de Palerme. Il est facile de louer une voiture directement depuis l'aéroport.
-              </p>
-              <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
-                {[{ nom: "AVIS", code: "T069423" }, { nom: "SIXT", code: "19451327" }].map(car => (
-                  <div key={car.nom}>
-                    <p style={{ fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 400, opacity: 0.38, marginBottom: "6px" }}>{car.nom}</p>
-                    <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", fontWeight: 400 }}>Code promo : {car.code}</p>
-                  </div>
-                ))}
-              </div>
+          <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px" }}>
+            <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Voiture</p>
+            <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginBottom: "24px" }}>
+              La Tonnara di Scopello se trouve à 40 minutes de route de l'aéroport de Palerme. Il est facile de louer une voiture directement depuis l'aéroport.
+            </p>
+            <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
+              {[{ nom: "AVIS", code: "T069423" }, { nom: "SIXT", code: "19451327" }].map(car => (
+                <div key={car.nom}>
+                  <p style={{ fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 400, opacity: 0.38, marginBottom: "6px" }}>{car.nom}</p>
+                  <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", fontWeight: 400 }}>Code promo : {car.code}</p>
+                </div>
+              ))}
             </div>
           </div>
-
         </div>
       </section>
 
@@ -405,8 +365,8 @@ export default function Infos() {
         }
 
         .hero-photo {
-          width: clamp(144px, 32vw, 208px);
-          height: clamp(144px, 32vw, 208px);
+          width: clamp(120px, min(32vw, 26svh), 208px);
+          height: clamp(120px, min(32vw, 26svh), 208px);
         }
 
         .section-pad {
@@ -517,13 +477,6 @@ export default function Infos() {
           }
 
           /* Venir mobile */
-          .venir-lieu {
-            flex-direction: column !important;
-          }
-          .venir-lieu img, .venir-lieu a {
-            width: 100% !important;
-            height: auto !important;
-          }
           .venir-grid {
             grid-template-columns: 1fr !important;
           }
@@ -543,8 +496,8 @@ export default function Infos() {
           }
 
           .hero-photo {
-            width: clamp(112px, 36vw, 176px) !important;
-            height: clamp(112px, 36vw, 176px) !important;
+            width: clamp(100px, min(36vw, 22svh), 160px) !important;
+            height: clamp(100px, min(36vw, 22svh), 160px) !important;
           }
         }
       `}</style>
