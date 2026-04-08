@@ -404,13 +404,14 @@ export default function Infos() {
           align-items: center;
           justify-content: center;
           text-decoration: none;
-          font-size: clamp(16px, 2vw, 24px);
+          font-size: clamp(12px, 1.2vw, 15px);
           font-weight: 400;
           letter-spacing: 0.2em;
           text-transform: uppercase;
+          white-space: nowrap;
           border: 1.5px solid;
-          padding: 14px 0;
-          width: clamp(160px, 16vw, 220px);
+          padding: 15px 0;
+          width: clamp(200px, 18vw, 250px);
           min-height: 52px;
           font-family: 'FT Aktual', Georgia, serif;
           background: ${BG};
