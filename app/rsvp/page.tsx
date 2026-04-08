@@ -6,7 +6,7 @@ import Link from "next/link";
 const COLOR = "#243b71";
 const BG = "#f3ecdc";
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbyH-_v0K_3MOXB8CiWpiPzbvBOo2F9j5nwAYAT4ZrdGUsRgaTy0nP6JmTkW9O7d0lk5/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbyk1I_j9gmyVhbyMARpvx5-dRZoTpJJTTtBtzHGm3x08YL6toCFh4TrVeJsevQHlu79/exec";
 
 const JOURS = [
   { id: "vendredi", label: "Vendredi 9", sublabel: "The Opening" },
@@ -84,9 +84,9 @@ export default function RSVP() {
         wedding:    form.jours.includes("samedi")   ? "Oui" : "Non",
         afterparty: form.jours.includes("dimanche") ? "Oui" : "Non",
         nb_personnes: String(ps.length),
-        prenom2: ps[1]?.prenom ?? "", nom2: ps[1]?.nom ?? "", email2: ps[1]?.email ?? "", allergie2: ps[1]?.allergies ?? "",
-        prenom3: ps[2]?.prenom ?? "", nom3: ps[2]?.nom ?? "", email3: ps[2]?.email ?? "", allergie3: ps[2]?.allergies ?? "",
-        prenom4: ps[3]?.prenom ?? "", nom4: ps[3]?.nom ?? "", email4: ps[3]?.email ?? "", allergie4: ps[3]?.allergies ?? "",
+        prenom2: ps[1]?.prenom ?? "", nom2: ps[1]?.nom ?? "", enfant2: ps[1] ? (ps[1].enfant ? "Enfant" : "Adulte") : "", email2: ps[1]?.email ?? "", allergie2: ps[1]?.allergies ?? "",
+        prenom3: ps[2]?.prenom ?? "", nom3: ps[2]?.nom ?? "", enfant3: ps[2] ? (ps[2].enfant ? "Enfant" : "Adulte") : "", email3: ps[2]?.email ?? "", allergie3: ps[2]?.allergies ?? "",
+        prenom4: ps[3]?.prenom ?? "", nom4: ps[3]?.nom ?? "", enfant4: ps[3] ? (ps[3].enfant ? "Enfant" : "Adulte") : "", email4: ps[3]?.email ?? "", allergie4: ps[3]?.allergies ?? "",
         message: form.message,
       });
       await fetch(SHEET_URL, {
