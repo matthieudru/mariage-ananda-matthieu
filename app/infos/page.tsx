@@ -87,7 +87,7 @@ function ProgrammePanel({
         {items.map((item, i) => (
           <div key={i} style={{ marginBottom: i < items.length - 1 ? "12px" : "16px" }}>
             {item.heure && <p style={{
-              fontSize: "10px", opacity: active ? 0.55 : 0.35, fontWeight: 400, marginBottom: "2px",
+              fontSize: "13px", opacity: active ? 0.55 : 0.35, fontWeight: 400, marginBottom: "2px",
               color: active ? BG : COLOR, transition: "color 0.4s, opacity 0.4s", letterSpacing: "0.08em",
             }}>{item.heure}</p>}
             <p style={{
@@ -180,7 +180,7 @@ const MAISONS = [
 ];
 
 const PROGRAMME = [
-  { num: "9", titre: "The\nOpening", jour: "Vendredi", mois: "Octobre", photo: "/TheOpening.JPG", items: [{ heure: "TBC", label: "À venir" }] },
+  { num: "9", titre: "The\nOpening", jour: "Vendredi", mois: "Octobre", photo: "/TheOpening.JPG", items: [{ heure: "18h00", label: "Drinks in Scopello" }] },
   { num: "10", titre: "The\nWedding", jour: "Samedi", mois: "Octobre", photo: "/scopello-2.jpg", items: [{ heure: "15h00", label: "Cérémonie" }, { heure: "17h00", label: "Apéritif" }, { heure: "19h30", label: "Dîner" }] },
   { num: "11", titre: "The After Party", jour: "Dimanche", mois: "Octobre", photo: "/TheAfterParty.jpeg", bgSize: "120%", bgPosition: "75% center", flipH: true, items: [{ heure: "12h–19h", label: "Pizza Party" }] },
   { num: "12", titre: "Ciao\nBye Bye", jour: "Lundi", mois: "Octobre", photo: null, items: [] },
@@ -193,7 +193,7 @@ export default function Infos() {
 
       {/* ── HERO ── */}
       <section style={{
-        minHeight: "100svh",
+        height: "100svh",
         background: "#6B1A1A",
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
@@ -206,7 +206,7 @@ export default function Infos() {
             <g transform="scale(1, 1.6)">
               <text y="148" fill="#f3ecdc">
                 <tspan fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" textLength="760" lengthAdjust="spacingAndGlyphs">ANANDA </tspan>
-                <tspan fontFamily="'La Belle Aurore', cursive" fontSize="118" textLength="240" lengthAdjust="spacingAndGlyphs">et</tspan>
+                <tspan fontFamily="'La Belle Aurore', cursive" fontSize="90" textLength="240" lengthAdjust="spacingAndGlyphs">et</tspan>
               </text>
               <text x="0" y="293" textLength="1000" lengthAdjust="spacingAndGlyphs"
                 fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" fill="#f3ecdc">
@@ -224,7 +224,7 @@ export default function Infos() {
           style={{ objectFit: "cover", display: "block", flexShrink: 0 }}
         />
 
-        <div style={{ position: "absolute", bottom: "28px", left: "50%", transform: "translateX(-50%)", animation: "bounce 2s ease-in-out infinite", opacity: 0.5 }}>
+        <div style={{ position: "absolute", bottom: "12px", left: "50%", transform: "translateX(-50%)", animation: "bounce 2s ease-in-out infinite", opacity: 0.5 }}>
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
             <path d="M12 5v14M5 12l7 7 7-7" stroke="#f3ecdc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
@@ -259,8 +259,8 @@ export default function Infos() {
           </Reveal>
         </div>
 
-        <Reveal delay={60}>
-          <div className="section-pad" style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, paddingTop: "32px", paddingBottom: "40px" }}>
+        <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 1fr" }} className="venir-grid">
+          <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)` }}>
             <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Avion</p>
             <p style={{ fontSize: "clamp(14px, 1.3vw, 17px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
               Le meilleur moyen pour rejoindre Scopello est d'atterrir à l'aéroport de Palerme.
@@ -269,10 +269,7 @@ export default function Infos() {
               L'aéroport de Palerme se situe ensuite à 40 minutes de voiture de Scopello.
             </p>
           </div>
-        </Reveal>
-
-        <Reveal delay={100}>
-          <div className="section-pad" style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, paddingTop: "32px", paddingBottom: "48px" }}>
+          <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "48px" }}>
             <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Voiture</p>
             <p style={{ fontSize: "clamp(14px, 1.3vw, 17px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginBottom: "28px" }}>
               La Tonnara di Scopello se trouve à 40 minutes de route de l'aéroport de Palerme.
@@ -287,7 +284,7 @@ export default function Infos() {
               ))}
             </div>
           </div>
-        </Reveal>
+        </div>
       </section>
 
       {/* ── HÔTELS ── */}
@@ -427,6 +424,15 @@ export default function Infos() {
           .hotel-row-inner {
             grid-template-columns: 1fr !important;
             gap: 8px !important;
+          }
+
+          /* Venir : une colonne */
+          .venir-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .venir-grid > div:first-child {
+            border-right: none !important;
+            border-bottom: 1px solid rgba(36,59,113,0.15);
           }
 
           /* Maisons : une colonne */

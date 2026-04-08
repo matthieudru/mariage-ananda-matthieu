@@ -48,7 +48,7 @@ export default function Home() {
           height: "auto",
           display: "block",
           marginTop: "-3vh",
-          marginLeft: "-24px",
+          marginLeft: "-48px",
           transformOrigin: "55% 28%",
           WebkitBackfaceVisibility: "hidden",
           backfaceVisibility: "hidden",
