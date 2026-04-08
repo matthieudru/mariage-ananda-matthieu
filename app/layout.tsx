@@ -5,6 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Ananda & Matthieu — 10 · 10 · 26",
   description: "Tonnara di Scopello · 10 octobre 2026",
+  icons: { icon: "/favicon.png" },
 };
 
 export const viewport: Viewport = {

@@ -261,7 +261,10 @@ export default function Infos() {
           <Link href="/" style={{ color: "#f3ecdc", textDecoration: "none", fontSize: "11px", fontWeight: 400, letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.5 }}>
             ← Accueil
           </Link>
-          <Link href="/rsvp" className="hero-rsvp">RSVP</Link>
+          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+            <a href="#" className="hero-rsvp">Wedding List</a>
+            <Link href="/rsvp" className="hero-rsvp">RSVP</Link>
+          </div>
         </div>
       </section>
 
@@ -343,10 +346,13 @@ export default function Infos() {
       </section>
 
 
-      {/* ── RSVP CTA ── */}
-      <section style={{ padding: "80px 24px 100px", textAlign: "center" }}>
+      {/* ── RSVP + WEDDING LIST CTA ── */}
+      <section style={{ padding: "80px 24px 100px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}>
         <Reveal>
           <Link href="/rsvp" className="cta-rsvp">RSVP</Link>
+        </Reveal>
+        <Reveal>
+          <a href="#" className="cta-weddinglist">Wedding List</a>
         </Reveal>
       </section>
 
@@ -414,6 +420,26 @@ export default function Infos() {
         .cta-rsvp:hover, .cta-rsvp:active {
           background: ${COLOR};
           color: ${BG};
+        }
+        .cta-weddinglist {
+          display: inline-flex;
+          align-items: center;
+          color: #f3ecdc;
+          background: #6B1A1A;
+          text-decoration: none;
+          font-size: clamp(14px, 1.6vw, 18px);
+          font-weight: 500;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          border: 1.5px solid #6B1A1A;
+          padding: 22px 64px;
+          min-height: 60px;
+          font-family: 'FT Aktual', Georgia, serif;
+          transition: background 0.2s ease-out, color 0.2s ease-out;
+        }
+        .cta-weddinglist:hover, .cta-weddinglist:active {
+          background: #4e1212;
+          border-color: #4e1212;
         }
         a { -webkit-tap-highlight-color: transparent; }
         .hotel-row:active > div:last-child { opacity: 1 !important; }

@@ -111,9 +111,21 @@ export default function RSVP() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/Sun.png" alt="" style={{ width: "clamp(96px, 12vw, 160px)", height: "auto" }} />
           </div>
-          <Link href="/" style={{ color: COLOR, textDecoration: "none", fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", borderBottom: `1px solid ${COLOR}`, paddingBottom: "2px" }}>
-            ← Retour à l'accueil
-          </Link>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}>
+            <a href="#" style={{
+              display: "inline-flex", alignItems: "center",
+              color: "#f3ecdc", background: "#6B1A1A",
+              textDecoration: "none", fontSize: "clamp(13px, 1.4vw, 16px)",
+              fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase",
+              border: "1.5px solid #6B1A1A", padding: "18px 48px",
+              fontFamily: "'FT Aktual', Georgia, serif",
+            }}>
+              Wedding List
+            </a>
+            <Link href="/" style={{ color: COLOR, textDecoration: "none", fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", borderBottom: `1px solid ${COLOR}`, paddingBottom: "2px" }}>
+              ← Retour à l'accueil
+            </Link>
+          </div>
         </div>
       </div>
     );
