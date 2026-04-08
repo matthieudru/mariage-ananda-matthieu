@@ -170,11 +170,12 @@ const HOTELS = [
 ];
 
 const MAISONS = [
-  { nom: "Villa Scopello", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/679510123027779817?adults=6&check_in=2026-10-10&check_out=2026-10-12", photo: "/Villa Scopello .avif", email: "" },
-  { nom: "Villa Scopello 2", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/737564969353396145?adults=6&check_in=2026-10-10&check_out=2026-10-12", photo: "/Villa Scopello 2  .avif", email: "" },
-  { nom: "Villa Gaia", detail: "6 personnes · 2 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/27384846?adults=1&check_in=2026-10-09&check_out=2026-10-12", photo: "/Villa Gaia  .avif", email: "" },
-  { nom: "Alla Riserva", detail: "7 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/casa-per-vacanze-riserva-dello-zingaro-scopello.fr.html", photo: "/Alla Riserva .jpg", email: "" },
-  { nom: "Palma Dello Zingaro", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/palma-dello-zingaro.fr.html", photo: "/Palma Dello Zingaro .jpg", email: "" },
+  { nom: "Villa Scopello", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/679510123027779817?adults=6&check_in=2026-10-10&check_out=2026-10-12", photo: "/villa-scopello.avif", email: "" },
+  { nom: "Villa Scopello 2", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/737564969353396145?adults=6&check_in=2026-10-10&check_out=2026-10-12", photo: "/villa-scopello-2.avif", email: "" },
+  { nom: "Villa Gaia", detail: "6 personnes · 2 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/27384846?adults=1&check_in=2026-10-09&check_out=2026-10-12", photo: "/villa-gaia.avif", email: "" },
+  { nom: "Alla Riserva", detail: "7 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/casa-per-vacanze-riserva-dello-zingaro-scopello.fr.html", photo: "/alla-riserva.jpg", email: "" },
+  { nom: "Palma Dello Zingaro", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/palma-dello-zingaro.fr.html", photo: "/palma-dello-zingaro.jpg", email: "" },
+  { nom: "Calabianca Villas", detail: "Liste de maisons situées à 20 minutes du lieu du mariage.", url: "https://linktr.ee/calabiancavillas", photo: "", email: "" },
 ];
 
 const PROGRAMME = [
@@ -337,20 +338,6 @@ export default function Infos() {
         <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)` }} />
       </section>
 
-      {/* ── CALABIANCA ── */}
-      <section style={{ borderBottom: `1px solid rgba(36,59,113,0.15)` }}>
-        <a
-          href="https://linktr.ee/calabiancavillas"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ display: "block", padding: "28px 40px", textDecoration: "none", color: COLOR, borderTop: `1px solid rgba(36,59,113,0.15)` }}
-        >
-          <p style={{ fontSize: "clamp(15px, 1.8vw, 22px)", fontWeight: 500, marginBottom: "6px" }}>Calabianca Villas</p>
-          <p style={{ fontSize: "clamp(12px, 1vw, 15px)", opacity: 0.55, lineHeight: 1.6, fontWeight: 400 }}>
-            Liste de maisons situées à 20 minutes du lieu du mariage.
-          </p>
-        </a>
-      </section>
 
       {/* ── RSVP CTA ── */}
       <section style={{ padding: "80px 24px 100px", textAlign: "center" }}>
