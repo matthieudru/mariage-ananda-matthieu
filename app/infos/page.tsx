@@ -396,41 +396,35 @@ export default function Infos() {
           border-color: #f3ecdc;
         }
 
-        .cta-rsvp {
+        .cta-rsvp, .cta-weddinglist {
           display: inline-flex;
           align-items: center;
-          color: ${COLOR};
-          background: transparent;
+          justify-content: center;
           text-decoration: none;
-          font-size: clamp(14px, 1.6vw, 18px);
+          font-size: clamp(12px, 1.2vw, 15px);
           font-weight: 500;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          border: 1.5px solid ${COLOR};
-          padding: 22px 64px;
+          border: 1.5px solid;
+          padding: 22px 0;
+          width: clamp(180px, 18vw, 260px);
           min-height: 60px;
           font-family: 'FT Aktual', Georgia, serif;
-          transition: background 0.2s ease-out, color 0.2s ease-out;
+          transition: background 0.2s ease-out, color 0.2s ease-out, border-color 0.2s ease-out;
+        }
+        .cta-rsvp {
+          color: ${BG};
+          background: ${COLOR};
+          border-color: ${COLOR};
         }
         .cta-rsvp:hover, .cta-rsvp:active {
-          background: ${COLOR};
-          color: ${BG};
+          background: #6B1A1A;
+          border-color: #6B1A1A;
         }
         .cta-weddinglist {
-          display: inline-flex;
-          align-items: center;
           color: #f3ecdc;
           background: #6B1A1A;
-          text-decoration: none;
-          font-size: clamp(14px, 1.6vw, 18px);
-          font-weight: 500;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          border: 1.5px solid #6B1A1A;
-          padding: 22px 64px;
-          min-height: 60px;
-          font-family: 'FT Aktual', Georgia, serif;
-          transition: background 0.2s ease-out, color 0.2s ease-out;
+          border-color: #6B1A1A;
         }
         .cta-weddinglist:hover, .cta-weddinglist:active {
           background: #4e1212;
