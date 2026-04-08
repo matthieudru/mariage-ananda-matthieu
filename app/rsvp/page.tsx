@@ -133,13 +133,13 @@ export default function RSVP() {
       </nav>
 
       {/* Hero */}
-      <section style={{ padding: "80px 40px 64px", borderBottom: `1px solid rgba(36,59,113,0.15)` }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.38, marginBottom: "24px" }}>
-          10 · 10 · 26 — Tonnara di Scopello
-        </p>
-        <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.88 }}>
+      <section style={{ padding: "80px 40px 64px", borderBottom: `1px solid rgba(36,59,113,0.15)`, textAlign: "center" }}>
+        <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.88, marginBottom: "20px" }}>
           RSVP
         </h1>
+        <p style={{ fontSize: "11px", letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.38, display: "inline-block" }}>
+          10 · 10 · 26 — Tonnara di Scopello
+        </p>
       </section>
 
       {/* Formulaire */}
@@ -160,7 +160,7 @@ export default function RSVP() {
 
         {/* Jours */}
         <div style={{ marginBottom: "56px" }}>
-          <span style={labelStyle}>Je serai là</span>
+          <span style={labelStyle}>Je serai là <span style={{ opacity: 0.5, fontWeight: 400 }}>(cliquez sur les cases pour confirmer les événements auxquels vous serez présent)</span></span>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginTop: "8px" }}>
             {JOURS.map(jour => {
               const checked = form.jours.includes(jour.id);
