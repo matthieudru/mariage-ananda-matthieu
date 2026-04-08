@@ -151,9 +151,9 @@ function HotelRow({ hotel, delay }: { hotel: { nom: string; detail: string; emai
             <p style={{ fontSize: "clamp(12px, 1vw, 15px)", opacity: hovered ? 0.75 : 0.55, lineHeight: 1.6, fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s, opacity 0.4s" }}>
               {hotel.detail}
             </p>
-            <p style={{ fontSize: "11px", opacity: 0.5, marginTop: "4px", fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
+            {hotel.email && <p style={{ fontSize: "11px", opacity: 0.5, marginTop: "4px", fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
               {hotel.email} · Réserver en direct
-            </p>
+            </p>}
           </div>
         </div>
       </a>
@@ -170,11 +170,11 @@ const HOTELS = [
 ];
 
 const MAISONS = [
-  { nom: "Villa Scopello", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/679510123027779817?adults=6&check_in=2026-10-10&check_out=2026-10-12", photo: "/Villa Scopello .avif" },
-  { nom: "Villa Scopello 2", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/737564969353396145?adults=6&check_in=2026-10-10&check_out=2026-10-12", photo: "/Villa Scopello 2  .avif" },
-  { nom: "Villa Gaia", detail: "6 personnes · 2 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/27384846?adults=1&check_in=2026-10-09&check_out=2026-10-12", photo: "/Villa Gaia  .avif" },
-  { nom: "Alla Riserva", detail: "7 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/casa-per-vacanze-riserva-dello-zingaro-scopello.fr.html", photo: "/Alla Riserva .jpg" },
-  { nom: "Palma Dello Zingaro", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/palma-dello-zingaro.fr.html", photo: "/Palma Dello Zingaro .jpg" },
+  { nom: "Villa Scopello", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/679510123027779817?adults=6&check_in=2026-10-10&check_out=2026-10-12", photo: "/Villa Scopello .avif", email: "" },
+  { nom: "Villa Scopello 2", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/737564969353396145?adults=6&check_in=2026-10-10&check_out=2026-10-12", photo: "/Villa Scopello 2  .avif", email: "" },
+  { nom: "Villa Gaia", detail: "6 personnes · 2 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/27384846?adults=1&check_in=2026-10-09&check_out=2026-10-12", photo: "/Villa Gaia  .avif", email: "" },
+  { nom: "Alla Riserva", detail: "7 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/casa-per-vacanze-riserva-dello-zingaro-scopello.fr.html", photo: "/Alla Riserva .jpg", email: "" },
+  { nom: "Palma Dello Zingaro", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/palma-dello-zingaro.fr.html", photo: "/Palma Dello Zingaro .jpg", email: "" },
 ];
 
 const PROGRAMME = [
