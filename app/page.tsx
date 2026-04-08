@@ -41,7 +41,7 @@ export default function Home() {
       {/* Image */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/AnandaetMatthieu5.jpg"
+        src="/illustration.JPG"
         alt="Ananda & Matthieu"
         style={{
           width: "min(88vw, 64vh)",
