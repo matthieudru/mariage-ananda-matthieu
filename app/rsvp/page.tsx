@@ -335,11 +335,13 @@ export default function RSVP() {
               </div>
             )}
 
-            {/* Allergies */}
-            <div>
-              <label style={labelStyle}>Allergies / régime alimentaire <span style={{ opacity: 0.4 }}>(optionnel)</span></label>
-              <input type="text" value={p.allergies} onChange={e => updatePersonne(i, "allergies", e.target.value)} placeholder="Végétarien, sans gluten, noix, OM..." style={inputStyle(false)} />
-            </div>
+            {/* Allergies — pas pour les enfants */}
+            {!p.enfant && (
+              <div>
+                <label style={labelStyle}>Allergies / régime alimentaire <span style={{ opacity: 0.4 }}>(optionnel)</span></label>
+                <input type="text" value={p.allergies} onChange={e => updatePersonne(i, "allergies", e.target.value)} placeholder="Végétarien, sans gluten, noix, OM..." style={inputStyle(false)} />
+              </div>
+            )}
           </div>
         ); })}
 
