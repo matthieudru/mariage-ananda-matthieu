@@ -12,7 +12,6 @@ const JOURS = [
   { id: "vendredi", label: "Vendredi 9", sublabel: "The Opening" },
   { id: "samedi", label: "Samedi 10", sublabel: "The Wedding" },
   { id: "dimanche", label: "Dimanche 11", sublabel: "The After Party" },
-  { id: "lundi", label: "Lundi 12", sublabel: "Ciao Bye Bye" },
 ];
 
 type Personne = { prenom: string; nom: string; allergies: string; enfant: boolean };
