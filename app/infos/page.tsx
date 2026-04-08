@@ -294,7 +294,10 @@ export default function Infos() {
           <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)` }}>
             <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Avion</p>
             <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
-              Le meilleur moyen pour rejoindre Scopello est d'atterrir à l'aéroport de Palerme, il se situe ensuite à 40 minutes de voiture de Scopello.
+              Le meilleur moyen pour rejoindre Scopello est d'atterrir à l'aéroport de Palerme.
+              Il y a des vols directs depuis Marseille avec Ryanair ou Transavia,
+              et depuis Paris avec Transavia, EasyJet ou Air France.
+              L'aéroport de Palerme se situe ensuite à 40 minutes de voiture de Scopello.
             </p>
           </div>
           <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px" }}>
