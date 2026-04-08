@@ -404,7 +404,7 @@ export default function Infos() {
           align-items: center;
           justify-content: center;
           text-decoration: none;
-          font-size: clamp(12px, 1.2vw, 15px);
+          font-size: clamp(13px, 1.5vw, 18px);
           font-weight: 400;
           letter-spacing: 0.2em;
           text-transform: uppercase;
