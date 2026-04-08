@@ -98,10 +98,19 @@ export default function RSVP() {
   };
 
   if (status === "success") {
+    const prenom = form.personnes[0]?.prenom?.trim() || "";
     return (
       <div style={{ background: BG, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'FT Aktual', Georgia, serif" }}>
         <div style={{ textAlign: "center", padding: "40px" }}>
-          <p style={{ fontSize: "clamp(40px, 7vw, 88px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.9, color: COLOR, marginBottom: "32px" }}>Grazie !</p>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "24px", marginBottom: "32px" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Sun.png" alt="" style={{ width: "clamp(48px, 6vw, 80px)", height: "auto" }} />
+            <p style={{ fontSize: "clamp(40px, 7vw, 88px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.9, color: COLOR }}>
+              Grazie{prenom ? ` ${prenom}` : ""} !
+            </p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Sun.png" alt="" style={{ width: "clamp(48px, 6vw, 80px)", height: "auto" }} />
+          </div>
           <p style={{ fontSize: "clamp(15px, 1.4vw, 18px)", opacity: 0.6, fontWeight: 400, marginBottom: "48px", lineHeight: 1.7 }}>
             On a hâte de vous voir à Scopello.
           </p>
@@ -133,12 +142,20 @@ export default function RSVP() {
 
       {/* Hero */}
       <section style={{ padding: "80px 40px 64px", borderBottom: `1px solid rgba(36,59,113,0.15)`, textAlign: "center" }}>
-        <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.88, marginBottom: "12px" }}>
-          RSVP
-        </h1>
-        <p style={{ fontSize: "13px", letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.38, display: "inline-block" }}>
-          10 · 10 · 26 — Tonnara di Scopello
-        </p>
+        <div style={{ display: "inline-block" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginBottom: "12px" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Orange fond copie.png" alt="" style={{ width: "clamp(60px, 8vw, 110px)", height: "auto", display: "block" }} />
+            <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "0.18em", lineHeight: 0.88 }}>
+              RSVP
+            </h1>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Orange fond.png" alt="" style={{ width: "clamp(60px, 8vw, 110px)", height: "auto", display: "block" }} />
+          </div>
+          <p style={{ fontSize: "13px", letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.38, width: "100%", textAlign: "center" }}>
+            10 · 10 · 26 — Tonnara di Scopello
+          </p>
+        </div>
       </section>
 
       {/* Formulaire */}
@@ -151,7 +168,7 @@ export default function RSVP() {
             type="email"
             value={form.email}
             onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-            placeholder="ananda@exemple.com"
+            placeholder="votre@email.com"
             style={inputStyle(!!errors.email)}
           />
           {errors.email && <p style={errorStyle}>{errors.email}</p>}
@@ -159,7 +176,7 @@ export default function RSVP() {
 
         {/* Jours */}
         <div style={{ marginBottom: "56px" }}>
-          <span style={labelStyle}>Je serai là <span style={{ opacity: 0.5, fontWeight: 400 }}>(cliquez sur les cases pour confirmer les événements auxquels vous serez présent)</span></span>
+          <span style={labelStyle}>Je serai là <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: "0.02em" }}>(sélectionnez les jours auxquels vous serez présent)</span></span>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginTop: "8px" }}>
             {JOURS.map(jour => {
               const checked = form.jours.includes(jour.id);
@@ -336,11 +353,11 @@ export default function RSVP() {
 
         {/* Message */}
         <div style={{ marginBottom: "64px" }}>
-          <label style={labelStyle}>Un mot pour nous <span style={{ opacity: 0.4 }}>(optionnel)</span></label>
+          <label style={labelStyle}>Un mot pour nous</label>
           <textarea
             value={form.message}
             onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
-            placeholder="On a hâte de fêter ça avec vous !"
+            placeholder="On a hâte de fêter ça avec vous, ou autre message moins banal."
             rows={4}
             style={{ ...inputStyle(false), resize: "none", paddingTop: "16px" }}
           />

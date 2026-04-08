@@ -41,14 +41,14 @@ export default function Home() {
       {/* Image */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/illustration.JPG"
+        src="/NEW_V1.jpg"
         alt="Ananda & Matthieu"
         style={{
           width: "min(88vw, 64vh)",
           height: "auto",
           display: "block",
           marginTop: "-3vh",
-          marginLeft: "-48px",
+          marginLeft: "-24px",
           transformOrigin: "55% 28%",
           WebkitBackfaceVisibility: "hidden",
           backfaceVisibility: "hidden",
