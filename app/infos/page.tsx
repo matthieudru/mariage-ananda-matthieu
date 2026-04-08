@@ -59,19 +59,11 @@ function ProgrammePanel({
 
       {/* Bouton overlay — capte tous les taps sur le panneau */}
       {photo && (
-        <label
-          htmlFor={`panel-${num}`}
+        <div
+          onTouchStart={(e) => { e.preventDefault(); setHovered(h => !h); }}
+          onClick={() => setHovered(h => !h)}
           style={{ position: "absolute", inset: 0, zIndex: 5, cursor: "pointer", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-          aria-label="Voir la photo"
-        >
-          <input
-            type="checkbox"
-            id={`panel-${num}`}
-            onChange={() => setHovered(h => !h)}
-            style={{ position: "absolute", opacity: 0, width: 0, height: 0, pointerEvents: "none" }}
-            tabIndex={-1}
-          />
-        </label>
+        />
       )}
 
       <div style={{ position: "relative", zIndex: 6, pointerEvents: "none" }}>
@@ -171,8 +163,8 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
 }
 
 const HOTELS: Hotel[] = [
-  { nom: "Baglio di Scopello", detail: "Centre du village de Scopello, 5 min de la Tonnara.", email: "info@hotelbagliodiscopello.it", url: "https://www.hotelbagliodiscopello.com/", photo: "https://www.hotelbagliodiscopello.com/img/about-1.jpg" },
-  { nom: "Baglio dello Zingaro", detail: "À proximité du lieu du mariage.", email: "info@bagliodellozingaro.it", url: "https://www.bagliodellozingaro.it/", photo: "" },
+  { nom: "Baglio di Scopello", detail: "Centre du village de Scopello, 5 min de la Tonnara. Réservez en direct en mentionnant notre mariage pour bénéficier de 5% de remise.", email: "info@hotelbagliodiscopello.it", url: "https://www.hotelbagliodiscopello.com/", photo: "https://www.hotelbagliodiscopello.com/img/about-1.jpg" },
+  { nom: "Baglio dello Zingaro", detail: "À proximité du lieu du mariage. Réservez en direct en mentionnant notre mariage pour bénéficier d'un prix fixe.", email: "info@bagliodellozingaro.it", url: "https://www.bagliodellozingaro.it/", photo: "" },
   { nom: "La Tavernetta", detail: "Centre du village de Scopello, 5 min de la Tonnara.", email: "info@albertolatavernetta.it", url: "https://www.albergolatavernetta.it/it/", photo: "/la-tavernetta.jpg" },
   { nom: "Tenute Plaia", detail: "Sur la route de Scopello, 4 min de la Tonnara.", email: "info@agriturismotenuteplaia.it", url: "https://www.agriturismotenuteplaia.it/", photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg" },
 ];
@@ -233,9 +225,9 @@ export default function Infos() {
         <div className="hero-title-wrap" style={{ width: "min(688px, 88vw)", flexShrink: 0 }}>
           <svg viewBox="0 0 1000 472" style={{ width: "100%", display: "block", overflow: "visible" }}>
             <g transform="scale(1, 1.6)">
-              <text y="148" fill="#f3ecdc">
-                <tspan fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" textLength="760" lengthAdjust="spacingAndGlyphs">ANANDA </tspan>
-                <tspan fontFamily="'La Belle Aurore', cursive" fontSize="90" textLength="240" lengthAdjust="spacingAndGlyphs">et</tspan>
+              <text y="148" textLength="1000" lengthAdjust="spacingAndGlyphs" fill="#f3ecdc">
+                <tspan fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148">ANANDA </tspan>
+                <tspan fontFamily="'La Belle Aurore', cursive" fontSize="90">et</tspan>
               </text>
               <text x="0" y="293" textLength="1000" lengthAdjust="spacingAndGlyphs"
                 fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" fill="#f3ecdc">
