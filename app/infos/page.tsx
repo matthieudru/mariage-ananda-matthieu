@@ -232,7 +232,7 @@ export default function Infos() {
           <svg viewBox="0 0 1000 472" style={{ width: "100%", display: "block", overflow: "visible" }}>
             <g transform="scale(1, 1.6)">
               <text x="0" y="148" textLength="740" lengthAdjust="spacingAndGlyphs" fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" fill="#f3ecdc">ANANDA</text>
-              <text x="760" y="148" textLength="240" lengthAdjust="spacingAndGlyphs" fontFamily="'La Belle Aurore', cursive" fontSize="80" letterSpacing="-8" fill="#f3ecdc">et</text>
+              <text x="760" y="148" textLength="240" lengthAdjust="spacingAndGlyphs" fontFamily="'La Belle Aurore', cursive" fontSize="80" fill="#f3ecdc">et</text>
               <text x="0" y="293" textLength="1000" lengthAdjust="spacingAndGlyphs"
                 fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" fill="#f3ecdc">
                 MATTHIEU
