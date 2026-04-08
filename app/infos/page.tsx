@@ -109,64 +109,131 @@ function ProgrammePanel({
 }
 
 /* ── Ligne hôtel ── */
-function HotelRow({ hotel, delay }: { hotel: { nom: string; detail: string; email: string; url: string; photo: string }; delay: number }) {
+type Hotel = { nom: string; detail: string; email: string; url: string; photo: string; booking?: string; code?: string; tarifs?: { label: string; prix: string }[] };
+
+function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
   const [hovered, setHovered] = useState(false);
   return (
     <Reveal delay={delay}>
-      <a
-        href={hotel.url}
-        target="_blank"
-        rel="noopener noreferrer"
+      <div
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        onTouchStart={() => setHovered(true)}
-        onTouchEnd={() => setTimeout(() => setHovered(false), 400)}
         className="hotel-row"
         style={{
-          display: "block",
           borderTop: `1px solid rgba(36,59,113,0.15)`,
-          padding: "24px 40px",
-          textDecoration: "none", color: COLOR,
           position: "relative", overflow: "hidden",
         }}
       >
-        <div style={{
-          position: "absolute", inset: 0,
-          backgroundImage: `url(${hotel.photo})`,
-          backgroundSize: "cover", backgroundPosition: "center",
-          opacity: hovered ? 1 : 0,
-          transition: "opacity 0.55s cubic-bezier(0,0,0.2,1)",
-        }} />
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "rgba(36,59,113,0.62)",
-          opacity: hovered ? 1 : 0,
-          transition: "opacity 0.55s cubic-bezier(0,0,0.2,1)",
-        }} />
-        <div className="hotel-row-inner" style={{ position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", alignItems: "center" }}>
-          <p style={{ fontSize: "clamp(15px, 1.8vw, 22px)", fontWeight: 500, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
-            {hotel.nom}
-          </p>
-          <div>
-            <p style={{ fontSize: "clamp(12px, 1vw, 15px)", opacity: hovered ? 0.75 : 0.55, lineHeight: 1.6, fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s, opacity 0.4s" }}>
-              {hotel.detail}
-            </p>
-            {hotel.email && <p style={{ fontSize: "11px", opacity: 0.5, marginTop: "4px", fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
-              {hotel.email} · Réserver en direct
-            </p>}
+        {hotel.photo && <>
+          <div style={{
+            position: "absolute", inset: 0,
+            backgroundImage: `url(${hotel.photo})`,
+            backgroundSize: "cover", backgroundPosition: "center",
+            opacity: hovered ? 1 : 0,
+            transition: "opacity 0.55s cubic-bezier(0,0,0.2,1)",
+          }} />
+          <div style={{
+            position: "absolute", inset: 0,
+            background: "rgba(36,59,113,0.62)",
+            opacity: hovered ? 1 : 0,
+            transition: "opacity 0.55s cubic-bezier(0,0,0.2,1)",
+          }} />
+        </>}
+
+        <div style={{ position: "relative", zIndex: 2, padding: "28px 40px" }}>
+          {/* Nom + lien */}
+          <div className="hotel-row-inner" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px", alignItems: "start" }}>
+            <div>
+              <a href={hotel.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+                <p style={{ fontSize: "clamp(15px, 1.8vw, 22px)", fontWeight: 500, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
+                  {hotel.nom} ↗
+                </p>
+              </a>
+              <p style={{ fontSize: "clamp(12px, 1vw, 14px)", opacity: 0.55, lineHeight: 1.6, fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s", marginTop: "4px" }}>
+                {hotel.detail}
+              </p>
+            </div>
+            <div>
+              <p style={{ fontSize: "clamp(12px, 1vw, 14px)", lineHeight: 1.7, fontWeight: 400, color: hovered ? BG : COLOR, opacity: hovered ? 0.85 : 0.65, transition: "color 0.4s", marginBottom: hotel.email ? "12px" : "0" }}>
+                {hotel.booking}
+              </p>
+              {hotel.code && (
+                <p style={{ fontSize: "13px", fontWeight: 500, color: hovered ? BG : COLOR, transition: "color 0.4s", marginBottom: "12px", letterSpacing: "0.05em" }}>
+                  Code : <span style={{ background: hovered ? "rgba(255,255,255,0.15)" : "rgba(36,59,113,0.08)", padding: "2px 8px" }}>{hotel.code}</span>
+                </p>
+              )}
+              {hotel.tarifs && (
+                <div style={{ marginBottom: "12px" }}>
+                  {hotel.tarifs.map((t, i) => (
+                    <p key={i} style={{ fontSize: "12px", color: hovered ? BG : COLOR, opacity: hovered ? 0.75 : 0.55, transition: "color 0.4s", lineHeight: 1.6 }}>
+                      {t.label} — {t.prix}
+                    </p>
+                  ))}
+                </div>
+              )}
+              {hotel.email && (
+                <p
+                  onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(hotel.email); }}
+                  style={{ fontSize: "12px", color: hovered ? BG : COLOR, opacity: 0.6, transition: "color 0.4s", cursor: "copy", display: "inline-flex", alignItems: "center", gap: "6px", border: `1px solid ${hovered ? "rgba(255,255,255,0.3)" : "rgba(36,59,113,0.2)"}`, padding: "4px 10px", letterSpacing: "0.03em" }}
+                  title="Cliquer pour copier"
+                >
+                  📋 {hotel.email}
+                </p>
+              )}
+            </div>
           </div>
         </div>
-      </a>
+      </div>
     </Reveal>
   );
 }
 
-const HOTELS = [
-  { nom: "La Tavernetta", detail: "Centre du village de Scopello, 5 min de la Tonnara.", email: "info@albertolatavernetta.it", url: "https://www.albergolatavernetta.it/en/", photo: "/la-tavernetta.jpg" },
-  { nom: "Baglio di Scopello", detail: "Centre du village de Scopello, 5 min de la Tonnara.", email: "info@hotelbagliodiscopello.it", url: "https://www.hotelbagliodiscopello.com/eng/index.html", photo: "https://www.hotelbagliodiscopello.com/img/about-1.jpg" },
-  { nom: "Torre Bennistra", detail: "Vue sur la Tonnara, centre du village, 5 min.", email: "info@torrebennistra.it", url: "https://www.hoteltorrebennistra.it/en/", photo: "https://www.hoteltorrebennistra.it/images/panorama/0c6a9640.webp" },
-  { nom: "Baglio La Riserva", detail: "Sur la route de Scopello, 4 min de la Tonnara.", email: "info@bagliolariserva.it", url: "https://www.bagliolariserva.it/", photo: "https://www.bagliolariserva.it/wp-content/uploads/2020/06/baglio-la-riserva-scopello-faraglioni-03-1024x673.jpg" },
-  { nom: "Tenute Plaia", detail: "Sur la route de Scopello, 4 min de la Tonnara.", email: "info@agriturismotenuteplaia.it", url: "https://www.agriturismotenuteplaia.it/english/", photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg" },
+const HOTELS: Hotel[] = [
+  {
+    nom: "Baglio di Scopello",
+    detail: "Centre du village de Scopello, 5 min de la Tonnara.",
+    email: "info@hotelbagliodiscopello.it",
+    url: "https://www.hotelbagliodiscopello.com/",
+    photo: "https://www.hotelbagliodiscopello.com/img/about-1.jpg",
+    booking: "Réservez directement par email en mentionnant que vous assistez au mariage d'Ananda et Matthieu. Vous bénéficierez d'une réduction de 5%.",
+  },
+  {
+    nom: "Baglio dello Zingaro",
+    detail: "À proximité du lieu du mariage.",
+    email: "info@bagliodellozingaro.it",
+    url: "https://www.bagliodellozingaro.it/",
+    photo: "",
+    booking: "Des chambres ont été réservées. Écrivez directement par email en mentionnant Ananda e Matthieu pour bénéficier des tarifs spéciaux (valables jusqu'à fin juillet). Ne passez pas par les plateformes de réservation.",
+    tarifs: [
+      { label: "Chambre simple (1)", prix: "70€ / nuit" },
+      { label: "Chambre double standard (3)", prix: "130€ / nuit" },
+      { label: "Chambre double avec balcon (2)", prix: "140€ / nuit" },
+      { label: "Chambre double deluxe (1)", prix: "145€ / nuit" },
+      { label: "Chambre double supérieure (9)", prix: "155€ / nuit" },
+      { label: "Chambre double executive (9)", prix: "165€ / nuit" },
+      { label: "Chambre quadruple économique (2)", prix: "180€ / nuit" },
+      { label: "Chambre quadruple standard (1)", prix: "185€ / nuit" },
+      { label: "Chambre quadruple avec balcon (1)", prix: "190€ / nuit" },
+      { label: "Chambre quadruple avec balcon vue mer (1)", prix: "200€ / nuit" },
+    ],
+  },
+  {
+    nom: "La Tavernetta",
+    detail: "Centre du village de Scopello, 5 min de la Tonnara.",
+    email: "info@albertolatavernetta.it",
+    url: "https://www.albergolatavernetta.it/it/",
+    photo: "/la-tavernetta.jpg",
+    booking: "Les chambres ne peuvent pas être bloquées sans acompte. Contactez l'hôtel directement par email pour réserver.",
+  },
+  {
+    nom: "Tenute Plaia",
+    detail: "Sur la route de Scopello, 4 min de la Tonnara.",
+    email: "info@agriturismotenuteplaia.it",
+    url: "https://www.agriturismotenuteplaia.it/",
+    photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg",
+    booking: "Réservez directement sur leur site avec le code ci-dessous (12% de réduction sur les tarifs standards). Indiquez nos prénoms dans la case « demandes spéciales ».",
+    code: "ANDMTE26",
+  },
 ];
 
 const MAISONS = [
@@ -180,7 +247,7 @@ const MAISONS = [
 
 const PROGRAMME = [
   { num: "9", titre: "The\nOpening", jour: "Vendredi", mois: "Octobre", photo: "/TheOpening.JPG", items: [{ heure: "18h00", label: "Drinks in Scopello" }] },
-  { num: "10", titre: "The\nWedding", jour: "Samedi", mois: "Octobre", photo: "/scopello-2.jpg", items: [{ heure: "15h00", label: "Cérémonie" }, { heure: "17h00", label: "Apéritif" }, { heure: "19h30", label: "Dîner, Fête..." }] },
+  { num: "10", titre: "The\nWedding", jour: "Samedi", mois: "Octobre", photo: "/scopello-1.webp", items: [{ heure: "15h00", label: "Cérémonie" }, { heure: "17h00", label: "Apéritif" }, { heure: "19h30", label: "Dîner, Fête..." }] },
   { num: "11", titre: "The\nAfter Party", jour: "Dimanche", mois: "Octobre", photo: "/afterparty.png", bgSize: "120%", bgPosition: "75% center", items: [{ heure: "12h–19h", label: "Pizza Party" }] },
   { num: "12", titre: "Ciao\nBye Bye", jour: "Lundi", mois: "Octobre", photo: "/Ciaobyebye.jpeg", items: [] },
 ];
