@@ -247,7 +247,7 @@ export default function Infos() {
         </div>
 
         <div style={{ position: "absolute", bottom: "12px", left: 0, right: 0, display: "flex", justifyContent: "center", opacity: 0.5 }}>
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" style={{ animation: "bounceY 2s ease-in-out infinite" }}>
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
             <path d="M12 5v14M5 12l7 7 7-7" stroke="#f3ecdc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
