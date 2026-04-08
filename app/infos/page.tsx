@@ -180,7 +180,7 @@ const MAISONS = [
 const PROGRAMME = [
   { num: "9", titre: "The\nOpening", jour: "Vendredi", mois: "Octobre", photo: "/TheOpening.JPG", items: [{ heure: "18h00", label: "Drinks in Scopello" }] },
   { num: "10", titre: "The\nWedding", jour: "Samedi", mois: "Octobre", photo: "/scopello-2.jpg", items: [{ heure: "15h00", label: "Cérémonie" }, { heure: "17h00", label: "Apéritif" }, { heure: "19h30", label: "Dîner, Fête..." }] },
-  { num: "11", titre: "The\nAfter Party", jour: "Dimanche", mois: "Octobre", photo: "/afterparty.jpg", bgSize: "120%", bgPosition: "75% center", flipH: true, items: [{ heure: "12h–19h", label: "Pizza Party" }] },
+  { num: "11", titre: "The\nAfter Party", jour: "Dimanche", mois: "Octobre", photo: "/afterparty.jpg", bgSize: "120%", bgPosition: "75% center", items: [{ heure: "12h–19h", label: "Pizza Party" }] },
   { num: "12", titre: "Ciao\nBye Bye", jour: "Lundi", mois: "Octobre", photo: "/Ciaobyebye.jpeg", items: [] },
 ];
 
