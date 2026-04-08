@@ -167,8 +167,6 @@ const HOTELS = [
   { nom: "Torre Bennistra", detail: "Vue sur la Tonnara, centre du village, 5 min.", email: "info@torrebennistra.it", url: "https://www.hoteltorrebennistra.it/en/", photo: "https://www.hoteltorrebennistra.it/images/panorama/0c6a9640.webp" },
   { nom: "Baglio La Riserva", detail: "Sur la route de Scopello, 4 min de la Tonnara.", email: "info@bagliolariserva.it", url: "https://www.bagliolariserva.it/", photo: "https://www.bagliolariserva.it/wp-content/uploads/2020/06/baglio-la-riserva-scopello-faraglioni-03-1024x673.jpg" },
   { nom: "Tenute Plaia", detail: "Sur la route de Scopello, 4 min de la Tonnara.", email: "info@agriturismotenuteplaia.it", url: "https://www.agriturismotenuteplaia.it/english/", photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg" },
-  { nom: "Hotel Punta Nord Est", detail: "À Castellammare del Golfo, 20 min de la Tonnara.", email: "info@puntanordest.com", url: "https://www.puntanordest.com/en/", photo: "https://www.puntanordest.com/wp-content/uploads/2024/03/ok-header-1-desk-1500x1000.webp" },
-  { nom: "Marina di Petrolo", detail: "À Castellammare del Golfo, 20 min de la Tonnara.", email: "hotel@marinadipetrolo.it", url: "https://www.marinadipetrolo.it/en", photo: "https://www.marinadipetrolo.it/sites/default/files/page_block/block_opening.jpg" },
 ];
 
 const MAISONS = [
@@ -187,12 +185,35 @@ const PROGRAMME = [
 ];
 
 export default function Infos() {
+  const heroRef = useRef<HTMLElement>(null);
+  const [heroVisible, setHeroVisible] = useState(true);
+
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setHeroVisible(entry.isIntersecting),
+      { threshold: 0.01 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const HERO_COLOR = "#6B1A1A";
+
   return (
     <div style={{ background: BG, color: COLOR, fontFamily: "'FT Aktual', Georgia, serif" }}>
+      {/* Couvre le cadre bleu sur le hero */}
+      {heroVisible && <>
+        <div style={{ position:"fixed", left:0, top:0, bottom:0, width:"11px", background:HERO_COLOR, zIndex:10000, pointerEvents:"none" }} />
+        <div style={{ position:"fixed", right:0, top:0, bottom:0, width:"11px", background:HERO_COLOR, zIndex:10000, pointerEvents:"none" }} />
+        <div style={{ position:"fixed", top:0, left:0, right:0, height:"11px", background:HERO_COLOR, zIndex:10000, pointerEvents:"none" }} />
+        <div style={{ position:"fixed", bottom:0, left:0, right:0, height:"11px", background:HERO_COLOR, zIndex:10000, pointerEvents:"none" }} />
+      </>}
 
 
       {/* ── HERO ── */}
-      <section style={{
+      <section ref={heroRef} style={{
         height: "100svh",
         background: "#6B1A1A",
         display: "flex", flexDirection: "column",
