@@ -179,9 +179,9 @@ const MAISONS = [
 
 const PROGRAMME = [
   { num: "9", titre: "The\nOpening", jour: "Vendredi", mois: "Octobre", photo: "/TheOpening.JPG", items: [{ heure: "18h00", label: "Drinks in Scopello" }] },
-  { num: "10", titre: "The\nWedding", jour: "Samedi", mois: "Octobre", photo: "/scopello-2.jpg", items: [{ heure: "15h00", label: "Cérémonie" }, { heure: "17h00", label: "Apéritif" }, { heure: "19h30", label: "Dîner" }] },
-  { num: "11", titre: "The After Party", jour: "Dimanche", mois: "Octobre", photo: "/TheAfterParty.jpeg", bgSize: "120%", bgPosition: "75% center", flipH: true, items: [{ heure: "12h–19h", label: "Pizza Party" }] },
-  { num: "12", titre: "Ciao\nBye Bye", jour: "Lundi", mois: "Octobre", photo: null, items: [] },
+  { num: "10", titre: "The\nWedding", jour: "Samedi", mois: "Octobre", photo: "/scopello-2.jpg", items: [{ heure: "15h00", label: "Cérémonie" }, { heure: "17h00", label: "Apéritif" }, { heure: "19h30", label: "Dîner, Fête..." }] },
+  { num: "11", titre: "The\nAfter Party", jour: "Dimanche", mois: "Octobre", photo: "/afterparty.jpg", bgSize: "120%", bgPosition: "75% center", flipH: true, items: [{ heure: "12h–19h", label: "Pizza Party" }] },
+  { num: "12", titre: "Ciao\nBye Bye", jour: "Lundi", mois: "Octobre", photo: "/Ciaobyebye.jpeg", items: [] },
 ];
 
 export default function Infos() {
@@ -246,8 +246,8 @@ export default function Infos() {
           />
         </div>
 
-        <div style={{ position: "absolute", bottom: "12px", left: "50%", transform: "translateX(-50%)", animation: "bounce 2s ease-in-out infinite", opacity: 0.5 }}>
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+        <div style={{ position: "absolute", bottom: "12px", left: 0, right: 0, display: "flex", justifyContent: "center", opacity: 0.5 }}>
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" style={{ animation: "bounceY 2s ease-in-out infinite" }}>
             <path d="M12 5v14M5 12l7 7 7-7" stroke="#f3ecdc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
@@ -357,9 +357,9 @@ export default function Infos() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=La+Belle+Aurore&display=swap');
 
-        @keyframes bounce {
-          0%, 100% { transform: translateX(-50%) translateY(0); }
-          50%       { transform: translateX(-50%) translateY(8px); }
+        @keyframes bounceY {
+          0%, 100% { transform: translateY(0); }
+          50%       { transform: translateY(8px); }
         }
 
         .hero-photo {

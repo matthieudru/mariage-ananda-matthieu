@@ -102,7 +102,7 @@ export default function RSVP() {
     return (
       <div style={{ background: BG, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'FT Aktual', Georgia, serif" }}>
         <div style={{ textAlign: "center", padding: "40px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "24px", marginBottom: "48px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "48px" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/Sun.png" alt="" style={{ width: "clamp(96px, 12vw, 160px)", height: "auto" }} />
             <p style={{ fontSize: "clamp(40px, 7vw, 88px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.9, color: COLOR }}>
@@ -142,9 +142,9 @@ export default function RSVP() {
         <div style={{ display: "inline-block", position: "relative" }}>
           {/* Images positionnées en dehors du flux pour ne pas affecter la largeur */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/Orange fond copie.png" alt="" style={{ position: "absolute", right: "100%", top: "50%", transform: "translateY(-60%)", width: "clamp(80px, 11vw, 150px)", height: "auto", marginRight: "16px" }} />
+          <img src="/Orange fond copie.png" alt="" style={{ position: "absolute", right: "100%", top: "50%", transform: "translateY(-50%)", width: "clamp(80px, 11vw, 150px)", height: "auto", marginRight: "16px" }} />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/Orange fond.png" alt="" style={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-60%)", width: "clamp(80px, 11vw, 150px)", height: "auto", marginLeft: "16px" }} />
+          <img src="/Orange fond.png" alt="" style={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", width: "clamp(80px, 11vw, 150px)", height: "auto", marginLeft: "16px" }} />
           <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "0.08em", lineHeight: 0.88, marginBottom: "4px" }}>
             RSVP
           </h1>
