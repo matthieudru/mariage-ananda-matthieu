@@ -170,11 +170,11 @@ const HOTELS = [
 ];
 
 const MAISONS = [
-  { nom: "Villa Gaia", detail: "6 personnes — 5 min de la Tonnara." },
-  { nom: "Villa Riserva dello Zingaro", detail: "6 à 8 personnes — 5 min de la Tonnara." },
-  { nom: "Villa Ginestra", detail: "6 personnes — 5 min de la Tonnara." },
-  { nom: "Casa Vinz", detail: "2 à 4 personnes — 5 min de la Tonnara." },
-  { nom: "Palma dello Zingaro", detail: "4 à 6 personnes — 5 min de la Tonnara." },
+  { nom: "Villa Scopello", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/679510123027779817?adults=6&check_in=2026-10-10&check_out=2026-10-12", photo: "/Villa Scopello .avif" },
+  { nom: "Villa Scopello 2", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/737564969353396145?adults=6&check_in=2026-10-10&check_out=2026-10-12", photo: "/Villa Scopello 2  .avif" },
+  { nom: "Villa Gaia", detail: "6 personnes · 2 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.airbnb.fr/rooms/27384846?adults=1&check_in=2026-10-09&check_out=2026-10-12", photo: "/Villa Gaia  .avif" },
+  { nom: "Alla Riserva", detail: "7 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/casa-per-vacanze-riserva-dello-zingaro-scopello.fr.html", photo: "/Alla Riserva .jpg" },
+  { nom: "Palma Dello Zingaro", detail: "6 personnes · 3 chambres — Villa sur la route de Scopello à 5 min en voiture de la Tonnara.", url: "https://www.booking.com/hotel/it/palma-dello-zingaro.fr.html", photo: "/Palma Dello Zingaro .jpg" },
 ];
 
 const PROGRAMME = [
@@ -328,18 +328,28 @@ export default function Infos() {
         <div className="section-pad" style={{ paddingTop: "48px", paddingBottom: "32px" }}>
           <Reveal>
             <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", lineHeight: 1, textTransform: "uppercase" }}>Dormir</p>
-            <p style={{ fontSize: "clamp(14px, 1.8vw, 20px)", letterSpacing: "0.04em", textTransform: "uppercase", opacity: 0.4, fontWeight: 400, marginTop: "10px" }}>Airbnb</p>
+            <p style={{ fontSize: "clamp(14px, 1.8vw, 20px)", letterSpacing: "0.04em", textTransform: "uppercase", opacity: 0.4, fontWeight: 400, marginTop: "10px" }}>Airbnb / Maisons</p>
           </Reveal>
         </div>
-        {MAISONS.map((m, i) => (
-          <Reveal key={m.nom} delay={i * 50}>
-            <div className="maison-row" style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, padding: "24px 40px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", alignItems: "center" }}>
-              <p style={{ fontSize: "clamp(15px, 1.8vw, 22px)", fontWeight: 400 }}>{m.nom}</p>
-              <p style={{ fontSize: "clamp(12px, 1vw, 15px)", opacity: 0.55, lineHeight: 1.6, fontWeight: 400 }}>{m.detail}</p>
-            </div>
-          </Reveal>
+        {MAISONS.map((h, i) => (
+          <HotelRow key={h.nom} hotel={h} delay={i * 50} />
         ))}
         <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)` }} />
+      </section>
+
+      {/* ── CALABIANCA ── */}
+      <section style={{ borderBottom: `1px solid rgba(36,59,113,0.15)` }}>
+        <a
+          href="https://linktr.ee/calabiancavillas"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: "block", padding: "28px 40px", textDecoration: "none", color: COLOR, borderTop: `1px solid rgba(36,59,113,0.15)` }}
+        >
+          <p style={{ fontSize: "clamp(15px, 1.8vw, 22px)", fontWeight: 500, marginBottom: "6px" }}>Calabianca Villas</p>
+          <p style={{ fontSize: "clamp(12px, 1vw, 15px)", opacity: 0.55, lineHeight: 1.6, fontWeight: 400 }}>
+            Liste de maisons situées à 20 minutes du lieu du mariage.
+          </p>
+        </a>
       </section>
 
       {/* ── RSVP CTA ── */}
