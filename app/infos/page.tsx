@@ -301,7 +301,7 @@ export default function Infos() {
               <iframe
                 src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 width="100%"
-                height="200"
+                height="260"
                 style={{ border: 0, display: "block", filter: "grayscale(1) contrast(1.1) opacity(0.85)" }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -311,14 +311,16 @@ export default function Infos() {
               </p>
             </a>
           </div>
-          {/* Droite : photo verticale */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/scopellopicture.jpg"
-            alt="Tonnara di Scopello"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", maxHeight: "520px" }}
-            className="lieu-photo"
-          />
+          {/* Droite : photo verticale avec espace */}
+          <div style={{ padding: "40px 40px 40px 24px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/scopellopicture.jpg"
+              alt="Tonnara di Scopello"
+              style={{ width: "100%", aspectRatio: "2/3", objectFit: "cover", display: "block" }}
+              className="lieu-photo"
+            />
+          </div>
         </div>
       </section>
 
