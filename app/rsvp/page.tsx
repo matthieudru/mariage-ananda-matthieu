@@ -76,12 +76,17 @@ export default function RSVP() {
     if (!validate()) return;
     setStatus("loading");
     try {
+      const ps = form.personnes;
       const params = new URLSearchParams({
         date: new Date().toLocaleString("fr-FR"),
-        email: form.personnes[0]?.email ?? "",
-        jours: form.jours.join(", "),
-        nb_personnes: String(form.personnes.length),
-        personnes: form.personnes.map((p, i) => `${i + 1}. ${p.prenom} ${p.nom}${p.enfant ? " (enfant)" : ""}${p.email ? ` <${p.email}>` : ""}${p.allergies ? ` — ${p.allergies}` : ""}`).join(" | "),
+        prenom1: ps[0]?.prenom ?? "", nom1: ps[0]?.nom ?? "", email1: ps[0]?.email ?? "", allergie1: ps[0]?.allergies ?? "",
+        opening:    form.jours.includes("vendredi") ? "Oui" : "Non",
+        wedding:    form.jours.includes("samedi")   ? "Oui" : "Non",
+        afterparty: form.jours.includes("dimanche") ? "Oui" : "Non",
+        nb_personnes: String(ps.length),
+        prenom2: ps[1]?.prenom ?? "", nom2: ps[1]?.nom ?? "", email2: ps[1]?.email ?? "", allergie2: ps[1]?.allergies ?? "",
+        prenom3: ps[2]?.prenom ?? "", nom3: ps[2]?.nom ?? "", email3: ps[2]?.email ?? "", allergie3: ps[2]?.allergies ?? "",
+        prenom4: ps[3]?.prenom ?? "", nom4: ps[3]?.nom ?? "", email4: ps[3]?.email ?? "", allergie4: ps[3]?.allergies ?? "",
         message: form.message,
       });
       await fetch(SHEET_URL, {
@@ -171,7 +176,7 @@ export default function RSVP() {
       {/* Formulaire */}
       <form onSubmit={handleSubmit} style={{ maxWidth: "720px", margin: "0 auto", padding: "64px 40px 120px" }}>
 
-        {/* Personne 0 : Prénom / Nom / Email */}
+        {/* Personne 0 : Prénom / Nom / Email / Allergies */}
         {(() => { const p = form.personnes[0]; return (
           <div style={{ marginBottom: "56px", paddingBottom: "56px", borderBottom: `1px solid rgba(36,59,113,0.12)` }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
@@ -186,10 +191,14 @@ export default function RSVP() {
                 {errors[`nom_0`] && <p style={errorStyle}>{errors[`nom_0`]}</p>}
               </div>
             </div>
-            <div>
+            <div style={{ marginBottom: "24px" }}>
               <label style={labelStyle}>Email de contact</label>
               <input type="email" value={p.email} onChange={e => updatePersonne(0, "email", e.target.value)} placeholder="votre@email.com" style={inputStyle(!!errors[`email_0`])} />
               {errors[`email_0`] && <p style={errorStyle}>{errors[`email_0`]}</p>}
+            </div>
+            <div>
+              <label style={labelStyle}>Allergies / régime alimentaire <span style={{ opacity: 0.4 }}>(optionnel)</span></label>
+              <input type="text" value={p.allergies} onChange={e => updatePersonne(0, "allergies", e.target.value)} placeholder="Végétarien, sans gluten, noix, OM..." style={inputStyle(false)} />
             </div>
           </div>
         ); })()}
