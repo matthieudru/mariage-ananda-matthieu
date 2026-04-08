@@ -170,6 +170,29 @@ export default function RSVP() {
       {/* Formulaire */}
       <form onSubmit={handleSubmit} style={{ maxWidth: "720px", margin: "0 auto", padding: "64px 40px 120px" }}>
 
+        {/* Personne 0 : Prénom / Nom / Email */}
+        {(() => { const p = form.personnes[0]; return (
+          <div style={{ marginBottom: "56px", paddingBottom: "56px", borderBottom: `1px solid rgba(36,59,113,0.12)` }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
+              <div>
+                <label style={labelStyle}>Prénom</label>
+                <input type="text" value={p.prenom} onChange={e => updatePersonne(0, "prenom", e.target.value)} placeholder="Prénom" style={inputStyle(!!errors[`prenom_0`])} />
+                {errors[`prenom_0`] && <p style={errorStyle}>{errors[`prenom_0`]}</p>}
+              </div>
+              <div>
+                <label style={labelStyle}>Nom</label>
+                <input type="text" value={p.nom} onChange={e => updatePersonne(0, "nom", e.target.value)} placeholder="Nom" style={inputStyle(!!errors[`nom_0`])} />
+                {errors[`nom_0`] && <p style={errorStyle}>{errors[`nom_0`]}</p>}
+              </div>
+            </div>
+            <div>
+              <label style={labelStyle}>Email de contact</label>
+              <input type="email" value={p.email} onChange={e => updatePersonne(0, "email", e.target.value)} placeholder="votre@email.com" style={inputStyle(!!errors[`email_0`])} />
+              {errors[`email_0`] && <p style={errorStyle}>{errors[`email_0`]}</p>}
+            </div>
+          </div>
+        ); })()}
+
         {/* Jours */}
         <div style={{ marginBottom: "56px" }}>
           <span style={labelStyle}>Je serai là <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: "0.02em" }}>(sélectionnez les jours auxquels vous serez présent)</span></span>
@@ -253,11 +276,11 @@ export default function RSVP() {
           </div>
         </div>
 
-        {/* Fiche par personne */}
-        {form.personnes.map((p, i) => (
+        {/* Fiches personnes supplémentaires */}
+        {form.personnes.slice(1).map((p, idx) => { const i = idx + 1; return (
           <div key={i} style={{ marginBottom: "48px", paddingBottom: "48px", borderBottom: `1px solid rgba(36,59,113,0.12)` }}>
             <p style={{ fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.4, marginBottom: "24px", fontWeight: 400 }}>
-              {i === 0 ? "Vous" : `Personne ${i + 1}`}
+              Personne {i + 1}
             </p>
 
             {/* Prénom / Nom */}
@@ -274,8 +297,8 @@ export default function RSVP() {
               </div>
             </div>
 
-            {/* Adulte / Enfant — uniquement pour les accompagnants */}
-            {i > 0 && (
+            {/* Adulte / Enfant */}
+            {(
               <div style={{ marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
                 <span style={{ fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.45, fontWeight: 400 }}>Adulte ou enfant</span>
                 <div style={{ display: "flex" }}>
@@ -304,9 +327,9 @@ export default function RSVP() {
             )}
 
             {/* Email — pas pour les enfants */}
-            {(i === 0 || !p.enfant) && (
+            {!p.enfant && (
               <div style={{ marginBottom: "24px" }}>
-                <label style={labelStyle}>Email{i > 0 ? "" : " de contact"}</label>
+                <label style={labelStyle}>Email</label>
                 <input type="email" value={p.email} onChange={e => updatePersonne(i, "email", e.target.value)} placeholder="votre@email.com" style={inputStyle(!!errors[`email_${i}`])} />
                 {errors[`email_${i}`] && <p style={errorStyle}>{errors[`email_${i}`]}</p>}
               </div>
@@ -318,7 +341,7 @@ export default function RSVP() {
               <input type="text" value={p.allergies} onChange={e => updatePersonne(i, "allergies", e.target.value)} placeholder="Végétarien, sans gluten, noix, OM..." style={inputStyle(false)} />
             </div>
           </div>
-        ))}
+        ); })}
 
         {/* Message */}
         <div style={{ marginBottom: "64px" }}>
