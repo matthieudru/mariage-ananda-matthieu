@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "iphone": "next build && next start --hostname 0.0.0.0 -p 3002",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
