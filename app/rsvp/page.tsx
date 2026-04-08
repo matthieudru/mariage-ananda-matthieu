@@ -148,8 +148,11 @@ export default function RSVP() {
           <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "0.08em", lineHeight: 0.88, marginBottom: "4px" }}>
             RSVP
           </h1>
-          <p style={{ fontSize: "13px", letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.38, width: "100%", textAlign: "center" }}>
+          <p className="rsvp-subtitle" style={{ fontSize: "13px", letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.38, width: "100%", textAlign: "center" }}>
             10 · 10 · 26 — Tonnara di Scopello
+          </p>
+          <p className="rsvp-subtitle-mobile" style={{ display: "none", fontSize: "13px", letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.38, width: "100%", textAlign: "center" }}>
+            10.10.26<br />Tonnara di Scopello
           </p>
         </div>
       </section>
@@ -395,6 +398,10 @@ export default function RSVP() {
         input:focus, textarea:focus { outline: none; border-bottom-color: ${COLOR} !important; }
         button[type="submit"]:hover:not(:disabled) { background: #1a2d58 !important; }
         button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        @media (max-width: 640px) {
+          .rsvp-subtitle { display: none !important; }
+          .rsvp-subtitle-mobile { display: block !important; }
+        }
       `}</style>
     </div>
   );

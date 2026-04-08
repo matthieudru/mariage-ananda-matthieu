@@ -124,10 +124,12 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
         onTouchEnd={() => setTimeout(() => setHovered(false), 400)}
         className="hotel-row"
         style={{
-          display: "block",
+          display: "flex",
+          alignItems: "center",
           borderTop: `1px solid rgba(36,59,113,0.15)`,
-          padding: "24px 40px",
-          height: "100px",
+          padding: "0 40px",
+          minHeight: "110px",
+          height: "110px",
           textDecoration: "none", color: COLOR,
           position: "relative", overflow: "hidden",
         }}
@@ -145,7 +147,7 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
           opacity: hovered ? 1 : 0,
           transition: "opacity 0.55s cubic-bezier(0,0,0.2,1)",
         }} />
-        <div className="hotel-row-inner" style={{ position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", alignItems: "center", height: "100%" }}>
+        <div className="hotel-row-inner" style={{ position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", alignItems: "center", width: "100%" }}>
           <p style={{ fontSize: "clamp(15px, 1.8vw, 22px)", fontWeight: 500, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
             {hotel.nom}
           </p>
@@ -229,8 +231,8 @@ export default function Infos() {
         <div className="hero-title-wrap" style={{ width: "min(688px, 88vw)", flexShrink: 0 }}>
           <svg viewBox="0 0 1000 472" style={{ width: "100%", display: "block", overflow: "visible" }}>
             <g transform="scale(1, 1.6)">
-              <text x="0" y="148" textLength="770" lengthAdjust="spacingAndGlyphs" fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" fill="#f3ecdc">ANANDA</text>
-              <text x="770" y="148" textLength="230" lengthAdjust="spacingAndGlyphs" fontFamily="'La Belle Aurore', cursive" fontSize="90" fill="#f3ecdc">et</text>
+              <text x="0" y="148" textLength="740" lengthAdjust="spacingAndGlyphs" fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" fill="#f3ecdc">ANANDA</text>
+              <text x="760" y="148" textLength="240" lengthAdjust="spacingAndGlyphs" fontFamily="'La Belle Aurore', cursive" fontSize="80" fill="#f3ecdc">et</text>
               <text x="0" y="293" textLength="1000" lengthAdjust="spacingAndGlyphs"
                 fontFamily="'Playfair Display', Georgia, serif" fontWeight="700" fontSize="148" fill="#f3ecdc">
                 MATTHIEU
@@ -447,7 +449,7 @@ export default function Infos() {
           }
 
           /* Hotel : une colonne */
-          .hotel-row { padding: 20px 20px !important; }
+          .hotel-row { padding: 0 20px !important; height: 160px !important; min-height: 160px !important; }
           .hotel-row-inner {
             grid-template-columns: 1fr !important;
             gap: 8px !important;
