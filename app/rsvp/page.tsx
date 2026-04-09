@@ -457,23 +457,25 @@ export default function RSVP() {
                 </label>
               );
             })}
+            {/* Bouton absent — 4e cellule, se place à droite de Dimanche 11 */}
+            <button
+              type="button"
+              onClick={toggleAbsent}
+              style={{
+                display: "block", padding: "20px 24px",
+                border: `1.5px solid ${form.absent ? COLOR : "rgba(36,59,113,0.25)"}`,
+                background: form.absent ? COLOR : "transparent",
+                color: form.absent ? BG : COLOR,
+                fontFamily: "'FT Aktual', Georgia, serif",
+                cursor: "pointer", transition: "all 0.2s ease-out",
+                WebkitTapHighlightColor: "transparent" as unknown as string,
+                userSelect: "none" as const, textAlign: "center" as const,
+              }}
+            >
+              <span style={{ display: "block", fontSize: "clamp(16px, 1.8vw, 20px)", fontWeight: 500, marginBottom: "4px", letterSpacing: "-0.01em" }}>Je ne serai pas là</span>
+              <span style={{ display: "block", fontSize: "10px", letterSpacing: "0.08em", textTransform: "uppercase", opacity: form.absent ? 0.6 : 0.4 }}>Absent du mariage</span>
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={toggleAbsent}
-            style={{
-              marginTop: "12px", width: "100%", padding: "20px 24px",
-              border: `1.5px solid ${form.absent ? COLOR : "rgba(36,59,113,0.25)"}`,
-              background: form.absent ? COLOR : "transparent",
-              color: form.absent ? BG : COLOR,
-              fontFamily: "'FT Aktual', Georgia, serif",
-              cursor: "pointer", transition: "all 0.2s ease-out",
-              WebkitTapHighlightColor: "transparent" as unknown as string,
-              userSelect: "none" as const, textAlign: "center" as const,
-            }}
-          >
-            <span style={{ display: "block", fontSize: "clamp(16px, 1.8vw, 20px)", fontWeight: 500, letterSpacing: "-0.01em" }}>Je ne serai malheureusement pas là</span>
-          </button>
           {errors.jours && <p style={errorStyle}>{errors.jours}</p>}
         </div>
 
