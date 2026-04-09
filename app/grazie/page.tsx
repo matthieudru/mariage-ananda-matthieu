@@ -66,25 +66,25 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
 
       const ctx = canvas.getContext("2d")!;
       ctx.scale(dpr, dpr);
+      // Après ctx.scale(dpr,dpr) toutes les coords sont en px CSS
       const W = rect.width;
       const H = rect.height;
 
-      /* Gradient argenté diagonal */
+      /* Gradient argenté */
       const grad = ctx.createLinearGradient(0, 0, W, H);
       grad.addColorStop(0,    "#a4a09a");
-      grad.addColorStop(0.12, "#ccc8c0");
-      grad.addColorStop(0.28, "#e4e0da");
-      grad.addColorStop(0.44, "#c8c4bc");
-      grad.addColorStop(0.58, "#dedad6");
-      grad.addColorStop(0.72, "#c0bcb4");
-      grad.addColorStop(0.86, "#d4d0c8");
+      grad.addColorStop(0.15, "#d0ccc4");
+      grad.addColorStop(0.3,  "#e8e4de");
+      grad.addColorStop(0.5,  "#c8c4bc");
+      grad.addColorStop(0.7,  "#dedad4");
+      grad.addColorStop(0.85, "#c0bcb4");
       grad.addColorStop(1,    "#acaaa2");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, W, H);
 
-      /* Reflets horizontaux fins */
+      /* Reflets */
       for (let y = 0; y < H; y++) {
-        const a = 0.015 + Math.abs(Math.sin(y * 0.09)) * 0.055;
+        const a = 0.012 + Math.abs(Math.sin(y * 0.09)) * 0.05;
         ctx.fillStyle = `rgba(255,255,255,${a.toFixed(3)})`;
         ctx.fillRect(0, y, W, 1);
       }
@@ -93,73 +93,79 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
       const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const d = imgData.data;
       for (let i = 0; i < d.length; i += 4) {
-        const n = (Math.random() - 0.5) * 24;
+        const n = (Math.random() - 0.5) * 22;
         d[i]   = Math.max(0, Math.min(255, d[i]   + n));
         d[i+1] = Math.max(0, Math.min(255, d[i+1] + n));
         d[i+2] = Math.max(0, Math.min(255, d[i+2] + n));
       }
       ctx.putImageData(imgData, 0, 0);
 
-      /* Cercles concentriques décoratifs centrés */
-      const cx = W / 2, cy = H / 2;
-      ctx.strokeStyle = "rgba(60,50,40,0.1)";
-      ctx.lineWidth = 0.8;
-      for (let r = 18; r < Math.max(W, H) * 0.65; r += 14) {
-        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+      /* Cercles concentriques */
+      ctx.strokeStyle = "rgba(60,50,40,0.08)"; ctx.lineWidth = 0.8;
+      for (let r = 20; r < Math.max(W, H) * 0.7; r += 16) {
+        ctx.beginPath(); ctx.arc(W / 2, H / 2, r, 0, Math.PI * 2); ctx.stroke();
       }
 
       /* Double cadre gravé */
-      ctx.strokeStyle = "rgba(60,50,40,0.22)"; ctx.lineWidth = 1.5;
-      ctx.strokeRect(7, 7, W - 14, H - 14);
-      ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.lineWidth = 1;
-      ctx.strokeRect(9, 9, W - 18, H - 18);
+      ctx.strokeStyle = "rgba(60,50,40,0.2)"; ctx.lineWidth = 1.5;
+      ctx.strokeRect(6, 6, W - 12, H - 12);
+      ctx.strokeStyle = "rgba(255,255,255,0.28)"; ctx.lineWidth = 1;
+      ctx.strokeRect(8, 8, W - 16, H - 16);
 
-      /* Textes */
+      /* ── Textes sur la couche ── */
       ctx.textAlign = "center";
+      const cx = W / 2;
 
-      /* Ligne 1-2 : instruction */
-      const fs1 = Math.max(12, Math.round(W * 0.044));
-      ctx.font = `italic ${fs1}px Georgia, serif`;
-      ctx.shadowColor = "rgba(255,255,255,0.8)"; ctx.shadowBlur = 3;
-      ctx.fillStyle = "rgba(30,22,14,0.62)";
-      ctx.fillText("Trouve 3 photos d'Ananda", cx, cy - 26);
-      ctx.fillText("et Matthieu pour gagner", cx, cy - 4);
-
-      /* Séparateur orné */
+      /* "10.10" très grand */
+      const fsBig = Math.max(28, Math.round(W * 0.14));
+      ctx.font = `bold ${fsBig}px Georgia, serif`;
+      ctx.shadowColor = "rgba(255,255,255,0.9)"; ctx.shadowBlur = 5;
+      ctx.fillStyle = "rgba(30,22,14,0.55)";
+      ctx.fillText("10.10", cx, H * 0.38);
       ctx.shadowBlur = 0;
-      const lw = W * 0.32;
-      ctx.strokeStyle = "rgba(60,50,40,0.25)"; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(cx - lw, cy + 10); ctx.lineTo(cx - 12, cy + 10); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(cx + 12, cy + 10); ctx.lineTo(cx + lw, cy + 10); ctx.stroke();
-      ctx.fillStyle = "rgba(60,50,40,0.3)";
-      ctx.font = `${Math.round(fs1 * 0.7)}px Georgia, serif`;
-      ctx.fillText("✦", cx, cy + 14);
 
-      /* Ligne 3 : Gratte ici — dominant */
-      const fs2 = Math.max(16, Math.round(W * 0.058));
-      ctx.font = `bold ${fs2}px Georgia, serif`;
+      /* Filet sous 10.10 */
+      const lw = W * 0.3;
+      ctx.strokeStyle = "rgba(60,50,40,0.2)"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx - lw, H * 0.46); ctx.lineTo(cx + lw, H * 0.46); ctx.stroke();
+
+      /* Règle */
+      const fsRule = Math.max(9, Math.round(W * 0.034));
+      ctx.font = `italic ${fsRule}px Georgia, serif`;
+      ctx.shadowColor = "rgba(255,255,255,0.7)"; ctx.shadowBlur = 2;
+      ctx.fillStyle = "rgba(30,22,14,0.5)";
+      ctx.fillText("Trouve 3 photos d'Ananda et Matthieu", cx, H * 0.57);
+      ctx.fillText("pour gagner · Tous les jeux sont gagnants", cx, H * 0.57 + fsRule * 1.4);
+      ctx.shadowBlur = 0;
+
+      /* "GRATTE ICI ▼" */
+      const fsGratte = Math.max(13, Math.round(W * 0.048));
+      ctx.font = `bold ${fsGratte}px Georgia, serif`;
       ctx.shadowColor = "rgba(255,255,255,0.9)"; ctx.shadowBlur = 4;
-      ctx.fillStyle = "rgba(30,22,14,0.72)";
-      ctx.letterSpacing = "0.05em";
-      ctx.fillText("GRATTE ICI ▼", cx, cy + 38);
+      ctx.fillStyle = "rgba(30,22,14,0.68)";
+      ctx.fillText("GRATTE ICI  ▼", cx, H * 0.82);
       ctx.shadowBlur = 0;
     });
   }, []);
 
-  /* ── Grattage ── */
-  const doScratch = useCallback((clientX: number, clientY: number) => {
+  /* ── Grattage ──
+     IMPORTANT : après ctx.scale(dpr,dpr), le repère est en px CSS.
+     Les coords clientX/Y - rect sont déjà en px CSS → pas de * dpr.
+     Le rayon est en px CSS : 20 (mouse) / 28 (touch). */
+  const doScratch = useCallback((clientX: number, clientY: number, radius: number) => {
     const canvas = canvasRef.current;
     if (!canvas || wonRef.current) return;
     const ctx  = canvas.getContext("2d")!;
-    const dpr  = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
-    const x = (clientX - rect.left) * dpr;
-    const y = (clientY - rect.top)  * dpr;
+
+    // Coordonnées en px CSS (pas de multiplication DPR — ctx.scale l'a déjà appliqué)
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
 
     ctx.save();
     ctx.globalCompositeOperation = "destination-out";
     ctx.beginPath();
-    ctx.arc(x, y, 12 * dpr, 0, Math.PI * 2);
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
@@ -178,262 +184,63 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
     }
   }, []);
 
-  const onMouseDown  = (e: React.MouseEvent) => { isDown.current = true;  doScratch(e.clientX, e.clientY); };
-  const onMouseMove  = (e: React.MouseEvent) => { if (isDown.current) doScratch(e.clientX, e.clientY); };
+  const onMouseDown  = (e: React.MouseEvent) => { isDown.current = true;  doScratch(e.clientX, e.clientY, 20); };
+  const onMouseMove  = (e: React.MouseEvent) => { if (isDown.current) doScratch(e.clientX, e.clientY, 20); };
   const onMouseUp    = () => { isDown.current = false; };
-  const onTouchStart = (e: React.TouchEvent) => { e.preventDefault(); isDown.current = true;  doScratch(e.touches[0].clientX, e.touches[0].clientY); };
-  const onTouchMove  = (e: React.TouchEvent) => { e.preventDefault(); if (isDown.current) doScratch(e.touches[0].clientX, e.touches[0].clientY); };
+  const onTouchStart = (e: React.TouchEvent) => { e.preventDefault(); isDown.current = true;  doScratch(e.touches[0].clientX, e.touches[0].clientY, 28); };
+  const onTouchMove  = (e: React.TouchEvent) => { e.preventDefault(); if (isDown.current) doScratch(e.touches[0].clientX, e.touches[0].clientY, 28); };
   const onTouchEnd   = () => { isDown.current = false; };
 
-  /* ─── Dot pattern CSS ─── */
-  const dotBg = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Ccircle cx='5' cy='5' r='0.75' fill='rgba(36,59,113,0.06)'/%3E%3C/svg%3E")`;
-  const stripeBg = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='7'%3E%3Crect x='0' width='18' height='7' fill='%23243b71'/%3E%3Crect x='18' width='18' height='7' fill='%23c9a84c'/%3E%3C/svg%3E")`;
-
   return (
-    <div style={{ textAlign: "center", userSelect: "none", marginBottom: "40px" }}>
+    <div style={{ textAlign: "center", userSelect: "none" }}>
 
-      {/* ═══ BILLET ═══ */}
+      {/* ═══ BILLET — juste la zone de grattage ═══ */}
       <div style={{
-        display: "inline-flex",
-        width: "min(520px, 95vw)",
+        display: "inline-block",
+        width: "min(520px, 92vw)",
         fontFamily: "'FT Aktual', Georgia, serif",
+        border: `2px solid ${COLOR}`,
         overflow: "hidden",
-        textAlign: "left",
-        border: `1.5px solid rgba(36,59,113,0.45)`,
-        boxShadow: "0 8px 40px rgba(36,59,113,0.2), 0 2px 8px rgba(36,59,113,0.1)",
+        boxShadow: "0 6px 32px rgba(36,59,113,0.18)",
       }}>
+        <div ref={scratchZoneRef} style={{ position: "relative", cursor: "crosshair" }}>
 
-        {/* ── Colonne WEDDING verticale ── */}
-        <div style={{
-          width: "58px", flexShrink: 0,
-          background: COLOR,
-          display: "flex", flexDirection: "column",
-          alignItems: "center", justifyContent: "center",
-          position: "relative", overflow: "hidden",
-        }}>
-          {/* Guilloché en fond */}
-          <svg style={{ position:"absolute", inset:0, width:"100%", height:"100%", opacity:0.07 }} preserveAspectRatio="xMidYMid slice">
-            <defs>
-              <pattern id="gc" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-                <circle cx="14" cy="14" r="12" fill="none" stroke={BG} strokeWidth="0.6"/>
-                <circle cx="0"  cy="0"  r="12" fill="none" stroke={BG} strokeWidth="0.6"/>
-                <circle cx="28" cy="0"  r="12" fill="none" stroke={BG} strokeWidth="0.6"/>
-                <circle cx="0"  cy="28" r="12" fill="none" stroke={BG} strokeWidth="0.6"/>
-                <circle cx="28" cy="28" r="12" fill="none" stroke={BG} strokeWidth="0.6"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#gc)" />
-          </svg>
-
-          {/* Étoile haut */}
-          <span style={{ position:"absolute", top:"14px", color:GOLD, fontSize:"14px", zIndex:1 }}>✦</span>
-
-          {/* WEDDING vertical bas → haut */}
+          {/* Grille de photos */}
           <div style={{
-            writingMode: "vertical-rl",
-            transform: "rotate(180deg)",
-            fontSize: "clamp(22px, 4.2vw, 30px)",
-            fontWeight: 700,
-            letterSpacing: "0.18em",
-            color: BG,
-            textShadow: `-1px -1px 0 ${GOLD}, 1px -1px 0 ${GOLD}, -1px 1px 0 ${GOLD}, 1px 1px 0 ${GOLD}, 0 3px 8px rgba(0,0,0,0.5)`,
-            position: "relative", zIndex: 1,
+            display: "grid",
+            gridTemplateColumns: `repeat(${COLS}, 1fr)`,
+            gap: "2px",
+            background: "rgba(36,59,113,0.1)",
           }}>
-            WEDDING
-          </div>
-
-          {/* Étoile bas */}
-          <span style={{ position:"absolute", bottom:"14px", color:GOLD, fontSize:"14px", zIndex:1 }}>✦</span>
-
-          {/* Double filet doré sur le bord droit */}
-          <div style={{ position:"absolute", right:"3px", top:0, bottom:0, width:"1px", background:`linear-gradient(to bottom, transparent, ${GOLD}, transparent)`, opacity:0.6 }} />
-          <div style={{ position:"absolute", right:"6px", top:0, bottom:0, width:"1px", background:`linear-gradient(to bottom, transparent, ${GOLD}, transparent)`, opacity:0.25 }} />
-        </div>
-
-        {/* ── Contenu principal ── */}
-        <div style={{ flex:1, display:"flex", flexDirection:"column", minWidth:0 }}>
-
-          {/* Stripe haut */}
-          <div style={{ height:"7px", backgroundImage:stripeBg, backgroundSize:"36px 7px", flexShrink:0 }} />
-
-          {/* Header */}
-          <div style={{
-            background: COLOR,
-            padding: "12px 14px 11px",
-            display: "flex", alignItems: "center", justifyContent: "space-between",
-            position: "relative", overflow: "hidden", flexShrink: 0,
-          }}>
-            <svg style={{ position:"absolute", inset:0, width:"100%", height:"100%", opacity:0.06 }} preserveAspectRatio="xMidYMid slice">
-              <defs>
-                <pattern id="gh" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-                  <circle cx="14" cy="14" r="12" fill="none" stroke={BG} strokeWidth="0.6"/>
-                  <circle cx="0"  cy="0"  r="12" fill="none" stroke={BG} strokeWidth="0.6"/>
-                  <circle cx="28" cy="0"  r="12" fill="none" stroke={BG} strokeWidth="0.6"/>
-                  <circle cx="0"  cy="28" r="12" fill="none" stroke={BG} strokeWidth="0.6"/>
-                  <circle cx="28" cy="28" r="12" fill="none" stroke={BG} strokeWidth="0.6"/>
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#gh)" />
-            </svg>
-
-            <div style={{ position:"relative" }}>
-              <div style={{
-                fontSize: "clamp(6px, 1vw, 8px)", letterSpacing: "0.32em",
-                color: `rgba(201,168,76,0.7)`, textTransform: "uppercase",
-                marginBottom: "5px",
-              }}>
-                Jeu de grattage
+            {grid.map((cell, idx) => (
+              <div key={idx} style={{ aspectRatio: "3 / 4", overflow: "hidden", background: BG }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={cell.src} alt=""
+                  style={{
+                    width: "100%", height: "100%",
+                    objectFit: "cover", display: "block",
+                    transform: `rotate(${cell.rotation}deg) scale(1.35)`,
+                    transformOrigin: "center",
+                  }}
+                />
               </div>
-              <div style={{
-                fontSize: "clamp(13px, 2.4vw, 18px)", fontWeight: 700,
-                letterSpacing: "0.18em", color: BG, textTransform: "uppercase",
-                lineHeight: 1,
-                textShadow: "0 1px 3px rgba(0,0,0,0.4)",
-              }}>
-                Ananda &amp; Matthieu
-              </div>
-              <div style={{
-                fontSize: "clamp(6px, 1vw, 8px)", letterSpacing: "0.22em",
-                color: "rgba(243,236,220,0.38)", textTransform: "uppercase",
-                marginTop: "5px",
-              }}>
-                Tonnara di Scopello · Sicile
-              </div>
-            </div>
-
-            <div style={{
-              position: "relative",
-              border: `1px solid ${GOLD}`,
-              padding: "6px 10px", textAlign: "center", flexShrink: 0,
-            }}>
-              <div style={{
-                fontSize: "clamp(13px, 2.4vw, 16px)", fontWeight: 700,
-                letterSpacing: "0.06em", color: GOLD, lineHeight: 1,
-              }}>10.10</div>
-              <div style={{
-                fontSize: "clamp(5px, 0.9vw, 7px)", letterSpacing: "0.22em",
-                color: `rgba(201,168,76,0.6)`, textTransform: "uppercase", marginTop: "4px",
-              }}>2026</div>
-            </div>
+            ))}
           </div>
 
-          {/* Règle */}
-          <div style={{
-            background: BG, backgroundImage: dotBg,
-            borderTop: `2px solid ${COLOR}`,
-            borderBottom: `1px solid rgba(36,59,113,0.14)`,
-            padding: "6px 12px",
-            display: "flex", alignItems: "center", justifyContent: "center", gap: "7px",
-            flexShrink: 0,
-          }}>
-            <span style={{ color:COLOR, opacity:0.22, fontSize:"6px" }}>◆</span>
-            <p style={{
-              fontSize: "clamp(5.5px, 1vw, 7px)", letterSpacing: "0.18em",
-              color: COLOR, opacity: 0.48, textTransform: "uppercase",
-              margin: 0, textAlign: "center",
-            }}>
-              Trouvez 3 fois la même photo · Tous les jeux sont gagnants
-            </p>
-            <span style={{ color:COLOR, opacity:0.22, fontSize:"6px" }}>◆</span>
-          </div>
-
-          {/* Zone de grattage */}
-          <div style={{ background: BG, backgroundImage: dotBg, padding: "10px 11px 8px", flex: 1 }}>
-
-            {/* Label */}
-            <div style={{ display:"flex", alignItems:"center", gap:"7px", marginBottom:"6px" }}>
-              <div style={{ flex:1, height:"1px", background:"rgba(36,59,113,0.18)" }} />
-              <span style={{
-                fontSize: "clamp(5px, 0.85vw, 7px)", letterSpacing: "0.28em",
-                color: COLOR, opacity: 0.38, textTransform: "uppercase",
-              }}>VOS PHOTOS</span>
-              <div style={{ flex:1, height:"1px", background:"rgba(36,59,113,0.18)" }} />
-            </div>
-
-            <div ref={scratchZoneRef} style={{
-              position: "relative",
-              border: `1.5px solid rgba(36,59,113,0.28)`,
-              boxShadow: "inset 0 1px 4px rgba(36,59,113,0.07), 0 1px 4px rgba(36,59,113,0.08)",
-              overflow: "hidden", cursor: "crosshair",
-            }}>
-              {/* Grille 6×3 */}
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(${COLS}, 1fr)`,
-                gap: "2px",
-                background: "rgba(36,59,113,0.12)",
-              }}>
-                {grid.map((cell, idx) => (
-                  <div key={idx} style={{
-                    aspectRatio: "3 / 4", overflow: "hidden",
-                    background: BG,
-                  }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={cell.src} alt=""
-                      style={{
-                        width: "100%", height: "100%",
-                        objectFit: "cover", display: "block",
-                        transform: `rotate(${cell.rotation}deg) scale(1.3)`,
-                        transformOrigin: "center",
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {/* Canvas métallique */}
-              <canvas
-                ref={canvasRef}
-                style={{ position:"absolute", inset:0, width:"100%", height:"100%", touchAction:"none" }}
-                onMouseDown={onMouseDown} onMouseMove={onMouseMove}
-                onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
-                onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
-              />
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div style={{
-            background: BG, backgroundImage: dotBg,
-            borderTop: `1px solid rgba(36,59,113,0.1)`,
-            padding: "7px 12px 8px",
-            display: "flex", alignItems: "center", justifyContent: "space-between",
-            flexShrink: 0,
-          }}>
-            {/* Code-barres gauche */}
-            <div style={{ display:"flex", alignItems:"flex-end", gap:"1.5px" }}>
-              {[3,5,2,7,4,6,2,5,3,6,4,7,3,5,2].map((h, i) => (
-                <div key={i} style={{
-                  width: i % 3 === 0 ? "2px" : "1px",
-                  height: `${h + 5}px`,
-                  background: `rgba(36,59,113,${0.12 + (i % 4) * 0.07})`,
-                }} />
-              ))}
-            </div>
-            <p style={{
-              fontSize: "clamp(5px, 0.85vw, 6.5px)", letterSpacing: "0.2em",
-              color: COLOR, opacity: 0.2, textTransform: "uppercase", margin: 0,
-            }}>NUL SI DÉCOUVERT</p>
-            {/* Code-barres droit */}
-            <div style={{ display:"flex", alignItems:"flex-end", gap:"1.5px" }}>
-              {[5,3,6,4,7,2,5,3,7,4,6,2,5,3,6].map((h, i) => (
-                <div key={i} style={{
-                  width: i % 3 === 0 ? "2px" : "1px",
-                  height: `${h + 5}px`,
-                  background: `rgba(36,59,113,${0.12 + (i % 4) * 0.07})`,
-                }} />
-              ))}
-            </div>
-          </div>
-
-          {/* Stripe bas */}
-          <div style={{ height:"7px", backgroundImage:stripeBg, backgroundSize:"36px 7px", flexShrink:0 }} />
+          {/* Canvas métallique par-dessus */}
+          <canvas
+            ref={canvasRef}
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", touchAction: "none" }}
+            onMouseDown={onMouseDown} onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
+            onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
+          />
         </div>
       </div>
       {/* ═══ FIN BILLET ═══ */}
 
       <button onClick={onClose} style={{
-        marginTop: "18px", background: "none", border: "none",
+        marginTop: "16px", background: "none", border: "none",
         fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase",
         opacity: 0.3, cursor: "pointer",
         fontFamily: "'FT Aktual', Georgia, serif", color: COLOR,
