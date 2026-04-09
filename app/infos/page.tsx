@@ -262,7 +262,7 @@ export default function Infos() {
             ← Accueil
           </Link>
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-            <a href="#" className="hero-rsvp">Wedding List</a>
+            <a href="https://www.ungrandjour.com/fr/ananda-matthieu" target="_blank" rel="noopener noreferrer" className="hero-rsvp">Liste de mariage</a>
             <Link href="/rsvp" className="hero-rsvp">RSVP</Link>
           </div>
         </div>
@@ -388,7 +388,7 @@ export default function Infos() {
           <Link href="/rsvp" className="cta-rsvp">RSVP</Link>
         </Reveal>
         <Reveal>
-          <a href="#" className="cta-weddinglist">Wedding List</a>
+          <a href="https://www.ungrandjour.com/fr/ananda-matthieu" target="_blank" rel="noopener noreferrer" className="cta-weddinglist">Liste de mariage</a>
         </Reveal>
       </section>
 
