@@ -415,8 +415,16 @@ export default function RSVP() {
           /* Citrons : collés contre le mot RSVP */
           .rsvp-lemon-left  { width: 19vw !important; margin-right: 0 !important; }
           .rsvp-lemon-right { width: 19vw !important; margin-left:  0 !important; }
-          /* Sous-labels : même taille sur les 3 boutons, "The After Party" ne passe pas à la ligne */
-          .jours-grid > label span:last-child { font-size: 10px !important; letter-spacing: 0 !important; }
+          /* Tous les textes des boutons : même taille uppercase = "DU MARIAGE" */
+          .jours-grid > label span,
+          .jours-grid > button span {
+            font-size: 11px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.12em !important;
+            font-weight: 400 !important;
+            margin-bottom: 0 !important;
+            line-height: 1.5 !important;
+          }
         }
       `}</style>
     </div>
