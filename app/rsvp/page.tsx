@@ -638,11 +638,11 @@ export default function RSVP() {
         @media (max-width: 640px) {
           .rsvp-subtitle { display: none !important; }
           .rsvp-subtitle-mobile { display: block !important; }
-          /* Citrons : plus proches du mot RSVP */
-          .rsvp-lemon-left  { width: 19vw !important; margin-right: 2vw !important; }
-          .rsvp-lemon-right { width: 19vw !important; margin-left:  2vw !important; }
-          /* Sous-label "The After Party" ne doit pas passer à la ligne */
-          .jours-grid > label span:last-child { font-size: 9px !important; letter-spacing: 0 !important; }
+          /* Citrons : collés contre le mot RSVP */
+          .rsvp-lemon-left  { width: 19vw !important; margin-right: 0 !important; }
+          .rsvp-lemon-right { width: 19vw !important; margin-left:  0 !important; }
+          /* Dimanche 11 : sous-label plus petit pour ne pas dépasser sur une ligne */
+          .jours-grid > label:last-child span:last-child { font-size: 9px !important; letter-spacing: 0 !important; }
         }
       `}</style>
     </div>
