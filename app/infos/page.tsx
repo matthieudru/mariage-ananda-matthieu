@@ -503,6 +503,14 @@ export default function Infos() {
         .hotel-row:active > div:last-child { opacity: 1 !important; }
         .hotel-row:active .hotel-row-inner p { color: ${BG} !important; }
 
+        /* ── Tablette (iPad, etc.) ── */
+        @media (min-width: 641px) and (max-width: 1100px) {
+          .tonnara-photo-col {
+            align-self: center !important;
+            height: 80% !important;
+          }
+        }
+
         /* ── Mobile ── */
         @media (max-width: 640px) {
           /* Boutons nav header : plus compacts pour ne pas écraser "← Accueil" */
