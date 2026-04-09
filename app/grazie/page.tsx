@@ -349,7 +349,7 @@ export default function GraziePage() {
     <>
     <style>{`@import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');`}</style>
     <div style={{
-      background: BG, height: "100vh",
+      background: BG, position: "fixed", inset: 0,
       display: "flex", flexDirection: "column",
       alignItems: "center", justifyContent: "space-between",
       fontFamily: "'FT Aktual', Georgia, serif",
@@ -362,7 +362,7 @@ export default function GraziePage() {
           position: "fixed", inset: 0, zIndex: 50,
           background: BG,
           display: "flex", flexDirection: "column", alignItems: "center",
-          overflowY: "auto", padding: "20px 20px 24px",
+          overflow: "hidden", padding: "20px 20px 24px",
         }}>
           {/* Espace au-dessus de la carte : flex:1 → BRAVO centré entre le haut de page et le haut de la carte */}
           <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
