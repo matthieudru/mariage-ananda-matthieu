@@ -86,11 +86,11 @@ function ProgrammePanel({
         {items.map((item, i) => (
           <div key={i} style={{ marginBottom: i < items.length - 1 ? "12px" : "16px" }}>
             {item.heure && <p style={{
-              fontSize: "13px", opacity: active ? 0.55 : 0.35, fontWeight: 400, marginBottom: "2px",
+              fontSize: "14px", opacity: active ? 0.55 : 0.35, fontWeight: 400, marginBottom: "2px",
               color: active ? BG : COLOR, transition: "color 0.4s, opacity 0.4s", letterSpacing: "0.08em",
             }}>{item.heure}</p>}
             <p style={{
-              fontSize: "clamp(12px, 1.2vw, 16px)", fontWeight: 400, lineHeight: 1.1, opacity: active ? 0.85 : 0.6,
+              fontSize: "clamp(13px, 1.3vw, 17px)", fontWeight: 400, lineHeight: 1.1, opacity: active ? 0.85 : 0.6,
               color: active ? BG : COLOR, transition: "color 0.4s",
             }}>{item.label}</p>
           </div>
@@ -288,7 +288,7 @@ export default function Infos() {
           <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", textTransform: "uppercase", lineHeight: 1 }}>Tonnara di Scopello</p>
           {/* Texte + carte à 2/3 du titre, centrés */}
           <div style={{ maxWidth: "75%", display: "flex", flexDirection: "column", gap: "20px" }}>
-            <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, textAlign: "justify" }}>
+            <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, textAlign: "justify" }}>
               Le mariage aura lieu le 10.10.26 à la Tonnara di Scopello, une ancienne fabrique de thon du XVIII<sup>e</sup> siècle, située au bord de la mer. Elle se situe à 5 minutes du village de Scopello, 20 minutes de Castellammare et une heure de Palerme.
             </p>
             <a
@@ -308,12 +308,12 @@ export default function Infos() {
                 />
               </div>
             </a>
-            <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginTop: "4px" }}>
+            <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginTop: "4px" }}>
               Tonnara di Scopello — SP16, Contrada Scopello, 91014 Castellammare del Golfo TP, Sicile
             </p>
             <div style={{ borderTop: `1px solid rgba(36,59,113,0.12)`, paddingTop: "16px", marginTop: "4px" }}>
               <p style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.38, fontWeight: 400, marginBottom: "8px" }}>Cérémonie religieuse</p>
-              <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, fontWeight: 400, lineHeight: 1.8, marginBottom: "8px" }}>
+              <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, fontWeight: 400, lineHeight: 1.8, marginBottom: "8px" }}>
                 Chiesa di San Giuseppe, Castellammare del Golfo
               </p>
               <a
@@ -351,7 +351,7 @@ export default function Infos() {
         <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 1fr" }} className="venir-grid">
           <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)` }}>
             <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Avion</p>
-            <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
+            <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
               Le meilleur moyen pour rejoindre Scopello est d'atterrir à l'aéroport de Palerme.
               Il y a des vols directs depuis Marseille avec Ryanair ou Transavia,
               et depuis Paris avec Transavia, EasyJet ou Air France.
@@ -360,14 +360,14 @@ export default function Infos() {
           </div>
           <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px" }}>
             <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Voiture</p>
-            <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginBottom: "24px" }}>
+            <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginBottom: "24px" }}>
               La Tonnara di Scopello se trouve à 40 minutes de route de l'aéroport de Palerme. Il est facile de louer une voiture directement depuis l'aéroport.
             </p>
             <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
               {[{ nom: "AVIS", code: "T069423" }, { nom: "SIXT", code: "19451327" }].map(car => (
                 <div key={car.nom}>
                   <p style={{ fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 400, opacity: 0.38, marginBottom: "6px" }}>{car.nom}</p>
-                  <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", fontWeight: 400 }}>Code promo : {car.code}</p>
+                  <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", fontWeight: 400 }}>Code promo : {car.code}</p>
                 </div>
               ))}
             </div>
