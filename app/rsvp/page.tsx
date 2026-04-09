@@ -374,9 +374,9 @@ export default function RSVP() {
         <div style={{ display: "inline-block", position: "relative" }}>
           {/* Images positionnées en dehors du flux pour ne pas affecter la largeur */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/Orange fond copie.png" alt="" style={{ position: "absolute", right: "100%", top: "50%", transform: "translateY(-50%)", width: "clamp(80px, 11vw, 150px)", height: "auto", marginRight: "16px" }} />
+          <img src="/Orange fond copie.png" alt="" className="rsvp-lemon rsvp-lemon-left" style={{ position: "absolute", right: "100%", top: "50%", transform: "translateY(-50%)", width: "clamp(80px, 11vw, 150px)", height: "auto", marginRight: "16px" }} />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/Orange fond.png" alt="" style={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", width: "clamp(80px, 11vw, 150px)", height: "auto", marginLeft: "16px" }} />
+          <img src="/Orange fond.png" alt="" className="rsvp-lemon rsvp-lemon-right" style={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", width: "clamp(80px, 11vw, 150px)", height: "auto", marginLeft: "16px" }} />
           <h1 style={{ fontSize: "clamp(48px, 10vw, 120px)", fontWeight: 500, letterSpacing: "0.08em", lineHeight: 0.88, marginBottom: "4px" }}>
             RSVP
           </h1>
@@ -422,7 +422,7 @@ export default function RSVP() {
         {/* Jours */}
         <div style={{ marginBottom: "56px" }}>
           <span style={labelStyle}>Je serai là <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: "0.02em" }}>(sélectionnez les jours auxquels vous serez présent)</span></span>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginTop: "8px" }}>
+          <div className="jours-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginTop: "8px" }}>
             {JOURS.map(jour => {
               const checked = form.jours.includes(jour.id);
               return (
@@ -440,6 +440,7 @@ export default function RSVP() {
                     transition: "all 0.2s ease-out",
                     WebkitTapHighlightColor: "transparent",
                     userSelect: "none",
+                    textAlign: "center",
                   }}
                 >
                   <input
@@ -637,6 +638,11 @@ export default function RSVP() {
         @media (max-width: 640px) {
           .rsvp-subtitle { display: none !important; }
           .rsvp-subtitle-mobile { display: block !important; }
+          /* Citrons : milieu entre bord écran et lettre R/P */
+          .rsvp-lemon-left  { margin-right: clamp(4px, 6vw, 16px) !important; }
+          .rsvp-lemon-right { margin-left:  clamp(4px, 6vw, 16px) !important; }
+          /* Boutons jours : une colonne, même taille, texte centré */
+          .jours-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </div>
