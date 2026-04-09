@@ -217,7 +217,7 @@ function SunGame({ onClose }: { onClose: () => void }) {
         const pad    = 10;
         const sunL   = SUN_X - SUN_R + pad;
         const sunRe  = SUN_X + SUN_R - pad;
-        const sunBot = s.sunY + diam - pad;
+        const sunBot = s.sunY + SUN_R * 2 - pad;
         for (const rock of s.rocks) {
           if (sunRe <= rock.x + 4 || sunL >= rock.x + rock.w - 4) continue;
           if (sunBot > SEA_Y - rock.h * 0.85) {
