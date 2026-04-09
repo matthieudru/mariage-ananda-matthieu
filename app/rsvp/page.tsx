@@ -415,15 +415,6 @@ export default function RSVP() {
           /* Citrons : collés contre le mot RSVP */
           .rsvp-lemon-left  { width: 19vw !important; margin-right: 0 !important; }
           .rsvp-lemon-right { width: 19vw !important; margin-left:  0 !important; }
-          /* Boutons dates : taille uniforme, minuscules */
-          .jours-grid span {
-            font-size: 11px !important;
-            text-transform: none !important;
-            letter-spacing: 0.05em !important;
-            font-weight: 400 !important;
-            margin-bottom: 0 !important;
-            line-height: 1.5 !important;
-          }
         }
       `}</style>
     </div>
