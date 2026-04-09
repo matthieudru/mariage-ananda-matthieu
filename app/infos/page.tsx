@@ -174,10 +174,10 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
 }
 
 const HOTELS: Hotel[] = [
-  { nom: "Baglio di Scopello", detail: "Centre du village de Scopello, 5 min de la Tonnara.", booking: "Réservez en direct (pas via Booking) en mentionnant notre mariage pour 5% de remise.", email: "info@hotelbagliodiscopello.it", url: "https://www.hotelbagliodiscopello.com/", photo: "https://www.hotelbagliodiscopello.com/img/about-1.jpg", prix: "180€/nuit" },
-  { nom: "Baglio dello Zingaro", detail: "À proximité du lieu du mariage.", booking: "Réservez en direct (pas via Booking) en mentionnant notre mariage pour un prix fixe.", email: "info@bagliodellozingaro.it", url: "https://www.bagliodellozingaro.it/", photo: "/zingaro.jpg", prix: "140€/nuit" },
-  { nom: "La Tavernetta", detail: "Centre du village de Scopello, 5 min de la Tonnara.", email: "info@albertolatavernetta.it", url: "https://www.albergolatavernetta.it/it/", photo: "/la-tavernetta.jpg", prix: "75€/nuit" },
-  { nom: "Tenute Plaia", detail: "Sur la route de Scopello, 4 min de la Tonnara.", booking: "Réservez sur leur site avec le code ANDMTE26 pour 12% de remise. Indiquez nos prénoms dans les demandes spéciales.", email: "info@agriturismotenuteplaia.it", url: "https://www.agriturismotenuteplaia.it/", photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg", prix: "110€/nuit" },
+  { nom: "Baglio di Scopello", detail: "Centre du village de Scopello, 5 min de la Tonnara.", booking: "Réservez en direct (pas via Booking) en mentionnant notre mariage pour 5% de remise.", email: "info@hotelbagliodiscopello.it", url: "https://www.hotelbagliodiscopello.com/", photo: "https://www.hotelbagliodiscopello.com/img/about-1.jpg", prix: "130–180€/nuit" },
+  { nom: "Baglio dello Zingaro", detail: "À proximité du lieu du mariage.", booking: "Réservez en direct (pas via Booking) en mentionnant notre mariage pour un prix fixe.", email: "info@bagliodellozingaro.it", url: "https://www.bagliodellozingaro.it/", photo: "/zingaro.jpg", prix: "~120€/nuit" },
+  { nom: "La Tavernetta", detail: "Centre du village de Scopello, 5 min de la Tonnara.", booking: "Réservez en direct en mentionnant notre mariage.", email: "info@albertolatavernetta.it", url: "https://www.albergolatavernetta.it/it/", photo: "/la-tavernetta.jpg", prix: "~250€/nuit" },
+  { nom: "Tenute Plaia", detail: "Sur la route de Scopello, 4 min de la Tonnara.", booking: "Réservez sur leur site avec le code ANDMTE26 pour 12% de remise. Indiquez nos prénoms dans les demandes spéciales lors de la réservation.", email: "info@agriturismotenuteplaia.it", url: "https://www.agriturismotenuteplaia.it/", photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg", prix: "~160€/nuit" },
 ];
 
 const MAISONS = [
