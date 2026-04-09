@@ -153,7 +153,7 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
               {hotel.nom}
             </p>
             {hotel.prix && <p style={{ fontSize: "12px", opacity: hovered ? 0.7 : 0.45, marginTop: "4px", fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s", letterSpacing: "0.03em" }}>
-              Environ {hotel.prix} · 10 oct.
+              Environ {hotel.prix}
             </p>}
           </div>
           <div>
@@ -302,12 +302,12 @@ export default function Infos() {
               rel="noopener noreferrer"
               style={{ display: "block", textDecoration: "none", border: `1px solid rgba(36,59,113,0.15)` }}
             >
-              {/* Conteneur carré via padding-bottom trick */}
               <div style={{ position: "relative", width: "100%", paddingBottom: "100%", overflow: "hidden" }}>
                 <iframe
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=12.800%2C38.055%2C12.855%2C38.085&layer=mapnik&marker=38.0694%2C12.8285"
-                  style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: 0, display: "block", filter: "saturate(0.55) brightness(1.08) contrast(0.88)" }}
+                  src="https://maps.google.com/maps?q=38.0694,12.8285&t=&z=15&ie=UTF8&iwloc=B&output=embed"
+                  style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "calc(100% + 50px)", border: 0, display: "block", filter: "saturate(0.55) brightness(1.08) contrast(0.88)" }}
                   loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
             </a>
