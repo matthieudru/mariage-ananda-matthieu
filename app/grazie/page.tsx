@@ -11,78 +11,53 @@ const BG    = "#f3ecdc";
 ───────────────────────────────────────── */
 const GAME_W   = 500;
 const GAME_H   = 195;
-const SEA_Y    = 150;           // Y de la surface de l'eau
-const SUN_R    = 48;            // rayon du soleil → 96px de diamètre
+const SEA_Y    = 150;
+const SUN_R    = 48;               // → 96px diamètre
 const SUN_X    = 85;
-const GROUND_Y = SEA_Y - SUN_R * 2;  // = 54  (sol du soleil = surface eau)
+const GROUND_Y = SEA_Y - SUN_R * 2; // 54
 
-const JUMP_V   = -580;          // vélocité saut px/sec
-const GRAVITY  = 1800;          // gravité px/sec²
-const BASE_SPD = 200;           // vitesse de départ px/sec
+const JUMP_V   = -580;
+const GRAVITY  = 1800;
+const BASE_SPD = 200;
 
-// Ratios naturels des images
-const RATIO_MONTAGNE = 1514 / 819;   // 1.848
-const RATIO_VAGUE    = 1514 / 819;   // 1.848
+const RATIO_MONTAGNE = 1514 / 819;
+const RATIO_VAGUE    = 1514 / 819;
 
 /* ─────────────────────────────────────────
-   Type état du jeu
+   État du jeu
 ───────────────────────────────────────── */
 type Rock = { x: number; w: number; h: number };
 type GS   = {
   sunY: number; vy: number; rocks: Rock[];
   speed: number; score: number;
   scoreAccum: number; spawnAccum: number;
-  waveOffset: number;   // px (scroll des vagues)
-  lastTs: number; dead: boolean;
+  waveOffset: number; lastTs: number; dead: boolean;
 };
 
 const makeState = (): GS => ({
   sunY: GROUND_Y, vy: 0, rocks: [],
   speed: BASE_SPD, score: 0,
   scoreAccum: 0, spawnAccum: 0,
-  waveOffset: 0,
-  lastTs: 0, dead: false,
+  waveOffset: 0, lastTs: 0, dead: false,
 });
 
 /* ─────────────────────────────────────────
-   Chargement image robuste
-   (gère le cache navigateur : onload peut
-    ne pas se déclencher si déjà en cache)
-───────────────────────────────────────── */
-function loadImg(
-  src: string,
-  ref: React.MutableRefObject<HTMLImageElement | null>
-) {
-  const img = new Image();
-  img.onload = () => { ref.current = img; };
-  img.onerror = () => { console.warn("Image not loaded:", src); };
-  img.src = src;
-  // Si l'image était déjà en cache, onload ne se déclenche pas
-  if (img.complete && img.naturalWidth > 0) ref.current = img;
-}
-
-/* ─────────────────────────────────────────
    Composant SunGame
+   Les images sont de vrais <img> DOM cachés
+   → le navigateur les gère, plus fiable sur iOS
 ───────────────────────────────────────── */
 function SunGame({ onClose }: { onClose: () => void }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const stateRef  = useRef<GS>(makeState());
-  const rafRef    = useRef<number>(0);
+  const canvasRef    = useRef<HTMLCanvasElement>(null);
+  const stateRef     = useRef<GS>(makeState());
+  const rafRef       = useRef<number>(0);
 
-  // Images
-  const imgSun      = useRef<HTMLImageElement | null>(null);
-  const imgMontagne = useRef<HTMLImageElement | null>(null);
-  const imgVague    = useRef<HTMLImageElement | null>(null);
+  // Refs vers de vrais éléments <img> dans le DOM (voir render)
+  const refSun       = useRef<HTMLImageElement>(null);
+  const refMontagne  = useRef<HTMLImageElement>(null);
+  const refVague     = useRef<HTMLImageElement>(null);
 
   const [dispScore, setDispScore] = useState(0);
   const [dispDead,  setDispDead]  = useState(false);
-
-  /* ── Chargement des images ── */
-  useEffect(() => {
-    loadImg("/anim-sun.jpg",  imgSun);      // 200×185, quasi carré
-    loadImg("/montagne.png",  imgMontagne); // 1514×819
-    loadImg("/vague.png",     imgVague);    // 1514×819
-  }, []);
 
   /* ── Boucle de jeu (monte une seule fois) ── */
   useEffect(() => {
@@ -95,11 +70,15 @@ function SunGame({ onClose }: { onClose: () => void }) {
     const ctx = canvas.getContext("2d")!;
     ctx.scale(dpr, dpr);
 
+    /* helper : est-ce qu'une image est prête ? */
+    const ready = (img: HTMLImageElement | null): img is HTMLImageElement =>
+      img !== null && img.complete && img.naturalWidth > 0;
+
     /* Spawn obstacle */
     const spawnRock = (s: GS) => {
       const lvl   = Math.floor(s.score / 15);
       const baseH = 28 + lvl * 7;
-      const h     = Math.min(baseH + Math.random() * 18, 62); // max 62px (franchissable)
+      const h     = Math.min(baseH + Math.random() * 18, 62);
       const w     = h * RATIO_MONTAGNE * (0.55 + Math.random() * 0.5);
       s.rocks.push({ x: GAME_W + 20, w, h });
     };
@@ -115,13 +94,12 @@ function SunGame({ onClose }: { onClose: () => void }) {
       ctx.fillStyle = sky;
       ctx.fillRect(0, 0, GAME_W, SEA_Y);
 
-      /* ── Montagnes ── */
+      /* ── Montagnes / obstacles ── */
       for (const rock of s.rocks) {
-        const img = imgMontagne.current;
-        if (img) {
-          ctx.drawImage(img, rock.x, SEA_Y - rock.h, rock.w, rock.h);
+        if (ready(refMontagne.current)) {
+          ctx.drawImage(refMontagne.current, rock.x, SEA_Y - rock.h, rock.w, rock.h);
         } else {
-          /* Fallback silhouette */
+          /* Silhouette de secours */
           ctx.fillStyle = "rgba(36,59,113,0.28)";
           ctx.beginPath();
           ctx.moveTo(rock.x, SEA_Y);
@@ -133,13 +111,12 @@ function SunGame({ onClose }: { onClose: () => void }) {
 
       /* ── Mer / vagues ── */
       const seaH = GAME_H - SEA_Y + 4;
-      const vImg = imgVague.current;
-      if (vImg) {
+      if (ready(refVague.current)) {
         const tileW  = seaH * RATIO_VAGUE;
         const offset = s.waveOffset % tileW;
         const count  = Math.ceil(GAME_W / tileW) + 2;
         for (let i = 0; i < count; i++) {
-          ctx.drawImage(vImg, i * tileW - offset, SEA_Y - 1, tileW, seaH + 2);
+          ctx.drawImage(refVague.current, i * tileW - offset, SEA_Y - 1, tileW, seaH + 2);
         }
       } else {
         ctx.fillStyle = "rgba(36,59,113,0.22)";
@@ -147,24 +124,22 @@ function SunGame({ onClose }: { onClose: () => void }) {
       }
 
       /* ── Soleil ── */
-      const sunImg = imgSun.current;
-      const diam   = SUN_R * 2;
-      if (sunImg) {
-        // Clip circulaire pour qualité maximale
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(SUN_X, s.sunY + SUN_R, SUN_R, 0, Math.PI * 2);
-        ctx.clip();
-        // Cover-fit : remplir le cercle sans déformer
-        const iRatio = sunImg.naturalWidth / sunImg.naturalHeight; // ≈1.08
-        let sw = diam, sh = diam;
-        if (iRatio > 1) { sh = diam / iRatio; } else { sw = diam * iRatio; }
-        const ox = SUN_X - SUN_R + (diam - sw) / 2;
-        const oy = s.sunY + (diam - sh) / 2;
-        ctx.drawImage(sunImg, ox, oy, sw, sh);
-        ctx.restore();
+      const diam = SUN_R * 2;
+      if (ready(refSun.current)) {
+        /* Dessin simple — pas de clip cercle, image rectangulaire */
+        const iw = refSun.current.naturalWidth;
+        const ih = refSun.current.naturalHeight;
+        // Fit dans le carré diam×diam en gardant le ratio
+        const scale = Math.min(diam / iw, diam / ih);
+        const sw = iw * scale;
+        const sh = ih * scale;
+        ctx.drawImage(
+          refSun.current,
+          SUN_X - sw / 2,
+          s.sunY + SUN_R - sh / 2,
+          sw, sh
+        );
       } else {
-        /* Fallback : cercle doré */
         ctx.beginPath();
         ctx.arc(SUN_X, s.sunY + SUN_R, SUN_R, 0, Math.PI * 2);
         ctx.fillStyle = "#d9943a";
@@ -177,20 +152,17 @@ function SunGame({ onClose }: { onClose: () => void }) {
       const s = stateRef.current;
 
       if (s.lastTs === 0) s.lastTs = ts;
-      const dt = Math.min((ts - s.lastTs) / 1000, 0.05); // cap 50ms
+      const dt = Math.min((ts - s.lastTs) / 1000, 0.05);
       s.lastTs = ts;
 
       if (!s.dead) {
-        /* Physique */
-        s.vy    += GRAVITY * dt;
-        s.sunY  += s.vy * dt;
+        s.vy         += GRAVITY * dt;
+        s.sunY       += s.vy * dt;
         if (s.sunY >= GROUND_Y) { s.sunY = GROUND_Y; s.vy = 0; }
-        if (s.sunY < 0)         { s.sunY = 0;         s.vy = 0; }
+        if (s.sunY  < 0)        { s.sunY = 0;         s.vy = 0; }
 
-        /* Scroll vagues */
-        s.waveOffset += 60 * dt; // 60 px/sec
+        s.waveOffset += 60 * dt;
 
-        /* Score : 1 point / seconde */
         s.scoreAccum += dt;
         if (s.scoreAccum >= 1) {
           s.score      += Math.floor(s.scoreAccum);
@@ -198,22 +170,16 @@ function SunGame({ onClose }: { onClose: () => void }) {
           setDispScore(s.score);
         }
 
-        /* Vitesse progressive (douce) */
         s.speed = BASE_SPD + s.score * 7;
 
-        /* Spawn */
         s.spawnAccum += dt;
         const interval = Math.max(1.1, 2.5 - s.score * 0.06);
-        if (s.spawnAccum >= interval) {
-          s.spawnAccum = 0;
-          spawnRock(s);
-        }
+        if (s.spawnAccum >= interval) { s.spawnAccum = 0; spawnRock(s); }
 
-        /* Déplacement obstacles */
         s.rocks.forEach(r => { r.x -= s.speed * dt; });
         s.rocks = s.rocks.filter(r => r.x + r.w > -10);
 
-        /* Collision AABB avec marge */
+        /* Collision */
         const pad    = 10;
         const sunL   = SUN_X - SUN_R + pad;
         const sunRe  = SUN_X + SUN_R - pad;
@@ -221,10 +187,7 @@ function SunGame({ onClose }: { onClose: () => void }) {
         for (const rock of s.rocks) {
           if (sunRe <= rock.x + 4 || sunL >= rock.x + rock.w - 4) continue;
           if (sunBot > SEA_Y - rock.h * 0.85) {
-            s.dead = true;
-            setDispDead(true);
-            setDispScore(s.score);
-            break;
+            s.dead = true; setDispDead(true); setDispScore(s.score); break;
           }
         }
       }
@@ -235,7 +198,7 @@ function SunGame({ onClose }: { onClose: () => void }) {
 
     rafRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(rafRef.current);
-  }, []);  // Une seule fois au montage
+  }, []);
 
   /* ── Saut / Restart ── */
   const jump = useCallback(() => {
@@ -246,7 +209,7 @@ function SunGame({ onClose }: { onClose: () => void }) {
       setDispScore(0);
       return;
     }
-    if (s.sunY >= GROUND_Y - 8) s.vy = JUMP_V; // saut depuis le sol uniquement
+    if (s.sunY >= GROUND_Y - 8) s.vy = JUMP_V;
   }, []);
 
   useEffect(() => {
@@ -259,6 +222,17 @@ function SunGame({ onClose }: { onClose: () => void }) {
 
   return (
     <div style={{ textAlign: "center", userSelect: "none", marginBottom: "40px" }}>
+      {/*
+        Images cachées dans le DOM — le navigateur les charge normalement.
+        On les lit depuis le canvas via refSun / refMontagne / refVague.
+      */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img ref={refSun}      src="/anim-sun.jpg"  alt="" style={{ display: "none" }} />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img ref={refMontagne} src="/montagne.png"  alt="" style={{ display: "none" }} />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img ref={refVague}    src="/vague.png"     alt="" style={{ display: "none" }} />
+
       <div
         onClick={jump}
         onTouchStart={(e) => { e.preventDefault(); jump(); }}
@@ -277,6 +251,7 @@ function SunGame({ onClose }: { onClose: () => void }) {
           }}
         />
       </div>
+
       <p style={{
         fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase",
         opacity: 0.35, marginTop: "8px", fontFamily: "'FT Aktual', Georgia, serif",
@@ -337,25 +312,15 @@ export default function GraziePage() {
         )}
 
         <div style={{ marginBottom: "28px", textAlign: "center", width: "100%" }}>
-          {/* Soleils + texte : côte à côte sur desktop, empilés sur mobile */}
-          <div style={{
-            display: "flex", alignItems: "center",
-            justifyContent: "center", gap: "16px",
-          }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/Sun.png" alt="" className="grazie-sun" style={{ width: "clamp(48px, 9vw, 120px)", height: "auto", flexShrink: 0 }} />
             <div style={{ textAlign: "center" }}>
-              <p style={{
-                fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 500,
-                letterSpacing: "-0.03em", lineHeight: 0.95, color: COLOR,
-              }}>
+              <p style={{ fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.95, color: COLOR }}>
                 Grazie
               </p>
               {prenom && (
-                <p style={{
-                  fontSize: "clamp(40px, 8vw, 100px)", fontWeight: 500,
-                  letterSpacing: "-0.03em", lineHeight: 0.95, color: COLOR,
-                }}>
+                <p style={{ fontSize: "clamp(40px, 8vw, 100px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.95, color: COLOR }}>
                   {prenom}
                 </p>
               )}
@@ -365,24 +330,16 @@ export default function GraziePage() {
           </div>
         </div>
 
-        <a
-          href="https://www.ungrandjour.com/fr/ananda-matthieu"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="grazie-btn grazie-btn-red"
-        >
+        <a href="https://www.ungrandjour.com/fr/ananda-matthieu" target="_blank" rel="noopener noreferrer" className="grazie-btn grazie-btn-red">
           Liste de mariage
         </a>
       </div>
 
-      <Link
-        href="/"
-        style={{
-          marginTop: "48px", fontSize: "11px", letterSpacing: "0.2em",
-          textTransform: "uppercase", opacity: 0.38, color: COLOR,
-          textDecoration: "none", fontFamily: "'FT Aktual', Georgia, serif",
-        }}
-      >
+      <Link href="/" style={{
+        marginTop: "48px", fontSize: "11px", letterSpacing: "0.2em",
+        textTransform: "uppercase", opacity: 0.38, color: COLOR,
+        textDecoration: "none", fontFamily: "'FT Aktual', Georgia, serif",
+      }}>
         ← Retour à l&apos;accueil
       </Link>
 
