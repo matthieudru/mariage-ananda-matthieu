@@ -62,16 +62,27 @@ function hairline(ctx: CanvasRenderingContext2D, yFrac: number) {
   ctx.stroke();
 }
 
+/* ── Bungee gras simulé : stroke + fill superposés ── */
+function drawBungee(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, size: number) {
+  ctx.font = `${size}px ${bungee}`;
+  ctx.shadowColor = "rgba(255,255,255,0.95)"; ctx.shadowBlur = 6;
+  // stroke épais pour épaissir le trait
+  ctx.lineWidth = size * 0.08;
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = "rgba(20,14,8,0.60)";
+  ctx.strokeText(text, x, y);
+  // fill par-dessus
+  ctx.fillStyle = "rgba(20,14,8,0.60)";
+  ctx.fillText(text, x, y);
+  ctx.shadowBlur = 0;
+}
+
 /* ════════════════════════════
    1. BUNGEE + SERIF ITALIC
    Règle en Georgia italic léger, GRATTE ICI Bungee petit
 ════════════════════════════ */
 function draw1(ctx: CanvasRenderingContext2D) {
-  ctx.font = `${Math.round(W*0.17)}px ${bungee}`;
-  ctx.shadowColor = "rgba(255,255,255,0.95)"; ctx.shadowBlur = 6;
-  ctx.fillStyle = "rgba(20,14,8,0.60)";
-  ctx.fillText("10.10", W/2, H*0.40);
-  ctx.shadowBlur = 0;
+  drawBungee(ctx, "10.10", W/2, H*0.40, Math.round(W*0.17));
 
   hairline(ctx, 0.50);
 
@@ -91,11 +102,7 @@ function draw1(ctx: CanvasRenderingContext2D) {
    Règle Helvetica 100 aérée, GRATTE ICI sans 300 tracké
 ════════════════════════════ */
 function draw2(ctx: CanvasRenderingContext2D) {
-  ctx.font = `${Math.round(W*0.17)}px ${bungee}`;
-  ctx.shadowColor = "rgba(255,255,255,0.95)"; ctx.shadowBlur = 6;
-  ctx.fillStyle = "rgba(20,14,8,0.60)";
-  ctx.fillText("10.10", W/2, H*0.40);
-  ctx.shadowBlur = 0;
+  drawBungee(ctx, "10.10", W/2, H*0.40, Math.round(W*0.17));
 
   hairline(ctx, 0.50);
 
@@ -118,11 +125,7 @@ function draw2(ctx: CanvasRenderingContext2D) {
    Règle sans 700 tracké, GRATTE ICI sans 900
 ════════════════════════════ */
 function draw3(ctx: CanvasRenderingContext2D) {
-  ctx.font = `${Math.round(W*0.17)}px ${bungee}`;
-  ctx.shadowColor = "rgba(255,255,255,0.95)"; ctx.shadowBlur = 6;
-  ctx.fillStyle = "rgba(20,14,8,0.60)";
-  ctx.fillText("10.10", W/2, H*0.40);
-  ctx.shadowBlur = 0;
+  drawBungee(ctx, "10.10", W/2, H*0.40, Math.round(W*0.17));
 
   hairline(ctx, 0.50);
 
@@ -145,11 +148,7 @@ function draw3(ctx: CanvasRenderingContext2D) {
    Tout en Bungee, hiérarchie de tailles, très cohérent
 ════════════════════════════ */
 function draw4(ctx: CanvasRenderingContext2D) {
-  ctx.font = `${Math.round(W*0.17)}px ${bungee}`;
-  ctx.shadowColor = "rgba(255,255,255,0.95)"; ctx.shadowBlur = 6;
-  ctx.fillStyle = "rgba(20,14,8,0.60)";
-  ctx.fillText("10.10", W/2, H*0.40);
-  ctx.shadowBlur = 0;
+  drawBungee(ctx, "10.10", W/2, H*0.40, Math.round(W*0.17));
 
   hairline(ctx, 0.50);
 
@@ -169,11 +168,7 @@ function draw4(ctx: CanvasRenderingContext2D) {
    Règle Georgia romain élégant, GRATTE ICI serif italic
 ════════════════════════════ */
 function draw5(ctx: CanvasRenderingContext2D) {
-  ctx.font = `${Math.round(W*0.17)}px ${bungee}`;
-  ctx.shadowColor = "rgba(255,255,255,0.95)"; ctx.shadowBlur = 6;
-  ctx.fillStyle = "rgba(20,14,8,0.60)";
-  ctx.fillText("10.10", W/2, H*0.40);
-  ctx.shadowBlur = 0;
+  drawBungee(ctx, "10.10", W/2, H*0.40, Math.round(W*0.17));
 
   hairline(ctx, 0.50);
 
