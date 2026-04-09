@@ -7,69 +7,76 @@ const COLOR = "#243b71";
 const BG    = "#f3ecdc";
 
 /* ─────────────────────────────────────────
-   Jeu de grattage
+   Jeu de grattage — style billet de loterie
 ───────────────────────────────────────── */
 function ScratchCard({ onClose }: { onClose: () => void }) {
-  const canvasRef  = useRef<HTMLCanvasElement>(null);
-  const [won,      setWon]      = useState(false);
-  const isDown     = useRef(false);
-  const wonRef     = useRef(false);
-  const lastCheck  = useRef(0);
+  const canvasRef      = useRef<HTMLCanvasElement>(null);
+  const scratchZoneRef = useRef<HTMLDivElement>(null);
+  const [won,     setWon]     = useState(false);
+  const isDown    = useRef(false);
+  const wonRef    = useRef(false);
+  const lastCheck = useRef(0);
 
-  /* ── Dessin de la couche de grattage ── */
+  /* ── Init couche de grattage ── */
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const zone   = scratchZoneRef.current;
+    if (!canvas || !zone) return;
 
-    // Taille réelle après layout
-    const rect = canvas.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
+    // Attendre que le layout soit calculé
+    requestAnimationFrame(() => {
+      const rect = zone.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width  = rect.width  * dpr;
-    canvas.height = rect.height * dpr;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width  = rect.width  * dpr;
+      canvas.height = rect.height * dpr;
 
-    const ctx = canvas.getContext("2d")!;
-    ctx.scale(dpr, dpr);
-    const W = rect.width;
-    const H = rect.height;
+      const ctx = canvas.getContext("2d")!;
+      ctx.scale(dpr, dpr);
+      const W = rect.width;
+      const H = rect.height;
 
-    // Fond doré-brun (couleur couche scratch)
-    ctx.fillStyle = "#9b8866";
-    ctx.fillRect(0, 0, W, H);
+      // Fond principal — bleu profond
+      ctx.fillStyle = COLOR;
+      ctx.fillRect(0, 0, W, H);
 
-    // Hachures légères
-    ctx.strokeStyle = "rgba(255,255,255,0.08)";
-    ctx.lineWidth = 1;
-    for (let x = -H; x < W + H; x += 7) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x + H, H);
-      ctx.stroke();
-    }
-
-    // Points de texture
-    ctx.fillStyle = "rgba(255,255,255,0.04)";
-    for (let cx = 6; cx < W; cx += 12) {
-      for (let cy = 6; cy < H; cy += 12) {
-        ctx.beginPath();
-        ctx.arc(cx, cy, 1.5, 0, Math.PI * 2);
-        ctx.fill();
+      // Hachures diagonales fines
+      ctx.strokeStyle = "rgba(255,255,255,0.06)";
+      ctx.lineWidth = 1;
+      for (let x = -H; x < W + H; x += 9) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + H, H); ctx.stroke();
       }
-    }
 
-    // Texte "GRATTE"
-    ctx.fillStyle = "rgba(255,255,255,0.22)";
-    ctx.textAlign = "center";
-    ctx.font = `10px Georgia, serif`;
-    ctx.fillText("GRATTE POUR RÉVÉLER", W / 2, H / 2 + 4);
+      // Grille de points texture
+      ctx.fillStyle = "rgba(255,255,255,0.03)";
+      for (let cx = 8; cx < W; cx += 14) {
+        for (let cy = 8; cy < H; cy += 14) {
+          ctx.beginPath(); ctx.arc(cx, cy, 1.8, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+
+      // Cadre intérieur
+      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(10, 10, W - 20, H - 20);
+
+      // Texte "GRATTEZ ICI"
+      ctx.fillStyle = "rgba(243,236,220,0.35)";
+      ctx.textAlign = "center";
+      ctx.font = `bold 11px Georgia, serif`;
+      ctx.fillText("GRATTEZ ICI", W / 2, H / 2 - 6);
+      ctx.font = `10px Georgia, serif`;
+      ctx.fillStyle = "rgba(243,236,220,0.2)";
+      ctx.fillText("▼", W / 2, H / 2 + 12);
+    });
   }, []);
 
   /* ── Grattage ── */
   const doScratch = useCallback((clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas || wonRef.current) return;
-    const ctx = canvas.getContext("2d")!;
+    const ctx  = canvas.getContext("2d")!;
     const dpr  = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
 
@@ -79,39 +86,35 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
     ctx.save();
     ctx.globalCompositeOperation = "destination-out";
     ctx.beginPath();
-    ctx.arc(x, y, 26 * dpr, 0, Math.PI * 2);
+    ctx.arc(x, y, 28 * dpr, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
-    // Vérification victoire max 5×/s
+    // Vérif victoire throttlée
     const now = Date.now();
     if (now - lastCheck.current < 200) return;
     lastCheck.current = now;
 
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
     let transparent = 0;
-    for (let i = 3; i < data.length; i += 4) {
-      if (data[i] < 128) transparent++;
-    }
+    for (let i = 3; i < data.length; i += 4) { if (data[i] < 128) transparent++; }
     const pct = (transparent / (canvas.width * canvas.height)) * 100;
 
     if (pct > 45) {
       wonRef.current = true;
       setWon(true);
-      // Effacement complet après délai
       setTimeout(() => {
         const ctx2 = canvasRef.current?.getContext("2d");
         if (ctx2 && canvasRef.current)
           ctx2.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      }, 500);
+      }, 400);
     }
   }, []);
 
-  /* ── Handlers ── */
+  /* ── Handlers souris / touch ── */
   const onMouseDown = (e: React.MouseEvent) => { isDown.current = true;  doScratch(e.clientX, e.clientY); };
   const onMouseMove = (e: React.MouseEvent) => { if (isDown.current) doScratch(e.clientX, e.clientY); };
   const onMouseUp   = () => { isDown.current = false; };
-
   const onTouchStart = (e: React.TouchEvent) => {
     e.preventDefault(); isDown.current = true;
     doScratch(e.touches[0].clientX, e.touches[0].clientY);
@@ -125,101 +128,152 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
   return (
     <div style={{ textAlign: "center", userSelect: "none", marginBottom: "40px" }}>
 
-      {/* Accroche */}
-      <p style={{
-        fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase",
-        color: COLOR, opacity: 0.4, margin: "0 auto 18px",
-        fontFamily: "'FT Aktual', Georgia, serif", lineHeight: 1.8,
-        maxWidth: "340px",
-      }}>
-        Si tu trouves 3 fois Ananda &amp; Matthieu,<br />
-        ils se marient le 10.10 — tous les jeux sont gagnants
-      </p>
-
-      {/* Carte */}
+      {/* ─── BILLET ─── */}
       <div style={{
-        position: "relative",
         display: "inline-block",
-        width: "min(460px, 90vw)",
-        aspectRatio: "460 / 190",
-        border: `1px solid rgba(36,59,113,0.18)`,
+        width: "min(480px, 92vw)",
+        background: BG,
+        border: `2px solid ${COLOR}`,
+        fontFamily: "'FT Aktual', Georgia, serif",
         overflow: "hidden",
+        textAlign: "left",
+        boxShadow: "0 4px 24px rgba(36,59,113,0.15)",
       }}>
-        {/* Couche inférieure : 3 cases prize */}
+
+        {/* ── Header bleu ── */}
         <div style={{
-          position: "absolute", inset: 0,
+          background: COLOR,
+          padding: "16px 20px 14px",
           display: "flex",
-          background: BG,
+          alignItems: "flex-end",
+          justifyContent: "space-between",
         }}>
-          {[0, 1, 2].map(i => (
-            <div key={i} style={{
-              flex: 1,
-              display: "flex", flexDirection: "column",
-              alignItems: "center", justifyContent: "center",
-              gap: "8px",
-              borderRight: i < 2 ? `1px solid rgba(36,59,113,0.1)` : "none",
+          <div>
+            <div style={{
+              fontSize: "clamp(32px, 7vw, 52px)", fontWeight: 700,
+              letterSpacing: "-0.02em", color: BG, lineHeight: 1,
             }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/Sun.png" alt="" style={{ width: "clamp(28px, 5vw, 42px)", height: "auto" }} />
-              <div style={{
-                fontSize: "clamp(7px, 1vw, 10px)",
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: COLOR,
-                fontFamily: "'FT Aktual', Georgia, serif",
-                lineHeight: 1.8,
-                textAlign: "center",
-              }}>
-                Ananda<br />&amp; Matthieu
-              </div>
+              WEDDING
             </div>
-          ))}
+            <div style={{
+              fontSize: "clamp(7px, 1.2vw, 9px)", letterSpacing: "0.3em",
+              color: "rgba(243,236,220,0.5)", textTransform: "uppercase", marginTop: "4px",
+            }}>
+              Ananda &amp; Matthieu
+            </div>
+          </div>
+          <div style={{ textAlign: "right", paddingBottom: "2px" }}>
+            <div style={{
+              fontSize: "clamp(7px, 1.2vw, 9px)", letterSpacing: "0.25em",
+              color: "rgba(243,236,220,0.45)", textTransform: "uppercase", lineHeight: 2,
+            }}>
+              10 · 10 · 26<br />Scopello, Sicile
+            </div>
+          </div>
         </div>
 
-        {/* Canvas scratch par-dessus */}
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute", inset: 0,
-            width: "100%", height: "100%",
-            cursor: "crosshair",
-            touchAction: "none",
-          }}
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={onMouseUp}
-          onMouseLeave={onMouseUp}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-        />
-      </div>
+        {/* ── Règle ── */}
+        <div style={{
+          padding: "8px 18px",
+          borderBottom: `1px solid rgba(36,59,113,0.12)`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          <p style={{
+            fontSize: "clamp(6px, 1.1vw, 8px)", letterSpacing: "0.18em",
+            color: COLOR, opacity: 0.45, textTransform: "uppercase",
+            margin: 0, textAlign: "center", lineHeight: 1.6,
+          }}>
+            Si vous trouvez 3 fois la même photo, c&apos;est gagné · Tous les jeux sont gagnants
+          </p>
+        </div>
 
-      {/* Message */}
-      {won ? (
+        {/* ── Zone de grattage ── */}
+        <div style={{ padding: "14px 16px 10px" }}>
+          <div
+            ref={scratchZoneRef}
+            style={{
+              position: "relative",
+              border: `1.5px solid rgba(36,59,113,0.25)`,
+              overflow: "hidden",
+              cursor: "crosshair",
+            }}
+          >
+            {/* Photos révélées dessous */}
+            <div style={{ display: "flex", background: "rgba(36,59,113,0.03)" }}>
+              {[0, 1, 2].map(i => (
+                <div key={i} style={{
+                  flex: 1,
+                  aspectRatio: "3 / 4",
+                  overflow: "hidden",
+                  borderRight: i < 2 ? `1px solid rgba(36,59,113,0.1)` : "none",
+                }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/jeu%20%C3%A0%20gratter.png"
+                    alt=""
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Canvas de grattage par-dessus */}
+            <canvas
+              ref={canvasRef}
+              style={{
+                position: "absolute", inset: 0,
+                width: "100%", height: "100%",
+                touchAction: "none",
+              }}
+              onMouseDown={onMouseDown}
+              onMouseMove={onMouseMove}
+              onMouseUp={onMouseUp}
+              onMouseLeave={onMouseUp}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            />
+          </div>
+        </div>
+
+        {/* ── Footer billet ── */}
+        <div style={{
+          padding: "8px 18px 12px",
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+        }}>
+          <p style={{
+            fontSize: "clamp(5px, 0.9vw, 7px)", letterSpacing: "0.2em",
+            color: COLOR, opacity: 0.22, textTransform: "uppercase", margin: 0,
+          }}>
+            NUL SI DÉCOUVERT
+          </p>
+          <p style={{
+            fontSize: "clamp(5px, 0.9vw, 7px)", letterSpacing: "0.2em",
+            color: COLOR, opacity: 0.22, textTransform: "uppercase", margin: 0,
+          }}>
+            JEU GRATUIT · OFFERT PAR LES MARIÉS
+          </p>
+        </div>
+      </div>
+      {/* ─── FIN BILLET ─── */}
+
+      {/* Message victoire */}
+      {won && (
         <p style={{
           fontSize: "clamp(28px, 5vw, 44px)",
           fontWeight: 500, letterSpacing: "-0.02em",
-          color: COLOR, marginTop: "20px",
+          color: COLOR, marginTop: "22px",
           fontFamily: "'FT Aktual', Georgia, serif",
           animation: "scratchWin 0.7s ease-out forwards",
         }}>
           C&apos;est gagné&nbsp;!
-        </p>
-      ) : (
-        <p style={{
-          fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase",
-          opacity: 0.3, marginTop: "8px",
-          fontFamily: "'FT Aktual', Georgia, serif",
-        }}>
-          Gratte la surface
         </p>
       )}
 
       <button
         onClick={onClose}
         style={{
-          marginTop: "10px", background: "none", border: "none",
+          marginTop: "14px", background: "none", border: "none",
           fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase",
           opacity: 0.3, cursor: "pointer",
           fontFamily: "'FT Aktual', Georgia, serif", color: COLOR,
