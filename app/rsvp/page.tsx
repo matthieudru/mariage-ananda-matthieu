@@ -9,28 +9,109 @@ const BG = "#f3ecdc";
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbyPWyZHvxo3l6bQGfmeUY5MvkbO1_y9nnEPTdf-6r-JJuzWdt8d1Q_nowH4t0mCW6uQ/exec";
 
 /* ── Mini jeu Soleil ── */
-const SUN_SIZE = 44;
-const JUMP_V = -14;
-const GRAVITY = 0.72;
+const SUN_R = 18;
+const SUN_X = 70; // centre horizontal fixe du soleil
+const JUMP_V = -11;
+const GRAVITY = 0.65;
 const GAME_W = 500;
-const GAME_H = 160;
-const GROUND_Y = GAME_H - 20; // laisse de la place pour le sol
+const GAME_H = 175;
+const SEA_Y = GAME_H - 42;
 
-type Mountain = { x: number; peaks: number[] };
+type Rock = { x: number; w: number; pts: number[] };
 
-function drawMountain(ctx: CanvasRenderingContext2D, m: Mountain, groundY: number) {
-  const nPeaks = m.peaks.length;
-  const segW = 60;
+function makeRock(startX: number): Rock {
+  const w = 26 + Math.random() * 38;
+  const nPts = 5 + Math.floor(Math.random() * 4);
+  const maxH = 32 + Math.random() * 68;
+  const pts = Array.from({ length: nPts }, (_, i) => {
+    const t = i / (nPts - 1);
+    const bell = Math.sin(t * Math.PI);
+    return bell * maxH * (0.4 + Math.random() * 0.6);
+  });
+  return { x: startX, w, pts };
+}
+
+function rockHeightAt(rock: Rock, x: number): number {
+  if (x < rock.x || x > rock.x + rock.w) return 0;
+  const t = (x - rock.x) / rock.w;
+  const n = rock.pts.length;
+  const idx = t * (n - 1);
+  const lo = Math.floor(idx);
+  const hi = Math.min(lo + 1, n - 1);
+  return rock.pts[lo] * (1 - (idx - lo)) + rock.pts[hi] * (idx - lo);
+}
+
+function drawRock(ctx: CanvasRenderingContext2D, rock: Rock, seaY: number) {
+  const { x, w, pts } = rock;
+  const n = pts.length;
   ctx.beginPath();
-  ctx.moveTo(m.x, groundY);
-  for (let i = 0; i < nPeaks; i++) {
-    const px = m.x + i * segW + segW / 2;
-    ctx.lineTo(px, groundY - m.peaks[i]);
+  ctx.moveTo(x, seaY + 2);
+  ctx.lineTo(x + w * 0.06, seaY - pts[0]);
+  for (let i = 1; i < n; i++) {
+    const px = x + (i / (n - 1)) * w;
+    const py = seaY - pts[i];
+    const cpx = x + ((i - 0.5) / (n - 1)) * w;
+    const cpy = seaY - (pts[i - 1] + pts[i]) / 2;
+    ctx.quadraticCurveTo(cpx, cpy, px, py);
   }
-  ctx.lineTo(m.x + nPeaks * segW, groundY);
+  ctx.lineTo(x + w * 0.94, seaY - pts[n - 1]);
+  ctx.lineTo(x + w, seaY + 2);
   ctx.closePath();
-  ctx.fillStyle = `rgba(36,59,113,0.35)`;
+  ctx.fillStyle = `rgba(36,59,113,0.72)`;
   ctx.fill();
+  ctx.strokeStyle = `rgba(36,59,113,0.28)`;
+  ctx.lineWidth = 0.8;
+  ctx.stroke();
+}
+
+function drawSun(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, frame: number) {
+  const rot = frame * 0.012;
+  const rayCount = 10;
+  ctx.lineCap = "round";
+  for (let i = 0; i < rayCount; i++) {
+    const angle = rot + (i / rayCount) * Math.PI * 2;
+    const inner = r + 2;
+    const outer = r + (i % 2 === 0 ? 9 : 6);
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(angle) * inner, cy + Math.sin(angle) * inner);
+    ctx.lineTo(cx + Math.cos(angle) * outer, cy + Math.sin(angle) * outer);
+    ctx.strokeStyle = `rgba(170,100,20,0.6)`;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(215,152,45,0.95)`;
+  ctx.fill();
+  ctx.strokeStyle = `rgba(155,90,18,0.5)`;
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx - r * 0.22, cy - r * 0.22, r * 0.32, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(238,190,80,0.28)`;
+  ctx.fill();
+}
+
+function drawSea(ctx: CanvasRenderingContext2D, frame: number, w: number, h: number, seaY: number) {
+  const grad = ctx.createLinearGradient(0, seaY, 0, h);
+  grad.addColorStop(0, `rgba(36,59,113,0.14)`);
+  grad.addColorStop(1, `rgba(36,59,113,0.26)`);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, seaY - 2, w, h - seaY + 2);
+  for (let layer = 0; layer < 3; layer++) {
+    const speed = 0.65 + layer * 0.28;
+    const amp = 2.6 - layer * 0.7;
+    const freq = 0.027 + layer * 0.013;
+    const phase = layer * 50;
+    ctx.beginPath();
+    for (let xi = 0; xi <= w; xi += 3) {
+      const y = seaY + Math.sin((xi + frame * speed + phase) * freq) * amp;
+      xi === 0 ? ctx.moveTo(xi, y) : ctx.lineTo(xi, y);
+    }
+    ctx.strokeStyle = `rgba(36,59,113,${0.30 - layer * 0.08})`;
+    ctx.lineWidth = layer === 0 ? 1.2 : 0.7;
+    ctx.stroke();
+  }
 }
 
 function SunGame({ onClose }: { onClose: () => void }) {
@@ -39,31 +120,22 @@ function SunGame({ onClose }: { onClose: () => void }) {
 
   type State = {
     sunY: number; vy: number;
-    mountains: Mountain[];
+    rocks: Rock[];
     frame: number; speed: number; score: number; dead: boolean;
   };
 
   const makeState = (): State => ({
-    sunY: GROUND_Y - SUN_SIZE, vy: 0, mountains: [], frame: 0, speed: 3.5, score: 0, dead: false
+    sunY: SEA_Y - SUN_R * 2 - 8, vy: 0, rocks: [], frame: 0, speed: 4.5, score: 0, dead: false,
   });
 
   const stateRef = useRef<State>(makeState());
   const rafRef = useRef<number>(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const faviconImg = useRef<HTMLImageElement | null>(null);
-  const imgReady = useRef(false);
-
-  useEffect(() => {
-    const img = new Image();
-    img.onload = () => { imgReady.current = true; };
-    img.src = "/favicon.png";
-    faviconImg.current = img;
-  }, []);
 
   const jump = useCallback(() => {
     const s = stateRef.current;
     if (s.dead) { stateRef.current = makeState(); setDead(false); setScore(0); return; }
-    if (s.sunY >= GROUND_Y - SUN_SIZE - 2) s.vy = JUMP_V;
+    if (s.sunY >= SEA_Y - SUN_R * 2 - 4) s.vy = JUMP_V;
   }, []);
 
   useEffect(() => {
@@ -75,76 +147,51 @@ function SunGame({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = GAME_W * dpr;
+    canvas.height = GAME_H * dpr;
+    canvas.style.width = GAME_W + "px";
+    canvas.style.height = GAME_H + "px";
     const ctx = canvas.getContext("2d")!;
+    ctx.scale(dpr, dpr);
     const s = stateRef.current;
 
     const drawScene = () => {
       ctx.clearRect(0, 0, GAME_W, GAME_H);
-
-      // Sky gradient
-      const sky = ctx.createLinearGradient(0, 0, 0, GROUND_Y);
-      sky.addColorStop(0, "#e8ddc8");
+      const sky = ctx.createLinearGradient(0, 0, 0, SEA_Y);
+      sky.addColorStop(0, "#ede4d0");
       sky.addColorStop(1, "#f3ecdc");
       ctx.fillStyle = sky;
-      ctx.fillRect(0, 0, GAME_W, GROUND_Y);
-
-      // Ground
-      ctx.fillStyle = `rgba(36,59,113,0.12)`;
-      ctx.fillRect(0, GROUND_Y, GAME_W, GAME_H - GROUND_Y);
-      ctx.strokeStyle = `rgba(36,59,113,0.3)`;
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(0, GROUND_Y); ctx.lineTo(GAME_W, GROUND_Y); ctx.stroke();
-
-      // Mountains
-      s.mountains.forEach(m => drawMountain(ctx, m, GROUND_Y));
-
-      // Favicon (sun)
-      if (imgReady.current && faviconImg.current) {
-        ctx.drawImage(faviconImg.current, 60, s.sunY, SUN_SIZE, SUN_SIZE);
-      } else {
-        ctx.fillStyle = `rgba(200,150,50,0.9)`;
-        ctx.beginPath();
-        ctx.arc(60 + SUN_SIZE / 2, s.sunY + SUN_SIZE / 2, SUN_SIZE / 2 - 2, 0, Math.PI * 2);
-        ctx.fill();
-      }
+      ctx.fillRect(0, 0, GAME_W, SEA_Y);
+      s.rocks.forEach(r => drawRock(ctx, r, SEA_Y));
+      drawSea(ctx, s.frame, GAME_W, GAME_H, SEA_Y);
+      drawSun(ctx, SUN_X, s.sunY + SUN_R, SUN_R, s.frame);
     };
 
     const loop = () => {
       if (s.dead) return;
       s.frame++;
       s.score++;
-      s.speed = 3.5 + Math.floor(s.score / 250) * 0.4;
+      s.speed = 4.5 + Math.floor(s.score / 200) * 0.5;
 
-      // Physics
       s.vy += GRAVITY;
       s.sunY += s.vy;
-      if (s.sunY >= GROUND_Y - SUN_SIZE) { s.sunY = GROUND_Y - SUN_SIZE; s.vy = 0; }
+      if (s.sunY >= SEA_Y - SUN_R * 2) { s.sunY = SEA_Y - SUN_R * 2; s.vy = 0; }
+      if (s.sunY < 0) { s.sunY = 0; s.vy = 0; }
 
-      // Spawn mountains
-      const interval = Math.max(60, 110 - Math.floor(s.score / 200) * 5);
-      if (s.frame % interval === 0) {
-        const nPeaks = 1 + Math.floor(Math.random() * 2);
-        const peaks = Array.from({ length: nPeaks }, () => 28 + Math.random() * 40);
-        s.mountains.push({ x: GAME_W + 10, peaks });
-      }
-      s.mountains = s.mountains.filter(m => m.x + m.peaks.length * 60 > -10);
-      s.mountains.forEach(m => { m.x -= s.speed; });
+      const interval = Math.max(46, 82 - Math.floor(s.score / 200) * 5);
+      if (s.frame % interval === 0) s.rocks.push(makeRock(GAME_W + 20));
+      s.rocks = s.rocks.filter(r => r.x + r.w > -10);
+      s.rocks.forEach(r => { r.x -= s.speed; });
 
-      // Collision — check if sun overlaps any mountain polygon (simplified bbox per segment)
-      const sx = 60, sy = s.sunY, pad = 8;
-      for (const m of s.mountains) {
-        const segW = 60;
-        for (let i = 0; i < m.peaks.length; i++) {
-          const px = m.x + i * segW;
-          const pw = segW;
-          const ph = m.peaks[i];
-          if (sx + SUN_SIZE - pad > px + 8 && sx + pad < px + pw - 8 && sy + SUN_SIZE - pad > GROUND_Y - ph * 0.7) {
-            s.dead = true;
-            setDead(true);
-            setScore(s.score);
-            cancelAnimationFrame(rafRef.current);
-            drawScene();
-            return;
+      const sunCX = SUN_X, sunCY = s.sunY + SUN_R;
+      for (const rock of s.rocks) {
+        if (sunCX + SUN_R < rock.x - 2 || sunCX - SUN_R > rock.x + rock.w + 2) continue;
+        for (const [cx, cy] of [[sunCX - SUN_R * 0.65, sunCY + SUN_R * 0.65], [sunCX, sunCY + SUN_R], [sunCX + SUN_R * 0.65, sunCY + SUN_R * 0.65]] as [number, number][]) {
+          const h = rockHeightAt(rock, cx);
+          if (h > 0 && cy > SEA_Y - h + 5) {
+            s.dead = true; setDead(true); setScore(s.score);
+            cancelAnimationFrame(rafRef.current); drawScene(); return;
           }
         }
       }
@@ -161,9 +208,8 @@ function SunGame({ onClose }: { onClose: () => void }) {
   return (
     <div style={{ textAlign: "center", userSelect: "none", marginBottom: "40px" }}>
       <div onClick={jump} onTouchStart={(e) => { e.preventDefault(); jump(); }}
-        style={{ display: "inline-block", cursor: "pointer", touchAction: "none", borderRadius: "2px", overflow: "hidden", border: `1px solid rgba(36,59,113,0.12)` }}>
-        <canvas ref={canvasRef} width={GAME_W} height={GAME_H}
-          style={{ display: "block", maxWidth: "min(500px, 88vw)", height: "auto" }} />
+        style={{ display: "inline-block", cursor: "pointer", touchAction: "none", overflow: "hidden", border: `1px solid rgba(36,59,113,0.12)` }}>
+        <canvas ref={canvasRef} style={{ display: "block", maxWidth: "min(500px, 88vw)" }} />
       </div>
       <p style={{ fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", opacity: 0.35, marginTop: "8px", fontFamily: "'FT Aktual', Georgia, serif" }}>
         {dead ? `Score : ${Math.floor(score / 10)} — Tap pour rejouer` : `Score : ${Math.floor(score / 10)} — Espace ou tap pour sauter`}
@@ -227,7 +273,7 @@ function GraziePage({ prenom }: { prenom: string }) {
       </div>
 
       {/* Retour accueil en bas */}
-      <Link href="/" className="grazie-btn grazie-btn-blue" style={{ marginTop: "40px" }}>
+      <Link href="/" style={{ marginTop: "48px", fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.38, color: COLOR, textDecoration: "none", fontFamily: "'FT Aktual', Georgia, serif" }}>
         ← Retour à l'accueil
       </Link>
 
