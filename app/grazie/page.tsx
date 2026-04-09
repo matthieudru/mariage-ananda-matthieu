@@ -118,25 +118,30 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
       ctx.textAlign = "center";
 
       /* Ligne 1-2 : instruction */
-      const fs1 = Math.max(9, Math.round(W * 0.033));
-      ctx.font = `${fs1}px Georgia, serif`;
-      ctx.shadowColor = "rgba(255,255,255,0.7)"; ctx.shadowBlur = 2;
-      ctx.fillStyle = "rgba(40,32,24,0.48)";
-      ctx.fillText("Trouve 3 photos d'Ananda", cx, cy - 22);
+      const fs1 = Math.max(12, Math.round(W * 0.044));
+      ctx.font = `italic ${fs1}px Georgia, serif`;
+      ctx.shadowColor = "rgba(255,255,255,0.8)"; ctx.shadowBlur = 3;
+      ctx.fillStyle = "rgba(30,22,14,0.62)";
+      ctx.fillText("Trouve 3 photos d'Ananda", cx, cy - 26);
       ctx.fillText("et Matthieu pour gagner", cx, cy - 4);
 
-      /* Séparateur */
+      /* Séparateur orné */
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = "rgba(60,50,40,0.2)"; ctx.lineWidth = 0.8;
-      const lw = W * 0.28;
-      ctx.beginPath(); ctx.moveTo(cx - lw, cy + 8); ctx.lineTo(cx + lw, cy + 8); ctx.stroke();
+      const lw = W * 0.32;
+      ctx.strokeStyle = "rgba(60,50,40,0.25)"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx - lw, cy + 10); ctx.lineTo(cx - 12, cy + 10); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx + 12, cy + 10); ctx.lineTo(cx + lw, cy + 10); ctx.stroke();
+      ctx.fillStyle = "rgba(60,50,40,0.3)";
+      ctx.font = `${Math.round(fs1 * 0.7)}px Georgia, serif`;
+      ctx.fillText("✦", cx, cy + 14);
 
-      /* Ligne 3 : Gratte ici */
-      const fs2 = Math.max(10, Math.round(W * 0.038));
+      /* Ligne 3 : Gratte ici — dominant */
+      const fs2 = Math.max(16, Math.round(W * 0.058));
       ctx.font = `bold ${fs2}px Georgia, serif`;
-      ctx.shadowColor = "rgba(255,255,255,0.7)"; ctx.shadowBlur = 3;
-      ctx.fillStyle = "rgba(40,32,24,0.6)";
-      ctx.fillText("Gratte ici  ▼", cx, cy + 26);
+      ctx.shadowColor = "rgba(255,255,255,0.9)"; ctx.shadowBlur = 4;
+      ctx.fillStyle = "rgba(30,22,14,0.72)";
+      ctx.letterSpacing = "0.05em";
+      ctx.fillText("GRATTE ICI ▼", cx, cy + 38);
       ctx.shadowBlur = 0;
     });
   }, []);
@@ -154,7 +159,7 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
     ctx.save();
     ctx.globalCompositeOperation = "destination-out";
     ctx.beginPath();
-    ctx.arc(x, y, 26 * dpr, 0, Math.PI * 2);
+    ctx.arc(x, y, 12 * dpr, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
@@ -200,7 +205,7 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
 
         {/* ── Colonne WEDDING verticale ── */}
         <div style={{
-          width: "44px", flexShrink: 0,
+          width: "58px", flexShrink: 0,
           background: COLOR,
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center",
@@ -221,27 +226,28 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
           </svg>
 
           {/* Étoile haut */}
-          <span style={{ position:"absolute", top:"14px", color:GOLD, fontSize:"11px", zIndex:1 }}>✦</span>
+          <span style={{ position:"absolute", top:"14px", color:GOLD, fontSize:"14px", zIndex:1 }}>✦</span>
 
           {/* WEDDING vertical bas → haut */}
           <div style={{
             writingMode: "vertical-rl",
             transform: "rotate(180deg)",
-            fontSize: "clamp(17px, 3.2vw, 22px)",
+            fontSize: "clamp(22px, 4.2vw, 30px)",
             fontWeight: 700,
-            letterSpacing: "0.14em",
+            letterSpacing: "0.18em",
             color: BG,
-            textShadow: "0 1px 0 rgba(0,0,0,0.35), 0 -1px 0 rgba(255,255,255,0.07)",
+            textShadow: `-1px -1px 0 ${GOLD}, 1px -1px 0 ${GOLD}, -1px 1px 0 ${GOLD}, 1px 1px 0 ${GOLD}, 0 3px 8px rgba(0,0,0,0.5)`,
             position: "relative", zIndex: 1,
           }}>
             WEDDING
           </div>
 
           {/* Étoile bas */}
-          <span style={{ position:"absolute", bottom:"14px", color:GOLD, fontSize:"11px", zIndex:1 }}>✦</span>
+          <span style={{ position:"absolute", bottom:"14px", color:GOLD, fontSize:"14px", zIndex:1 }}>✦</span>
 
-          {/* Filet doré sur le bord droit */}
-          <div style={{ position:"absolute", right:0, top:0, bottom:0, width:"2px", background:`linear-gradient(to bottom, transparent, ${GOLD}, transparent)`, opacity:0.5 }} />
+          {/* Double filet doré sur le bord droit */}
+          <div style={{ position:"absolute", right:"3px", top:0, bottom:0, width:"1px", background:`linear-gradient(to bottom, transparent, ${GOLD}, transparent)`, opacity:0.6 }} />
+          <div style={{ position:"absolute", right:"6px", top:0, bottom:0, width:"1px", background:`linear-gradient(to bottom, transparent, ${GOLD}, transparent)`, opacity:0.25 }} />
         </div>
 
         {/* ── Contenu principal ── */}
@@ -272,15 +278,23 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
 
             <div style={{ position:"relative" }}>
               <div style={{
-                fontSize: "clamp(9px, 1.7vw, 12px)", fontWeight: 500,
-                letterSpacing: "0.22em", color: BG, textTransform: "uppercase",
+                fontSize: "clamp(6px, 1vw, 8px)", letterSpacing: "0.32em",
+                color: `rgba(201,168,76,0.7)`, textTransform: "uppercase",
+                marginBottom: "5px",
+              }}>
+                Jeu de grattage
+              </div>
+              <div style={{
+                fontSize: "clamp(13px, 2.4vw, 18px)", fontWeight: 700,
+                letterSpacing: "0.18em", color: BG, textTransform: "uppercase",
                 lineHeight: 1,
+                textShadow: "0 1px 3px rgba(0,0,0,0.4)",
               }}>
                 Ananda &amp; Matthieu
               </div>
               <div style={{
-                fontSize: "clamp(6px, 1vw, 8px)", letterSpacing: "0.2em",
-                color: "rgba(243,236,220,0.4)", textTransform: "uppercase",
+                fontSize: "clamp(6px, 1vw, 8px)", letterSpacing: "0.22em",
+                color: "rgba(243,236,220,0.38)", textTransform: "uppercase",
                 marginTop: "5px",
               }}>
                 Tonnara di Scopello · Sicile
