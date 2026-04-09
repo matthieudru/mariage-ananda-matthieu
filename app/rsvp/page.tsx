@@ -216,7 +216,7 @@ export default function RSVP() {
                     padding: "20px 24px",
                     cursor: "pointer",
                     fontFamily: "'FT Aktual', Georgia, serif",
-                    transition: "all 0.2s ease-out",
+                    transition: "all 0.08s ease-out",
                     WebkitTapHighlightColor: "transparent",
                     userSelect: "none",
                     textAlign: "center",
@@ -245,7 +245,7 @@ export default function RSVP() {
                 background: form.absent ? COLOR : "transparent",
                 color: form.absent ? BG : COLOR,
                 fontFamily: "'FT Aktual', Georgia, serif",
-                cursor: "pointer", transition: "all 0.2s ease-out",
+                cursor: "pointer", transition: "all 0.08s ease-out",
                 WebkitTapHighlightColor: "transparent" as unknown as string,
                 userSelect: "none" as const, textAlign: "center" as const,
               }}
@@ -281,7 +281,7 @@ export default function RSVP() {
                     fontSize: "clamp(16px, 1.6vw, 20px)",
                     fontWeight: 500,
                     cursor: "pointer",
-                    transition: "all 0.2s ease-out",
+                    transition: "all 0.08s ease-out",
                     WebkitTapHighlightColor: "transparent",
                     userSelect: "none",
                   }}
@@ -336,7 +336,7 @@ export default function RSVP() {
                         borderRight: idx === 0 ? "none" : `1.5px solid ${active ? COLOR : "rgba(36,59,113,0.25)"}`,
                         background: active ? COLOR : "transparent", color: active ? BG : COLOR,
                         fontFamily: "'FT Aktual', Georgia, serif", fontSize: "11px", letterSpacing: "0.1em", fontWeight: 400,
-                        cursor: "pointer", transition: "all 0.2s ease-out",
+                        cursor: "pointer", transition: "all 0.08s ease-out",
                         WebkitTapHighlightColor: "transparent", userSelect: "none",
                       }}>
                         <input type="radio" id={`enfant-${i}-${label}`} name={`enfant-${i}`} checked={active}
