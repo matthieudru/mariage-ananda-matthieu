@@ -108,7 +108,7 @@ function ProgrammePanel({
 }
 
 /* ── Ligne hôtel ── */
-type Hotel = { nom: string; detail: string; booking?: string; email: string; url: string; photo: string };
+type Hotel = { nom: string; detail: string; booking?: string; email: string; url: string; photo: string; prix?: string };
 
 function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
   const [hovered, setHovered] = useState(false);
@@ -148,17 +148,22 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
           transition: "opacity 0.55s cubic-bezier(0,0,0.2,1)",
         }} />
         <div className="hotel-row-inner" style={{ position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", alignItems: "center", width: "100%" }}>
-          <p style={{ fontSize: "clamp(15px, 1.8vw, 22px)", fontWeight: 500, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
-            {hotel.nom}
-          </p>
           <div>
-            <p style={{ fontSize: "clamp(12px, 1vw, 15px)", opacity: hovered ? 0.75 : 0.55, lineHeight: 1.5, fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s, opacity 0.4s" }}>
+            <p style={{ fontSize: "clamp(16px, 1.9vw, 24px)", fontWeight: 500, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
+              {hotel.nom}
+            </p>
+            {hotel.prix && <p style={{ fontSize: "12px", opacity: hovered ? 0.7 : 0.45, marginTop: "4px", fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s", letterSpacing: "0.03em" }}>
+              Environ {hotel.prix} · 10 oct.
+            </p>}
+          </div>
+          <div>
+            <p style={{ fontSize: "clamp(13px, 1.1vw, 16px)", opacity: hovered ? 0.75 : 0.55, lineHeight: 1.5, fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s, opacity 0.4s" }}>
               {hotel.detail}
             </p>
-            {hotel.booking && <p style={{ fontSize: "11px", opacity: hovered ? 0.7 : 0.45, marginTop: "4px", fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s", lineHeight: 1.5 }}>
+            {hotel.booking && <p style={{ fontSize: "12px", opacity: hovered ? 0.7 : 0.45, marginTop: "4px", fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s", lineHeight: 1.5 }}>
               {hotel.booking}
             </p>}
-            {hotel.email && <p style={{ fontSize: "11px", opacity: 0.5, marginTop: "4px", fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
+            {hotel.email && <p style={{ fontSize: "12px", opacity: 0.5, marginTop: "4px", fontWeight: 400, color: hovered ? BG : COLOR, transition: "color 0.4s" }}>
               {hotel.email}
             </p>}
           </div>
@@ -169,10 +174,10 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
 }
 
 const HOTELS: Hotel[] = [
-  { nom: "Baglio di Scopello", detail: "Centre du village de Scopello, 5 min de la Tonnara.", booking: "Réservez en direct en mentionnant notre mariage pour 5% de remise.", email: "info@hotelbagliodiscopello.it", url: "https://www.hotelbagliodiscopello.com/", photo: "https://www.hotelbagliodiscopello.com/img/about-1.jpg" },
-  { nom: "Baglio dello Zingaro", detail: "À proximité du lieu du mariage.", booking: "Réservez en direct en mentionnant notre mariage pour un prix fixe.", email: "info@bagliodellozingaro.it", url: "https://www.bagliodellozingaro.it/", photo: "/zingaro.jpg" },
-  { nom: "La Tavernetta", detail: "Centre du village de Scopello, 5 min de la Tonnara.", email: "info@albertolatavernetta.it", url: "https://www.albergolatavernetta.it/it/", photo: "/la-tavernetta.jpg" },
-  { nom: "Tenute Plaia", detail: "Sur la route de Scopello, 4 min de la Tonnara.", booking: "Réservez sur leur site avec le code ANDMTE26 pour 12% de remise. Indiquez nos prénoms dans les demandes spéciales.", email: "info@agriturismotenuteplaia.it", url: "https://www.agriturismotenuteplaia.it/", photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg" },
+  { nom: "Baglio di Scopello", detail: "Centre du village de Scopello, 5 min de la Tonnara.", booking: "Réservez en direct (pas via Booking) en mentionnant notre mariage pour 5% de remise.", email: "info@hotelbagliodiscopello.it", url: "https://www.hotelbagliodiscopello.com/", photo: "https://www.hotelbagliodiscopello.com/img/about-1.jpg", prix: "180€/nuit" },
+  { nom: "Baglio dello Zingaro", detail: "À proximité du lieu du mariage.", booking: "Réservez en direct (pas via Booking) en mentionnant notre mariage pour un prix fixe.", email: "info@bagliodellozingaro.it", url: "https://www.bagliodellozingaro.it/", photo: "/zingaro.jpg", prix: "140€/nuit" },
+  { nom: "La Tavernetta", detail: "Centre du village de Scopello, 5 min de la Tonnara.", email: "info@albertolatavernetta.it", url: "https://www.albergolatavernetta.it/it/", photo: "/la-tavernetta.jpg", prix: "75€/nuit" },
+  { nom: "Tenute Plaia", detail: "Sur la route de Scopello, 4 min de la Tonnara.", booking: "Réservez sur leur site avec le code ANDMTE26 pour 12% de remise. Indiquez nos prénoms dans les demandes spéciales.", email: "info@agriturismotenuteplaia.it", url: "https://www.agriturismotenuteplaia.it/", photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg", prix: "110€/nuit" },
 ];
 
 const MAISONS = [
