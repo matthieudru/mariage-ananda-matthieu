@@ -12,15 +12,15 @@ const BG    = "#f3ecdc";
 const GAME_W   = 500;
 const GAME_H   = 195;
 const SEA_Y    = 150;
-const SUN_R    = 48;               // → 96px diamètre
-const SUN_X    = 85;
-const GROUND_Y = SEA_Y - SUN_R * 2; // 54
+const SUN_R    = 44;               // rayon → 88px de diamètre
+const SUN_X    = 80;
+const GROUND_Y = SEA_Y - SUN_R * 2; // 62
 
-const JUMP_V   = -580;
+const JUMP_V   = -560;
 const GRAVITY  = 1800;
 const BASE_SPD = 200;
 
-const RATIO_MONTAGNE = 1514 / 819;
+const RATIO_MONTAGNE = 1514 / 819; // ratio naturel des images
 const RATIO_VAGUE    = 1514 / 819;
 
 /* ─────────────────────────────────────────
@@ -41,163 +41,181 @@ const makeState = (): GS => ({
   waveOffset: 0, lastTs: 0, dead: false,
 });
 
+/* Chargement fiable d'une image (gère cache + erreurs) */
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise(resolve => {
+    const img = new Image();
+    let done = false;
+    const finish = () => { if (!done) { done = true; resolve(img); } };
+    img.onload  = finish;
+    img.onerror = finish; // résoudre même en cas d'erreur (fallback dessiné)
+    img.src = src;
+    if (img.complete) finish(); // déjà en cache
+  });
+}
+
 /* ─────────────────────────────────────────
    Composant SunGame
-   Les images sont de vrais <img> DOM cachés
-   → le navigateur les gère, plus fiable sur iOS
 ───────────────────────────────────────── */
 function SunGame({ onClose }: { onClose: () => void }) {
-  const canvasRef    = useRef<HTMLCanvasElement>(null);
-  const stateRef     = useRef<GS>(makeState());
-  const rafRef       = useRef<number>(0);
+  const canvasRef  = useRef<HTMLCanvasElement>(null);
+  const stateRef   = useRef<GS>(makeState());
+  const rafRef     = useRef<number>(0);
 
-  // Refs vers de vrais éléments <img> dans le DOM (voir render)
-  const refSun       = useRef<HTMLImageElement>(null);
-  const refMontagne  = useRef<HTMLImageElement>(null);
-  const refVague     = useRef<HTMLImageElement>(null);
-
+  const [loading,   setLoading]   = useState(true);
   const [dispScore, setDispScore] = useState(0);
   const [dispDead,  setDispDead]  = useState(false);
 
-  /* ── Boucle de jeu (monte une seule fois) ── */
+  /* ── Pré-chargement de toutes les images AVANT de lancer la boucle ── */
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    let cancelled = false;
 
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width  = GAME_W * dpr;
-    canvas.height = GAME_H * dpr;
-    const ctx = canvas.getContext("2d")!;
-    ctx.scale(dpr, dpr);
+    Promise.all([
+      loadImage("/anim-sun.jpg"),   // 5 KB  — soleil
+      loadImage("/montagne.png"),   // 214 KB — obstacles
+      loadImage("/vague.png"),      // 245 KB — mer
+    ]).then(([imgSun, imgMont, imgVague]) => {
+      if (cancelled) return;
 
-    /* helper : est-ce qu'une image est prête ? */
-    const ready = (img: HTMLImageElement | null): img is HTMLImageElement =>
-      img !== null && img.complete && img.naturalWidth > 0;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-    /* Spawn obstacle */
-    const spawnRock = (s: GS) => {
-      const lvl   = Math.floor(s.score / 15);
-      const baseH = 28 + lvl * 7;
-      const h     = Math.min(baseH + Math.random() * 18, 62);
-      const w     = h * RATIO_MONTAGNE * (0.55 + Math.random() * 0.5);
-      s.rocks.push({ x: GAME_W + 20, w, h });
-    };
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width  = GAME_W * dpr;
+      canvas.height = GAME_H * dpr;
+      const ctx = canvas.getContext("2d")!;
+      ctx.scale(dpr, dpr);
 
-    /* Dessin */
-    const draw = (s: GS) => {
-      ctx.clearRect(0, 0, GAME_W, GAME_H);
+      /* ── Spawn obstacle ── */
+      const spawnRock = (s: GS) => {
+        const lvl   = Math.floor(s.score / 15);
+        const baseH = 28 + lvl * 7;
+        const h     = Math.min(baseH + Math.random() * 20, 60);
+        const w     = h * RATIO_MONTAGNE * (0.55 + Math.random() * 0.5);
+        s.rocks.push({ x: GAME_W + 20, w, h });
+      };
 
-      /* Ciel */
-      const sky = ctx.createLinearGradient(0, 0, 0, SEA_Y);
-      sky.addColorStop(0, "#d9cfbc");
-      sky.addColorStop(1, "#f3ecdc");
-      ctx.fillStyle = sky;
-      ctx.fillRect(0, 0, GAME_W, SEA_Y);
+      /* ── Dessin ── */
+      const draw = (s: GS) => {
+        ctx.clearRect(0, 0, GAME_W, GAME_H);
 
-      /* ── Montagnes / obstacles ── */
-      for (const rock of s.rocks) {
-        if (ready(refMontagne.current)) {
-          ctx.drawImage(refMontagne.current, rock.x, SEA_Y - rock.h, rock.w, rock.h);
-        } else {
-          /* Silhouette de secours */
-          ctx.fillStyle = "rgba(36,59,113,0.28)";
-          ctx.beginPath();
-          ctx.moveTo(rock.x, SEA_Y);
-          ctx.lineTo(rock.x + rock.w * 0.5, SEA_Y - rock.h);
-          ctx.lineTo(rock.x + rock.w, SEA_Y);
-          ctx.fill();
-        }
-      }
+        /* Ciel */
+        const sky = ctx.createLinearGradient(0, 0, 0, SEA_Y);
+        sky.addColorStop(0, "#d9cfbc");
+        sky.addColorStop(1, "#f3ecdc");
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, GAME_W, SEA_Y);
 
-      /* ── Mer / vagues ── */
-      const seaH = GAME_H - SEA_Y + 4;
-      if (ready(refVague.current)) {
-        const tileW  = seaH * RATIO_VAGUE;
-        const offset = s.waveOffset % tileW;
-        const count  = Math.ceil(GAME_W / tileW) + 2;
-        for (let i = 0; i < count; i++) {
-          ctx.drawImage(refVague.current, i * tileW - offset, SEA_Y - 1, tileW, seaH + 2);
-        }
-      } else {
-        ctx.fillStyle = "rgba(36,59,113,0.22)";
-        ctx.fillRect(0, SEA_Y, GAME_W, seaH);
-      }
-
-      /* ── Soleil ── */
-      const diam = SUN_R * 2;
-      if (ready(refSun.current)) {
-        /* Dessin simple — pas de clip cercle, image rectangulaire */
-        const iw = refSun.current.naturalWidth;
-        const ih = refSun.current.naturalHeight;
-        // Fit dans le carré diam×diam en gardant le ratio
-        const scale = Math.min(diam / iw, diam / ih);
-        const sw = iw * scale;
-        const sh = ih * scale;
-        ctx.drawImage(
-          refSun.current,
-          SUN_X - sw / 2,
-          s.sunY + SUN_R - sh / 2,
-          sw, sh
-        );
-      } else {
-        ctx.beginPath();
-        ctx.arc(SUN_X, s.sunY + SUN_R, SUN_R, 0, Math.PI * 2);
-        ctx.fillStyle = "#d9943a";
-        ctx.fill();
-      }
-    };
-
-    /* ── Boucle principale ── */
-    const loop = (ts: number) => {
-      const s = stateRef.current;
-
-      if (s.lastTs === 0) s.lastTs = ts;
-      const dt = Math.min((ts - s.lastTs) / 1000, 0.05);
-      s.lastTs = ts;
-
-      if (!s.dead) {
-        s.vy         += GRAVITY * dt;
-        s.sunY       += s.vy * dt;
-        if (s.sunY >= GROUND_Y) { s.sunY = GROUND_Y; s.vy = 0; }
-        if (s.sunY  < 0)        { s.sunY = 0;         s.vy = 0; }
-
-        s.waveOffset += 60 * dt;
-
-        s.scoreAccum += dt;
-        if (s.scoreAccum >= 1) {
-          s.score      += Math.floor(s.scoreAccum);
-          s.scoreAccum %= 1;
-          setDispScore(s.score);
-        }
-
-        s.speed = BASE_SPD + s.score * 7;
-
-        s.spawnAccum += dt;
-        const interval = Math.max(1.1, 2.5 - s.score * 0.06);
-        if (s.spawnAccum >= interval) { s.spawnAccum = 0; spawnRock(s); }
-
-        s.rocks.forEach(r => { r.x -= s.speed * dt; });
-        s.rocks = s.rocks.filter(r => r.x + r.w > -10);
-
-        /* Collision */
-        const pad    = 10;
-        const sunL   = SUN_X - SUN_R + pad;
-        const sunRe  = SUN_X + SUN_R - pad;
-        const sunBot = s.sunY + SUN_R * 2 - pad;
+        /* ── Montagnes (image ou triangle fallback) ── */
         for (const rock of s.rocks) {
-          if (sunRe <= rock.x + 4 || sunL >= rock.x + rock.w - 4) continue;
-          if (sunBot > SEA_Y - rock.h * 0.85) {
-            s.dead = true; setDispDead(true); setDispScore(s.score); break;
+          if (imgMont.naturalWidth > 0) {
+            ctx.drawImage(imgMont, rock.x, SEA_Y - rock.h, rock.w, rock.h);
+          } else {
+            ctx.fillStyle = "rgba(36,59,113,0.3)";
+            ctx.beginPath();
+            ctx.moveTo(rock.x, SEA_Y);
+            ctx.lineTo(rock.x + rock.w * 0.5, SEA_Y - rock.h);
+            ctx.lineTo(rock.x + rock.w, SEA_Y);
+            ctx.fill();
           }
         }
-      }
 
-      draw(s);
+        /* ── Vagues (image tuilée ou rectangle fallback) ── */
+        const seaH = GAME_H - SEA_Y + 4;
+        if (imgVague.naturalWidth > 0) {
+          const tileW  = seaH * RATIO_VAGUE;
+          const offset = s.waveOffset % tileW;
+          const count  = Math.ceil(GAME_W / tileW) + 2;
+          for (let i = 0; i < count; i++) {
+            ctx.drawImage(imgVague, i * tileW - offset, SEA_Y - 1, tileW, seaH + 2);
+          }
+        } else {
+          ctx.fillStyle = "rgba(36,59,113,0.22)";
+          ctx.fillRect(0, SEA_Y, GAME_W, seaH);
+        }
+
+        /* ── Soleil ──
+           anim-sun.jpg est un JPEG (fond blanc).
+           On utilise globalCompositeOperation='multiply' :
+           blanc × fond = fond (le blanc disparaît),
+           les couleurs du soleil restent visibles.  */
+        if (imgSun.naturalWidth > 0) {
+          const diam = SUN_R * 2;
+          const scale = Math.min(diam / imgSun.naturalWidth, diam / imgSun.naturalHeight);
+          const sw = imgSun.naturalWidth  * scale;
+          const sh = imgSun.naturalHeight * scale;
+          const ox = SUN_X - sw / 2;
+          const oy = s.sunY + SUN_R - sh / 2;
+
+          ctx.save();
+          ctx.globalCompositeOperation = "multiply";
+          ctx.drawImage(imgSun, ox, oy, sw, sh);
+          ctx.restore();
+        } else {
+          ctx.beginPath();
+          ctx.arc(SUN_X, s.sunY + SUN_R, SUN_R, 0, Math.PI * 2);
+          ctx.fillStyle = "#d9943a";
+          ctx.fill();
+        }
+      };
+
+      /* ── Boucle principale (delta time) ── */
+      const loop = (ts: number) => {
+        const s = stateRef.current;
+
+        if (s.lastTs === 0) s.lastTs = ts;
+        const dt = Math.min((ts - s.lastTs) / 1000, 0.05);
+        s.lastTs = ts;
+
+        if (!s.dead) {
+          s.vy         += GRAVITY * dt;
+          s.sunY       += s.vy * dt;
+          if (s.sunY >= GROUND_Y) { s.sunY = GROUND_Y; s.vy = 0; }
+          if (s.sunY  < 0)        { s.sunY = 0;         s.vy = 0; }
+
+          s.waveOffset += 60 * dt;
+
+          s.scoreAccum += dt;
+          if (s.scoreAccum >= 1) {
+            s.score      += Math.floor(s.scoreAccum);
+            s.scoreAccum %= 1;
+            setDispScore(s.score);
+          }
+
+          s.speed = BASE_SPD + s.score * 7;
+
+          s.spawnAccum += dt;
+          const interval = Math.max(1.1, 2.5 - s.score * 0.06);
+          if (s.spawnAccum >= interval) { s.spawnAccum = 0; spawnRock(s); }
+
+          s.rocks.forEach(r => { r.x -= s.speed * dt; });
+          s.rocks = s.rocks.filter(r => r.x + r.w > -10);
+
+          /* Collision */
+          const pad    = 10;
+          const sunL   = SUN_X - SUN_R + pad;
+          const sunRe  = SUN_X + SUN_R - pad;
+          const sunBot = s.sunY + SUN_R * 2 - pad;
+          for (const rock of s.rocks) {
+            if (sunRe <= rock.x + 4 || sunL >= rock.x + rock.w - 4) continue;
+            if (sunBot > SEA_Y - rock.h * 0.85) {
+              s.dead = true; setDispDead(true); setDispScore(s.score); break;
+            }
+          }
+        }
+
+        draw(s);
+        rafRef.current = requestAnimationFrame(loop);
+      };
+
+      setLoading(false);
       rafRef.current = requestAnimationFrame(loop);
-    };
+    });
 
-    rafRef.current = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   /* ── Saut / Restart ── */
@@ -222,17 +240,6 @@ function SunGame({ onClose }: { onClose: () => void }) {
 
   return (
     <div style={{ textAlign: "center", userSelect: "none", marginBottom: "40px" }}>
-      {/*
-        Images cachées dans le DOM — le navigateur les charge normalement.
-        On les lit depuis le canvas via refSun / refMontagne / refVague.
-      */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img ref={refSun}      src="/anim-sun.jpg"  alt="" style={{ display: "none" }} />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img ref={refMontagne} src="/montagne.png"  alt="" style={{ display: "none" }} />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img ref={refVague}    src="/vague.png"     alt="" style={{ display: "none" }} />
-
       <div
         onClick={jump}
         onTouchStart={(e) => { e.preventDefault(); jump(); }}
@@ -240,26 +247,41 @@ function SunGame({ onClose }: { onClose: () => void }) {
           display: "inline-block", cursor: "pointer",
           touchAction: "none", overflow: "hidden",
           border: `1px solid rgba(36,59,113,0.12)`,
+          width: "min(500px, 90vw)",
         }}
       >
-        <canvas
-          ref={canvasRef}
-          style={{
-            display: "block",
-            width: "min(500px, 90vw)",
+        {loading ? (
+          <div style={{
             aspectRatio: `${GAME_W} / ${GAME_H}`,
-          }}
-        />
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "#f3ecdc", width: "100%",
+          }}>
+            <p style={{ fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.35, fontFamily: "'FT Aktual', Georgia, serif" }}>
+              Chargement…
+            </p>
+          </div>
+        ) : (
+          <canvas
+            ref={canvasRef}
+            style={{
+              display: "block", width: "100%",
+              aspectRatio: `${GAME_W} / ${GAME_H}`,
+            }}
+          />
+        )}
       </div>
 
-      <p style={{
-        fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase",
-        opacity: 0.35, marginTop: "8px", fontFamily: "'FT Aktual', Georgia, serif",
-      }}>
-        {dispDead
-          ? `Score : ${dispScore} — Tap pour rejouer`
-          : `Score : ${dispScore} — Espace ou tap pour sauter`}
-      </p>
+      {!loading && (
+        <p style={{
+          fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase",
+          opacity: 0.35, marginTop: "8px", fontFamily: "'FT Aktual', Georgia, serif",
+        }}>
+          {dispDead
+            ? `Score : ${dispScore} — Tap pour rejouer`
+            : `Score : ${dispScore} — Espace ou tap pour sauter`}
+        </p>
+      )}
+
       <button
         onClick={onClose}
         style={{
