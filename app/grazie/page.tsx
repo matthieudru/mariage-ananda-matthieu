@@ -248,26 +248,25 @@ function SunGame({ onClose }: { onClose: () => void }) {
           touchAction: "none", overflow: "hidden",
           border: `1px solid rgba(36,59,113,0.12)`,
           width: "min(500px, 90vw)",
+          position: "relative",
         }}
       >
-        {loading ? (
+        {/* Canvas toujours dans le DOM pour que canvasRef soit valide */}
+        <canvas
+          ref={canvasRef}
+          style={{ display: "block", width: "100%", aspectRatio: `${GAME_W} / ${GAME_H}` }}
+        />
+        {/* Overlay loading par-dessus */}
+        {loading && (
           <div style={{
-            aspectRatio: `${GAME_W} / ${GAME_H}`,
+            position: "absolute", inset: 0,
             display: "flex", alignItems: "center", justifyContent: "center",
-            background: "#f3ecdc", width: "100%",
+            background: BG,
           }}>
             <p style={{ fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.35, fontFamily: "'FT Aktual', Georgia, serif" }}>
               Chargement…
             </p>
           </div>
-        ) : (
-          <canvas
-            ref={canvasRef}
-            style={{
-              display: "block", width: "100%",
-              aspectRatio: `${GAME_W} / ${GAME_H}`,
-            }}
-          />
         )}
       </div>
 
