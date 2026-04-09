@@ -323,35 +323,31 @@ export default function RSVP() {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    setStatus("loading");
-    try {
-      const ps = form.personnes;
-      const params = new URLSearchParams({
-        date: new Date().toLocaleString("fr-FR"),
-        prenom1: ps[0]?.prenom ?? "", nom1: ps[0]?.nom ?? "", email1: ps[0]?.email ?? "", allergie1: ps[0]?.allergies ?? "",
-        absent:     form.absent ? "Oui" : "Non",
-        opening:    !form.absent && form.jours.includes("vendredi") ? "Oui" : "Non",
-        wedding:    !form.absent && form.jours.includes("samedi")   ? "Oui" : "Non",
-        afterparty: !form.absent && form.jours.includes("dimanche") ? "Oui" : "Non",
-        nb_personnes: String(ps.length),
-        prenom2: ps[1]?.prenom ?? "", nom2: ps[1]?.nom ?? "", enfant2: ps[1] ? (ps[1].enfant ? "Enfant" : "Adulte") : "", email2: ps[1]?.email ?? "", allergie2: ps[1]?.allergies ?? "",
-        prenom3: ps[2]?.prenom ?? "", nom3: ps[2]?.nom ?? "", enfant3: ps[2] ? (ps[2].enfant ? "Enfant" : "Adulte") : "", email3: ps[2]?.email ?? "", allergie3: ps[2]?.allergies ?? "",
-        prenom4: ps[3]?.prenom ?? "", nom4: ps[3]?.nom ?? "", enfant4: ps[3] ? (ps[3].enfant ? "Enfant" : "Adulte") : "", email4: ps[3]?.email ?? "", allergie4: ps[3]?.allergies ?? "",
-        message: form.message,
-      });
-      await fetch(SHEET_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params.toString(),
-      });
-      setStatus("success");
-    } catch {
-      setStatus("error");
-    }
+    const ps = form.personnes;
+    const params = new URLSearchParams({
+      date: new Date().toLocaleString("fr-FR"),
+      prenom1: ps[0]?.prenom ?? "", nom1: ps[0]?.nom ?? "", email1: ps[0]?.email ?? "", allergie1: ps[0]?.allergies ?? "",
+      absent:     form.absent ? "Oui" : "Non",
+      opening:    !form.absent && form.jours.includes("vendredi") ? "Oui" : "Non",
+      wedding:    !form.absent && form.jours.includes("samedi")   ? "Oui" : "Non",
+      afterparty: !form.absent && form.jours.includes("dimanche") ? "Oui" : "Non",
+      nb_personnes: String(ps.length),
+      prenom2: ps[1]?.prenom ?? "", nom2: ps[1]?.nom ?? "", enfant2: ps[1] ? (ps[1].enfant ? "Enfant" : "Adulte") : "", email2: ps[1]?.email ?? "", allergie2: ps[1]?.allergies ?? "",
+      prenom3: ps[2]?.prenom ?? "", nom3: ps[2]?.nom ?? "", enfant3: ps[2] ? (ps[2].enfant ? "Enfant" : "Adulte") : "", email3: ps[2]?.email ?? "", allergie3: ps[2]?.allergies ?? "",
+      prenom4: ps[3]?.prenom ?? "", nom4: ps[3]?.nom ?? "", enfant4: ps[3] ? (ps[3].enfant ? "Enfant" : "Adulte") : "", email4: ps[3]?.email ?? "", allergie4: ps[3]?.allergies ?? "",
+      message: form.message,
+    });
+    // Fire and forget — no-cors ne permet pas de lire la réponse de toute façon
+    fetch(SHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString(),
+    });
+    setStatus("success");
   };
 
   if (showGrazie || status === "success") {
