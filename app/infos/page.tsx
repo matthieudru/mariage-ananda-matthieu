@@ -197,31 +197,11 @@ const PROGRAMME = [
 
 export default function Infos() {
   const heroRef  = useRef<HTMLElement>(null);
-  const [heroOn, setHeroOn] = useState(true);
-
-  useEffect(() => {
-    const el = heroRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => setHeroOn(entry.isIntersecting),
-      { threshold: 0 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
 
   const HERO_BG = "#6B1A1A";
 
   return (
     <div style={{ background: BG, color: COLOR, fontFamily: "'FT Aktual', Georgia, serif" }}>
-
-      {/* Overlays qui cachent le cadre bleu sur la zone rouge */}
-      {heroOn && <>
-        <div style={{ position:"fixed", left:0,  top:0, bottom:0, width:"11px",  background:HERO_BG, zIndex:10000, pointerEvents:"none" }} />
-        <div style={{ position:"fixed", right:0, top:0, bottom:0, width:"11px",  background:HERO_BG, zIndex:10000, pointerEvents:"none" }} />
-        <div style={{ position:"fixed", top:0,   left:0, right:0, height:"11px", background:HERO_BG, zIndex:10000, pointerEvents:"none" }} />
-        <div style={{ position:"fixed", bottom:0,left:0, right:0, height:"11px", background:HERO_BG, zIndex:10000, pointerEvents:"none" }} />
-      </>}
 
       {/* ── HERO ── */}
       <section ref={heroRef} style={{
@@ -231,6 +211,7 @@ export default function Infos() {
         alignItems: "center",
         padding: "72px 24px 60px",
         position: "relative",
+        zIndex: 10000,
         boxSizing: "border-box",
       }}>
         <div className="hero-title-wrap" style={{ width: "min(688px, 88vw, 80svh)", flexShrink: 0 }}>
