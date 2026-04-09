@@ -503,11 +503,18 @@ export default function Infos() {
         .hotel-row:active > div:last-child { opacity: 1 !important; }
         .hotel-row:active .hotel-row-inner p { color: ${BG} !important; }
 
-        /* ── Tablette + desktop : photo Tonnara centrée verticalement ── */
+        /* ── Tablette + desktop : section Tonnara auto-sizée sur le contenu gauche ── */
         @media (min-width: 641px) {
+          .tonnara-grid {
+            height: auto !important;
+          }
           .tonnara-photo-col {
-            align-self: center !important;
-            height: 80% !important;
+            align-self: stretch !important;
+            height: auto !important;
+          }
+          .tonnara-photo {
+            inset: 5% 0 !important;
+            height: 90% !important;
           }
         }
 
