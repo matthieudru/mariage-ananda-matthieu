@@ -638,10 +638,15 @@ export default function RSVP() {
         @media (max-width: 640px) {
           .rsvp-subtitle { display: none !important; }
           .rsvp-subtitle-mobile { display: block !important; }
-          /* Citrons : milieu entre bord écran et lettre R/P */
-          .rsvp-lemon-left  { margin-right: clamp(4px, 6vw, 16px) !important; }
-          .rsvp-lemon-right { margin-left:  clamp(4px, 6vw, 16px) !important; }
-          /* Boutons jours : garder 2 colonnes comme avant */
+          /* Citrons : plus centrés entre bord écran et RSVP */
+          .rsvp-lemon-left  { margin-right: 24px !important; }
+          .rsvp-lemon-right { margin-left:  24px !important; }
+          /* Boutons jours : Dimanche 11 centré, même taille que les autres */
+          .jours-grid > label:last-child {
+            grid-column: 1 / -1;
+            justify-self: center;
+            width: calc(50% - 6px);
+          }
         }
       `}</style>
     </div>
