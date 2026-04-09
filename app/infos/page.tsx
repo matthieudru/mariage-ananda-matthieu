@@ -302,11 +302,11 @@ export default function Infos() {
               rel="noopener noreferrer"
               style={{ display: "block", textDecoration: "none", border: `1px solid rgba(36,59,113,0.15)`, maxWidth: "75%" }}
             >
-              <div style={{ height: "180px", overflow: "hidden" }}>
+              <div style={{ height: "280px", overflow: "hidden" }}>
                 <iframe
                   src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=13&ie=UTF8&iwloc=B&output=embed"
                   width="100%"
-                  height="230"
+                  height="330"
                   style={{ border: 0, display: "block", filter: "saturate(0.55) brightness(1.08) contrast(0.88)" }}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
@@ -317,7 +317,7 @@ export default function Infos() {
               Tonnara di Scopello — SP16, Contrada Scopello, 91014 Castellammare del Golfo TP, Sicile
             </p>
             <div style={{ borderTop: `1px solid rgba(36,59,113,0.12)`, paddingTop: "16px", marginTop: "4px" }}>
-              <p style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.38, fontWeight: 400, marginBottom: "8px" }}>Cérémonie religieuse</p>
+              <p style={{ fontSize: "13px", letterSpacing: "0.12em", textTransform: "uppercase", opacity: 0.45, fontWeight: 400, marginBottom: "8px" }}>Cérémonie religieuse</p>
               <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, fontWeight: 400, lineHeight: 1.8, marginBottom: "8px" }}>
                 Chiesa di San Giuseppe, Castellammare del Golfo
               </p>
