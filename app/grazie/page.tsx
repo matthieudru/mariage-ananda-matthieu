@@ -81,7 +81,7 @@ function ScratchCard() {
       const by = cy + Math.sin(angle) * ry * (0.8 + Math.random() * 0.5);
       for (let i = 0; i < 18; i++) {
         const a = Math.random() * Math.PI * 2;
-        const spd = 0.5 + Math.random() * 1.8; // plus lent
+        const spd = 0.2 + Math.random() * 0.9; // très lent
         particles.push({ x:bx, y:by, vx:Math.cos(a)*spd, vy:Math.sin(a)*spd,
           alpha:1, color:colors[Math.floor(Math.random()*colors.length)], r:2+Math.random()*3 });
       }
@@ -90,12 +90,12 @@ function ScratchCard() {
     let frame = 0;
     function animate() {
       if (!fw) return;
-      if (frame > 300) { ctx.clearRect(0,0,fw.width,fw.height); return; } // plus long
+      if (frame > 500) { ctx.clearRect(0,0,fw.width,fw.height); return; }
       ctx.clearRect(0,0,fw.width,fw.height);
       for (const p of particles) {
         p.x += p.vx; p.y += p.vy;
-        p.vy += 0.02; // gravité réduite
-        p.alpha -= 0.004; // disparition lente
+        p.vy += 0.008; // gravité très réduite
+        p.alpha -= 0.0018; // disparition très lente
         if (p.alpha <= 0) continue;
         ctx.globalAlpha = p.alpha;
         ctx.fillStyle = p.color;
@@ -288,11 +288,16 @@ function ScratchCard() {
         pointerEvents: "none", width: "100%", height: "100%",
       }} />
 
-      {/* Bravo */}
+      {/* Bravo — fixed, ne déplace rien */}
       {won && (
         <div style={{
-          marginBottom: "16px",
-          fontSize: "clamp(32px, 7vw, 56px)",
+          position: "fixed",
+          top: "10vh",
+          left: 0, right: 0,
+          textAlign: "center",
+          zIndex: 110,
+          pointerEvents: "none",
+          fontSize: "clamp(40px, 8vw, 72px)",
           color: COLOR,
           fontFamily: "'Bungee', sans-serif",
           WebkitTextStroke: "1px rgba(36,59,113,0.3)",
