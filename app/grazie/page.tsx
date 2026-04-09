@@ -107,7 +107,7 @@ function ScratchCard() {
     const zone   = scratchZoneRef.current;
     if (!canvas || !zone) return;
 
-    requestAnimationFrame(() => {
+    const draw = () => {
       const rect = zone.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
 
@@ -117,7 +117,6 @@ function ScratchCard() {
 
       const ctx = canvas.getContext("2d")!;
       ctx.scale(dpr, dpr);
-      // Après ctx.scale(dpr,dpr) toutes les coords sont en px CSS
       const W = rect.width;
       const H = rect.height;
 
@@ -151,12 +150,6 @@ function ScratchCard() {
       }
       ctx.putImageData(imgData, 0, 0);
 
-      /* Cercles concentriques */
-      ctx.strokeStyle = "rgba(60,50,40,0.08)"; ctx.lineWidth = 0.8;
-      for (let r = 20; r < Math.max(W, H) * 0.7; r += 16) {
-        ctx.beginPath(); ctx.arc(W / 2, H / 2, r, 0, Math.PI * 2); ctx.stroke();
-      }
-
       /* Double cadre gravé */
       ctx.strokeStyle = "rgba(60,50,40,0.2)"; ctx.lineWidth = 1.5;
       ctx.strokeRect(6, 6, W - 12, H - 12);
@@ -166,37 +159,47 @@ function ScratchCard() {
       /* ── Textes sur la couche ── */
       ctx.textAlign = "center";
       const cx = W / 2;
-      const sans = `"Helvetica Neue", "Arial", sans-serif`;
+      const bungee = `"Bungee", sans-serif`;
+      const sans   = `"Helvetica Neue", "Arial", sans-serif`;
 
-      /* "10.10" — grand, sans-serif moderne */
+      /* helper Bungee gras : stroke + fill */
+      const drawBungee = (text: string, x: number, y: number, size: number) => {
+        ctx.font = `${size}px ${bungee}`;
+        ctx.shadowColor = "rgba(255,255,255,0.95)"; ctx.shadowBlur = 6;
+        ctx.lineWidth = size * 0.08; ctx.lineJoin = "round";
+        ctx.strokeStyle = "rgba(20,14,8,0.60)";
+        ctx.strokeText(text, x, y);
+        ctx.fillStyle = "rgba(20,14,8,0.60)";
+        ctx.fillText(text, x, y);
+        ctx.shadowBlur = 0;
+      };
+
+      /* "10/10" — Bungee gras */
       const fsBig = Math.max(32, Math.round(W * 0.16));
-      ctx.font = `900 ${fsBig}px ${sans}`;
-      ctx.shadowColor = "rgba(255,255,255,0.95)"; ctx.shadowBlur = 6;
-      ctx.fillStyle = "rgba(20,14,8,0.52)";
-      ctx.fillText("10.10", cx, H * 0.37);
-      ctx.shadowBlur = 0;
+      drawBungee("10/10", cx, H * 0.37, fsBig);
 
-      /* Filet sous 10.10 */
+      /* Filet */
       const lw = W * 0.28;
       ctx.strokeStyle = "rgba(60,50,40,0.18)"; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(cx - lw, H * 0.44); ctx.lineTo(cx + lw, H * 0.44); ctx.stroke();
 
-      /* Règle */
-      const fsRule = Math.max(9, Math.round(W * 0.032));
-      ctx.font = `${fsRule}px ${sans}`;
+      /* Règle — sans 700 tracké caps (option 3) */
+      const fsRule = Math.max(9, Math.round(W * 0.028));
+      ctx.font = `700 ${fsRule}px ${sans}`;
       ctx.shadowColor = "rgba(255,255,255,0.7)"; ctx.shadowBlur = 2;
-      ctx.fillStyle = "rgba(20,14,8,0.44)";
-      ctx.fillText("Trouve 3 photos d'Ananda et Matthieu pour gagner", cx, H * 0.56);
-      ctx.shadowBlur = 0;
+      ctx.fillStyle = "rgba(20,14,8,0.50)";
+      ctx.letterSpacing = "0.10em";
+      ctx.fillText("TROUVE 3 PHOTOS D'ANANDA ET MATTHIEU", cx, H * 0.56);
+      ctx.letterSpacing = "0"; ctx.shadowBlur = 0;
 
-      /* "GRATTE ICI ▼" */
+      /* "GRATTE ICI ▼" — Bungee gras */
       const fsGratte = Math.max(14, Math.round(W * 0.052));
-      ctx.font = `700 ${fsGratte}px ${sans}`;
-      ctx.letterSpacing = "0.08em";
-      ctx.shadowColor = "rgba(255,255,255,0.95)"; ctx.shadowBlur = 5;
-      ctx.fillStyle = "rgba(20,14,8,0.65)";
-      ctx.fillText("GRATTE ICI  ▼", cx, H * 0.78);
-      ctx.shadowBlur = 0;
+      drawBungee("GRATTE ICI  ▼", cx, H * 0.78, fsGratte);
+    };
+
+    // Charger Bungee puis dessiner
+    document.fonts.load(`16px "Bungee"`).then(() => {
+      requestAnimationFrame(draw);
     });
   }, []);
 
@@ -332,6 +335,8 @@ export default function GraziePage() {
   }, []);
 
   return (
+    <>
+    <style>{`@import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');`}</style>
     <div style={{
       background: BG, height: "100vh",
       display: "flex", flexDirection: "column",
@@ -416,5 +421,6 @@ export default function GraziePage() {
         }
       `}</style>
     </div>
+    </>
   );
 }
