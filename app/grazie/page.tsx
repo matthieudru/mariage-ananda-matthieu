@@ -44,11 +44,62 @@ function buildGrid(): Cell[] {
 ───────────────────────────────────────── */
 function ScratchCard() {
   const canvasRef      = useRef<HTMLCanvasElement>(null);
+  const fwCanvasRef    = useRef<HTMLCanvasElement>(null);
   const scratchZoneRef = useRef<HTMLDivElement>(null);
   const isDown         = useRef(false);
   const didReveal      = useRef(false);
   const lastCheck      = useRef(0);
+  const [won, setWon]  = useState(false);
   const [grid]         = useState<Cell[]>(() => buildGrid());
+
+  /* ── Feu d'artifice ── */
+  const launchFireworks = useCallback(() => {
+    const fw = fwCanvasRef.current;
+    if (!fw) return;
+    fw.width  = window.innerWidth;
+    fw.height = window.innerHeight;
+    const ctx = fw.getContext("2d")!;
+
+    type P = { x:number; y:number; vx:number; vy:number; alpha:number; color:string; r:number };
+    const particles: P[] = [];
+    const colors = [GOLD, COLOR, "#c0392b", "#ffffff", "#e8d5a3", "#9b59b6"];
+
+    const card = scratchZoneRef.current?.getBoundingClientRect();
+    const cx = card ? (card.left + card.right) / 2 : window.innerWidth / 2;
+    const cy = card ? (card.top  + card.bottom) / 2 : window.innerHeight / 2;
+    const rx = card ? card.width  / 2 + 20 : 200;
+    const ry = card ? card.height / 2 + 20 : 150;
+
+    for (let burst = 0; burst < 12; burst++) {
+      const angle = (burst / 12) * Math.PI * 2;
+      const bx = cx + Math.cos(angle) * rx * (0.8 + Math.random() * 0.5);
+      const by = cy + Math.sin(angle) * ry * (0.8 + Math.random() * 0.5);
+      for (let i = 0; i < 18; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const spd = 1.2 + Math.random() * 3.5;
+        particles.push({ x:bx, y:by, vx:Math.cos(a)*spd, vy:Math.sin(a)*spd,
+          alpha:1, color:colors[Math.floor(Math.random()*colors.length)], r:2+Math.random()*3 });
+      }
+    }
+
+    let frame = 0;
+    function animate() {
+      if (!fw) return;
+      if (frame > 140) { ctx.clearRect(0,0,fw.width,fw.height); return; }
+      ctx.clearRect(0,0,fw.width,fw.height);
+      for (const p of particles) {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.alpha -= 0.01;
+        if (p.alpha <= 0) continue;
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      frame++;
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }, []);
 
   /* ── Init couche métallique ── */
   useEffect(() => {
@@ -179,12 +230,14 @@ function ScratchCard() {
     for (let i = 3; i < data.length; i += 4) { if (data[i] < 128) t++; }
     if ((t / (canvas.width * canvas.height)) * 100 > 95) {
       didReveal.current = true;
+      setWon(true);
       setTimeout(() => {
         const c2 = canvasRef.current?.getContext("2d");
         if (c2 && canvasRef.current) c2.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        launchFireworks();
       }, 400);
     }
-  }, []);
+  }, [launchFireworks, setWon]);
 
   const onMouseDown  = (e: React.MouseEvent) => { isDown.current = true;  doScratch(e.clientX, e.clientY, 20); };
   const onMouseMove  = (e: React.MouseEvent) => { if (isDown.current) doScratch(e.clientX, e.clientY, 20); };
@@ -195,6 +248,27 @@ function ScratchCard() {
 
   return (
     <div style={{ textAlign: "center", userSelect: "none" }}>
+
+      {/* Canvas feu d'artifice — plein écran fixe, pointer-events none */}
+      <canvas ref={fwCanvasRef} style={{
+        position: "fixed", inset: 0, zIndex: 100,
+        pointerEvents: "none", width: "100%", height: "100%",
+      }} />
+
+      {/* Bravo */}
+      {won && (
+        <div style={{
+          marginBottom: "16px",
+          fontSize: "clamp(28px, 6vw, 48px)",
+          fontWeight: 500,
+          letterSpacing: "-0.02em",
+          color: COLOR,
+          fontFamily: "'FT Aktual', Georgia, serif",
+          animation: "bravoIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both",
+        }}>
+          Bravo ! 🎉
+        </div>
+      )}
 
       {/* ═══ BILLET — juste la zone de grattage ═══ */}
       <div style={{
@@ -336,6 +410,10 @@ export default function GraziePage() {
         .grazie-btn-blue { color: ${COLOR}; border-color: ${COLOR}; }
         .grazie-btn-blue:hover, .grazie-btn-blue:active { background: ${COLOR}; color: ${BG}; }
         @media (max-width: 640px) { .grazie-sun { width: 56px !important; } }
+        @keyframes bravoIn {
+          0%   { opacity: 0; transform: scale(0.5); }
+          100% { opacity: 1; transform: scale(1); }
+        }
       `}</style>
     </div>
   );
