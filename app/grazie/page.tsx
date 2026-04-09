@@ -365,8 +365,8 @@ export default function GraziePage() {
           overflowY: "auto", padding: "20px 20px 24px",
         }}>
           {/* Espace au-dessus de la carte — BRAVO centré dedans */}
-          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
-            {won ? (
+          <div style={{ flex: 2, display: "flex", alignItems: "center", justifyContent: "center", width: "100%", paddingBottom: "clamp(8px, 2vh, 24px)" }}>
+            {won && (
               <div style={{
                 fontSize: "clamp(40px, 8vw, 72px)",
                 color: COLOR,
@@ -376,7 +376,7 @@ export default function GraziePage() {
               }}>
                 BRAVO
               </div>
-            ) : <div />}
+            )}
           </div>
 
           {/* Carte à gratter */}
