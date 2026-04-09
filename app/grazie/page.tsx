@@ -464,19 +464,27 @@ export default function GraziePage() {
       fontFamily: "'FT Aktual', Georgia, serif",
       padding: "60px 24px 48px",
     }}>
+      {/* Overlay jeu — fixe, ne déplace pas la page */}
+      {showGame && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 50,
+          background: "rgba(243,236,220,0.97)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          overflowY: "auto", padding: "20px",
+        }}>
+          <ScratchCard onClose={() => setShowGame(false)} />
+        </div>
+      )}
+
       <div style={{
         flex: 1, display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
       }}>
-        {showGame && <ScratchCard onClose={() => setShowGame(false)} />}
-
-        {!showGame && (
-          <button onClick={() => setShowGame(true)}
-            className="grazie-btn grazie-btn-blue"
-            style={{ marginBottom: "40px" }}>
-            Jouer
-          </button>
-        )}
+        <button onClick={() => setShowGame(true)}
+          className="grazie-btn grazie-btn-blue"
+          style={{ marginBottom: "40px" }}>
+          Jouer
+        </button>
 
         <div style={{ marginBottom: "28px", textAlign: "center", width: "100%" }}>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"16px" }}>

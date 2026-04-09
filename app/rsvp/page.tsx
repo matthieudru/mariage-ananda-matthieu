@@ -415,6 +415,12 @@ export default function RSVP() {
           /* Citrons : collés contre le mot RSVP */
           .rsvp-lemon-left  { width: 19vw !important; margin-right: 0 !important; }
           .rsvp-lemon-right { width: 19vw !important; margin-left:  0 !important; }
+          /* Sous-labels boutons (THE OPENING, THE AFTER PARTY…) : assez petits pour tenir sur une ligne */
+          .jours-grid span + span {
+            font-size: 9px !important;
+            white-space: nowrap !important;
+            letter-spacing: 0.08em !important;
+          }
         }
       `}</style>
     </div>
