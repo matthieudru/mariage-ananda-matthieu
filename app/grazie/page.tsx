@@ -11,29 +11,32 @@ const GOLD  = "#c9a84c";
    Décommenter pour ajouter des amis
 ───────────────────────────────────────── */
 const COUPLE_PHOTO  = "/couple.png";
-const FRIEND_PHOTOS: string[] = [
-  // "/ami1.png",  "/ami2.png",  "/ami3.png",
-  // "/ami4.png",  "/ami5.png",  "/ami6.png",
-  // "/ami7.png",  "/ami8.png",  "/ami9.png",
-  // "/ami10.png", "/ami11.png", "/ami12.png",
-  // "/ami13.png", "/ami14.png", "/ami15.png",
-];
+const AMI1_PHOTO    = "/ami1.png";
+// Ajouter d'autres amis ici : const AMI2_PHOTO = "/ami2.png"; etc.
+
 const COLS         = 6;
 const ROWS         = 3;
 const GRID_SIZE    = COLS * ROWS; // 18
 const COUPLE_COUNT = 3;
 
-type Cell = { src: string | null };
+type Cell = { src: string; rotation: number };
 
 function buildGrid(): Cell[] {
-  const cells: Cell[] = [];
-  for (let i = 0; i < COUPLE_COUNT; i++) cells.push({ src: COUPLE_PHOTO });
-  for (let i = 0; i < GRID_SIZE - COUPLE_COUNT; i++) cells.push({ src: FRIEND_PHOTOS[i] ?? null });
-  for (let i = cells.length - 1; i > 0; i--) {
+  // 3 photos du couple + le reste rempli avec ami1
+  const srcs: string[] = [
+    ...Array(COUPLE_COUNT).fill(COUPLE_PHOTO),
+    ...Array(GRID_SIZE - COUPLE_COUNT).fill(AMI1_PHOTO),
+  ];
+  // Mélange Fisher-Yates
+  for (let i = srcs.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [cells[i], cells[j]] = [cells[j], cells[i]];
+    [srcs[i], srcs[j]] = [srcs[j], srcs[i]];
   }
-  return cells;
+  // Rotation aléatoire ±16° pour chaque photo
+  return srcs.map(src => ({
+    src,
+    rotation: (Math.random() - 0.5) * 32,
+  }));
 }
 
 /* ─────────────────────────────────────────
@@ -350,25 +353,16 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
                   <div key={idx} style={{
                     aspectRatio: "3 / 4", overflow: "hidden",
                     background: BG,
-                    display: "flex", alignItems: "center", justifyContent: "center",
                   }}>
-                    {cell.src ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={cell.src} alt=""
-                        style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
-                      />
-                    ) : (
-                      <div style={{
-                        width:"100%", height:"100%",
-                        background:"rgba(36,59,113,0.05)",
-                        display:"flex", alignItems:"center", justifyContent:"center",
-                      }}>
-                        <svg width="32%" viewBox="0 0 24 24" fill="none">
-                          <circle cx="12" cy="8" r="4" fill="rgba(36,59,113,0.12)" />
-                          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="rgba(36,59,113,0.12)" strokeWidth="1.5" strokeLinecap="round"/>
-                        </svg>
-                      </div>
-                    )}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={cell.src} alt=""
+                      style={{
+                        width: "100%", height: "100%",
+                        objectFit: "cover", display: "block",
+                        transform: `rotate(${cell.rotation}deg) scale(1.3)`,
+                        transformOrigin: "center",
+                      }}
+                    />
                   </div>
                 ))}
               </div>
