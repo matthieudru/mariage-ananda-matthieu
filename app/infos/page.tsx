@@ -283,32 +283,32 @@ export default function Infos() {
 
       {/* ── TONNARA ── */}
       <section style={{ borderBottom: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 40%" }} className="tonnara-grid">
-        {/* Gauche : texte + carte */}
+        {/* Gauche : titre + texte + carte */}
         <div className="section-pad" style={{ paddingTop: "48px", paddingBottom: "48px", borderRight: `1px solid rgba(36,59,113,0.15)`, display: "flex", flexDirection: "column", gap: "28px" }}>
-          <div>
-            <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", textTransform: "uppercase", lineHeight: 1, marginBottom: "20px" }}>Tonnara di Scopello</p>
-            <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
+          <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", textTransform: "uppercase", lineHeight: 1 }}>Tonnara di Scopello</p>
+          {/* Texte + carte à 2/3 du titre, centrés */}
+          <div style={{ maxWidth: "67%", margin: "0 auto", display: "flex", flexDirection: "column", gap: "20px", width: "100%" }}>
+            <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, textAlign: "justify" }}>
               Le mariage aura lieu le 10.10.26 à la Tonnara di Scopello, une ancienne fabrique de thon du XVIII<sup>e</sup> siècle, située au bord de la mer. Elle se situe à 5 minutes du village de Scopello, 20 minutes de Castellammare et une heure de Palerme.
             </p>
+            <a
+              href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: "block", textDecoration: "none", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)` }}
+            >
+              <div style={{ height: "220px", overflow: "hidden", position: "relative" }}>
+                <iframe
+                  src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=13&ie=UTF8&iwloc=B&output=embed"
+                  width="100%"
+                  height="250"
+                  style={{ border: 0, display: "block", filter: "grayscale(1) contrast(1.1) opacity(0.85)", marginBottom: "-30px" }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            </a>
           </div>
-          <a
-            href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: "block", textDecoration: "none", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)`, maxWidth: "380px" }}
-          >
-            {/* Clip the Google Maps bottom bar */}
-            <div style={{ height: "220px", overflow: "hidden", position: "relative" }}>
-              <iframe
-                src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=13&ie=UTF8&iwloc=B&output=embed"
-                width="100%"
-                height="250"
-                style={{ border: 0, display: "block", filter: "grayscale(1) contrast(1.1) opacity(0.85)", marginBottom: "-30px" }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-          </a>
         </div>
         {/* Droite : photo avec marge */}
         <div style={{ padding: "40px 40px 40px 0" }}>
