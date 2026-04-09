@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 const COLOR = "#243b71";
@@ -127,9 +127,8 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
           display: "flex",
           alignItems: "center",
           borderTop: `1px solid rgba(36,59,113,0.15)`,
-          padding: "0 40px",
+          padding: "24px 40px",
           minHeight: "110px",
-          height: "110px",
           textDecoration: "none", color: COLOR,
           position: "relative", overflow: "hidden",
         }}
@@ -197,18 +196,41 @@ const PROGRAMME = [
 ];
 
 export default function Infos() {
+  const heroRef  = useRef<HTMLElement>(null);
+  const [heroOn, setHeroOn] = useState(true);
+
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setHeroOn(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const HERO_BG = "#6B1A1A";
+
   return (
     <div style={{ background: BG, color: COLOR, fontFamily: "'FT Aktual', Georgia, serif" }}>
 
-      {/* ── HERO ── z-index: 10001 le place au-dessus du cadre bleu fixe (9999) */}
-      <section style={{
+      {/* Overlays qui cachent le cadre bleu sur la zone rouge */}
+      {heroOn && <>
+        <div style={{ position:"fixed", left:0,  top:0, bottom:0, width:"11px",  background:HERO_BG, zIndex:10000, pointerEvents:"none" }} />
+        <div style={{ position:"fixed", right:0, top:0, bottom:0, width:"11px",  background:HERO_BG, zIndex:10000, pointerEvents:"none" }} />
+        <div style={{ position:"fixed", top:0,   left:0, right:0, height:"11px", background:HERO_BG, zIndex:10000, pointerEvents:"none" }} />
+        <div style={{ position:"fixed", bottom:0,left:0, right:0, height:"11px", background:HERO_BG, zIndex:10000, pointerEvents:"none" }} />
+      </>}
+
+      {/* ── HERO ── */}
+      <section ref={heroRef} style={{
         height: "100svh",
-        background: "#6B1A1A",
+        background: HERO_BG,
         display: "flex", flexDirection: "column",
         alignItems: "center",
         padding: "72px 24px 60px",
         position: "relative",
-        zIndex: 10001,
         boxSizing: "border-box",
       }}>
         <div className="hero-title-wrap" style={{ width: "min(688px, 88vw, 80svh)", flexShrink: 0 }}>
@@ -388,7 +410,7 @@ export default function Infos() {
 
 
       {/* ── RSVP + WEDDING LIST CTA ── */}
-      <section style={{ padding: "80px 24px 100px", textAlign: "center", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: "20px", flexWrap: "wrap" }}>
+      <section style={{ padding: "80px 24px 80px", textAlign: "center", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: "20px", flexWrap: "wrap" }}>
         <Reveal>
           <Link href="/rsvp" className="cta-rsvp">RSVP</Link>
         </Reveal>
@@ -534,7 +556,7 @@ export default function Infos() {
           }
 
           /* Hotel : une colonne */
-          .hotel-row { padding: 0 20px !important; height: 160px !important; min-height: 160px !important; }
+          .hotel-row { padding: 20px !important; min-height: 0 !important; }
           .hotel-row-inner {
             grid-template-columns: 1fr !important;
             gap: 8px !important;
