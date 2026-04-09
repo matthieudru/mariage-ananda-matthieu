@@ -138,10 +138,10 @@ export default function TestTonnara() {
         </div>
       </section>
 
-      {/* ── 7 : Texte + carte empilés dans col étroite (1/3 largeur option 3), photo grande ── */}
+      {/* ── 7 : Texte + carte empilés à gauche (1/2), photo portrait 1/2 à droite ── */}
       <section style={{ borderTop: border, marginTop: "64px" }}>
-        <Label n={7} desc="Texte puis carte empilés dans 1/3 gauche (même largeur que col texte prop 3), photo 2/3 droite" />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", borderTop: border, minHeight: 420 }}>
+        <Label n={7} desc="Texte + carte empilés (même largeur que col texte prop 3), photo portrait même largeur à droite" />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderTop: border, minHeight: 420 }}>
           <div style={{ padding: `40px ${pad}`, borderRight: border, display: "flex", flexDirection: "column", gap: "24px", justifyContent: "center" }}>
             <Title /><Desc />
             <MapEmbed h={180} />
