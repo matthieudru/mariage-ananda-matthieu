@@ -311,7 +311,7 @@ export default function Infos() {
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
-              <div style={{ position: "absolute", top: "10px", left: "10px", background: "rgba(243,236,220,1)", padding: "4px 8px" }}>
+              <div style={{ position: "absolute", top: "10px", left: "10px", background: "rgba(243,236,220,1)", padding: "8px 14px" }}>
                 <span style={{ fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: COLOR, fontWeight: 400 }}>Ouvrir dans Maps →</span>
               </div>
             </a>

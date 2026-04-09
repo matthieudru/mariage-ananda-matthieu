@@ -213,13 +213,13 @@ export default function RSVP() {
                 </label>
               );
             })}
-            {/* Bouton absent — 4e cellule, se place à droite de Dimanche 11 */}
+            {/* Bouton absent — même style exact que les labels de jours */}
             <button
               type="button"
               onClick={toggleAbsent}
               style={{
-                display: "flex", alignItems: "center", justifyContent: "center",
-                padding: "20px 12px",
+                display: "block",
+                padding: "20px 24px",
                 border: `1.5px solid ${form.absent ? COLOR : "rgba(36,59,113,0.25)"}`,
                 background: form.absent ? COLOR : "transparent",
                 color: form.absent ? BG : COLOR,
@@ -229,7 +229,8 @@ export default function RSVP() {
                 userSelect: "none" as const, textAlign: "center" as const,
               }}
             >
-              <span style={{ fontSize: "clamp(11px, 1.3vw, 13px)", fontWeight: 400, letterSpacing: "0.18em", textTransform: "uppercase", whiteSpace: "nowrap" }}>Absent du mariage</span>
+              <span style={{ display: "block", fontSize: "clamp(16px, 1.8vw, 20px)", fontWeight: 500, marginBottom: "4px", letterSpacing: "-0.01em" }}>Absent</span>
+              <span style={{ display: "block", fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", opacity: form.absent ? 0.6 : 0.4 }}>du mariage</span>
             </button>
           </div>
           {errors.jours && <p style={errorStyle}>{errors.jours}</p>}
