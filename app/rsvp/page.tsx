@@ -35,9 +35,11 @@ export default function RSVP() {
     absent: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [alreadyDone, setAlreadyDone] = useState(false);
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("grazie") === "1") router.replace("/grazie");
+    if (localStorage.getItem("rsvp_submitted") === "1") setAlreadyDone(true);
   }, [router]);
 
   const setNbPersonnes = (n: number) => {
@@ -105,6 +107,7 @@ export default function RSVP() {
     if (!sent) {
       fetch(SHEET_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: params.toString() });
     }
+    localStorage.setItem("rsvp_submitted", "1");
     const prenom = ps[0]?.prenom?.trim() || "";
     router.push(`/grazie${prenom ? `?prenom=${encodeURIComponent(prenom)}` : ""}`);
   };
@@ -127,8 +130,26 @@ export default function RSVP() {
         </Link>
       </nav>
 
+      {/* Déjà inscrit */}
+      {alreadyDone && (
+        <div style={{ maxWidth: "720px", margin: "80px auto", padding: "0 40px", textAlign: "center" }}>
+          <p style={{ fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 500, color: COLOR, marginBottom: "16px", letterSpacing: "-0.01em" }}>
+            Votre RSVP a déjà été envoyé.
+          </p>
+          <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.55, lineHeight: 1.7, marginBottom: "40px" }}>
+            Nous avons bien reçu votre réponse. Si vous souhaitez modifier votre inscription, contactez-nous directement.
+          </p>
+          <button
+            onClick={() => { localStorage.removeItem("rsvp_submitted"); setAlreadyDone(false); }}
+            style={{ fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", color: COLOR, opacity: 0.4, background: "none", border: "none", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}
+          >
+            Renvoyer quand même
+          </button>
+        </div>
+      )}
+
       {/* Hero */}
-      <section style={{ padding: "60px 40px 48px", borderBottom: `1px solid rgba(36,59,113,0.15)`, textAlign: "center" }}>
+      {!alreadyDone && <section style={{ padding: "60px 40px 48px", borderBottom: `1px solid rgba(36,59,113,0.15)`, textAlign: "center" }}>
         <div style={{ display: "inline-block", position: "relative" }}>
           {/* Images positionnées en dehors du flux pour ne pas affecter la largeur */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -145,10 +166,10 @@ export default function RSVP() {
             10.10.26<br />Tonnara di Scopello
           </p>
         </div>
-      </section>
+      </section>}
 
       {/* Formulaire */}
-      <form onSubmit={handleSubmit} style={{ maxWidth: "720px", margin: "0 auto", padding: "64px 40px 120px" }}>
+      {!alreadyDone && <form onSubmit={handleSubmit} style={{ maxWidth: "720px", margin: "0 auto", padding: "64px 40px 120px" }}>
 
         {/* Personne 0 : Prénom / Nom / Email / Allergies */}
         {(() => { const p = form.personnes[0]; return (
@@ -396,7 +417,7 @@ export default function RSVP() {
         >
           {form.absent ? "Confirmer mon absence" : "Confirmer ma présence"}
         </button>
-      </form>
+      </form>}
 
       {/* Footer */}
       <footer style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, padding: "28px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", opacity: 0.35, marginBottom: "11px" }}>
