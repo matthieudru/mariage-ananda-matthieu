@@ -9,7 +9,7 @@ const BG = "#f3ecdc";
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbyPWyZHvxo3l6bQGfmeUY5MvkbO1_y9nnEPTdf-6r-JJuzWdt8d1Q_nowH4t0mCW6uQ/exec";
 
 /* ── Mini jeu Soleil ── */
-const SUN_R = 18;
+const SUN_R = 26;
 const SUN_X = 70;
 const JUMP_V = -11;
 const GRAVITY = 0.65;
