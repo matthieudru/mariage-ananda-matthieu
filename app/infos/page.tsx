@@ -295,14 +295,14 @@ export default function Infos() {
               href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: "block", textDecoration: "none", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)` }}
+              style={{ display: "block", textDecoration: "none", border: `1px solid rgba(36,59,113,0.15)`, maxWidth: "75%" }}
             >
-              <div style={{ height: "220px", overflow: "hidden", position: "relative" }}>
+              <div style={{ height: "180px", overflow: "hidden" }}>
                 <iframe
                   src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=13&ie=UTF8&iwloc=B&output=embed"
                   width="100%"
-                  height="280"
-                  style={{ border: 0, display: "block", marginTop: "-30px" }}
+                  height="230"
+                  style={{ border: 0, display: "block" }}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
