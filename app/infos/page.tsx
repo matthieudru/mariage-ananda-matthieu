@@ -503,8 +503,8 @@ export default function Infos() {
         .hotel-row:active > div:last-child { opacity: 1 !important; }
         .hotel-row:active .hotel-row-inner p { color: ${BG} !important; }
 
-        /* ── Tablette (iPad, etc.) ── */
-        @media (min-width: 641px) and (max-width: 1100px) {
+        /* ── Tablette + desktop : photo Tonnara centrée verticalement ── */
+        @media (min-width: 641px) {
           .tonnara-photo-col {
             align-self: center !important;
             height: 80% !important;
