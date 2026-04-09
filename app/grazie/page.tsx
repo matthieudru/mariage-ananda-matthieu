@@ -42,11 +42,11 @@ function buildGrid(): Cell[] {
 /* ─────────────────────────────────────────
    Jeu de grattage
 ───────────────────────────────────────── */
-function ScratchCard({ onClose }: { onClose: () => void }) {
+function ScratchCard() {
   const canvasRef      = useRef<HTMLCanvasElement>(null);
   const scratchZoneRef = useRef<HTMLDivElement>(null);
   const isDown         = useRef(false);
-  const wonRef         = useRef(false);
+  const didReveal      = useRef(false);
   const lastCheck      = useRef(0);
   const [grid]         = useState<Cell[]>(() => buildGrid());
 
@@ -115,35 +115,36 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
       /* ── Textes sur la couche ── */
       ctx.textAlign = "center";
       const cx = W / 2;
+      const sans = `"Helvetica Neue", "Arial", sans-serif`;
 
-      /* "10.10" très grand */
-      const fsBig = Math.max(28, Math.round(W * 0.14));
-      ctx.font = `bold ${fsBig}px Georgia, serif`;
-      ctx.shadowColor = "rgba(255,255,255,0.9)"; ctx.shadowBlur = 5;
-      ctx.fillStyle = "rgba(30,22,14,0.55)";
-      ctx.fillText("10.10", cx, H * 0.38);
+      /* "10.10" — grand, sans-serif moderne */
+      const fsBig = Math.max(32, Math.round(W * 0.16));
+      ctx.font = `900 ${fsBig}px ${sans}`;
+      ctx.shadowColor = "rgba(255,255,255,0.95)"; ctx.shadowBlur = 6;
+      ctx.fillStyle = "rgba(20,14,8,0.52)";
+      ctx.fillText("10.10", cx, H * 0.37);
       ctx.shadowBlur = 0;
 
       /* Filet sous 10.10 */
-      const lw = W * 0.3;
-      ctx.strokeStyle = "rgba(60,50,40,0.2)"; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(cx - lw, H * 0.46); ctx.lineTo(cx + lw, H * 0.46); ctx.stroke();
+      const lw = W * 0.28;
+      ctx.strokeStyle = "rgba(60,50,40,0.18)"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx - lw, H * 0.44); ctx.lineTo(cx + lw, H * 0.44); ctx.stroke();
 
       /* Règle */
-      const fsRule = Math.max(9, Math.round(W * 0.034));
-      ctx.font = `italic ${fsRule}px Georgia, serif`;
+      const fsRule = Math.max(9, Math.round(W * 0.032));
+      ctx.font = `${fsRule}px ${sans}`;
       ctx.shadowColor = "rgba(255,255,255,0.7)"; ctx.shadowBlur = 2;
-      ctx.fillStyle = "rgba(30,22,14,0.5)";
-      ctx.fillText("Trouve 3 photos d'Ananda et Matthieu", cx, H * 0.57);
-      ctx.fillText("pour gagner · Tous les jeux sont gagnants", cx, H * 0.57 + fsRule * 1.4);
+      ctx.fillStyle = "rgba(20,14,8,0.44)";
+      ctx.fillText("Trouve 3 photos d'Ananda et Matthieu pour gagner", cx, H * 0.56);
       ctx.shadowBlur = 0;
 
       /* "GRATTE ICI ▼" */
-      const fsGratte = Math.max(13, Math.round(W * 0.048));
-      ctx.font = `bold ${fsGratte}px Georgia, serif`;
-      ctx.shadowColor = "rgba(255,255,255,0.9)"; ctx.shadowBlur = 4;
-      ctx.fillStyle = "rgba(30,22,14,0.68)";
-      ctx.fillText("GRATTE ICI  ▼", cx, H * 0.82);
+      const fsGratte = Math.max(14, Math.round(W * 0.052));
+      ctx.font = `700 ${fsGratte}px ${sans}`;
+      ctx.letterSpacing = "0.08em";
+      ctx.shadowColor = "rgba(255,255,255,0.95)"; ctx.shadowBlur = 5;
+      ctx.fillStyle = "rgba(20,14,8,0.65)";
+      ctx.fillText("GRATTE ICI  ▼", cx, H * 0.78);
       ctx.shadowBlur = 0;
     });
   }, []);
@@ -154,7 +155,7 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
      Le rayon est en px CSS : 20 (mouse) / 28 (touch). */
   const doScratch = useCallback((clientX: number, clientY: number, radius: number) => {
     const canvas = canvasRef.current;
-    if (!canvas || wonRef.current) return;
+    if (!canvas) return;
     const ctx  = canvas.getContext("2d")!;
     const rect = canvas.getBoundingClientRect();
 
@@ -169,14 +170,15 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
     ctx.fill();
     ctx.restore();
 
+    if (didReveal.current) return;
     const now = Date.now();
     if (now - lastCheck.current < 200) return;
     lastCheck.current = now;
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
     let t = 0;
     for (let i = 3; i < data.length; i += 4) { if (data[i] < 128) t++; }
-    if ((t / (canvas.width * canvas.height)) * 100 > 45) {
-      wonRef.current = true;
+    if ((t / (canvas.width * canvas.height)) * 100 > 95) {
+      didReveal.current = true;
       setTimeout(() => {
         const c2 = canvasRef.current?.getContext("2d");
         if (c2 && canvasRef.current) c2.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
@@ -239,14 +241,6 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
       </div>
       {/* ═══ FIN BILLET ═══ */}
 
-      <button onClick={onClose} style={{
-        marginTop: "16px", background: "none", border: "none",
-        fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase",
-        opacity: 0.3, cursor: "pointer",
-        fontFamily: "'FT Aktual', Georgia, serif", color: COLOR,
-      }}>
-        Fermer ×
-      </button>
     </div>
   );
 }
@@ -265,38 +259,43 @@ export default function GraziePage() {
 
   return (
     <div style={{
-      background: BG, minHeight: "100vh",
+      background: BG, height: "100vh",
       display: "flex", flexDirection: "column",
       alignItems: "center", justifyContent: "space-between",
       fontFamily: "'FT Aktual', Georgia, serif",
-      padding: "60px 24px 48px",
+      padding: "48px 24px 24px",
+      overflow: "hidden",
     }}>
       {/* Overlay jeu — fixe, ne déplace pas la page */}
       {showGame && (
         <div style={{
           position: "fixed", inset: 0, zIndex: 50,
-          background: "rgba(243,236,220,0.97)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          overflowY: "auto", padding: "20px",
+          background: BG,
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          overflowY: "auto", padding: "20px", gap: "16px",
         }}>
-          <ScratchCard onClose={() => setShowGame(false)} />
+          <ScratchCard />
+          <button onClick={() => setShowGame(false)} className="grazie-btn grazie-btn-blue" style={{ marginTop: "8px" }}>
+            Fermer
+          </button>
+          <a href="https://www.ungrandjour.com/fr/ananda-matthieu" target="_blank" rel="noopener noreferrer" className="grazie-btn grazie-btn-red">
+            Liste de mariage
+          </a>
         </div>
       )}
 
       <div style={{
         flex: 1, display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
+        alignItems: "center", justifyContent: "center", gap: "32px",
       }}>
-        <button onClick={() => setShowGame(true)}
-          className="grazie-btn grazie-btn-blue"
-          style={{ marginBottom: "40px" }}>
+        <button onClick={() => setShowGame(true)} className="grazie-btn grazie-btn-blue">
           Jouer
         </button>
 
-        <div style={{ marginBottom: "28px", textAlign: "center", width: "100%" }}>
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"16px" }}>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"12px" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Sun.png" alt="" className="grazie-sun" style={{ width:"clamp(48px,9vw,120px)", height:"auto", flexShrink:0 }} />
+            <img src="/Sun.png" alt="" className="grazie-sun" style={{ width:"clamp(64px,11vw,140px)", height:"auto", flexShrink:0 }} />
             <div style={{ textAlign:"center" }}>
               <p style={{ fontSize:"clamp(48px,9vw,110px)", fontWeight:500, letterSpacing:"-0.03em", lineHeight:0.95, color:COLOR }}>Grazie</p>
               {prenom && (
@@ -304,7 +303,7 @@ export default function GraziePage() {
               )}
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Sun.png" alt="" className="grazie-sun" style={{ width:"clamp(48px,9vw,120px)", height:"auto", flexShrink:0 }} />
+            <img src="/Sun.png" alt="" className="grazie-sun" style={{ width:"clamp(64px,11vw,140px)", height:"auto", flexShrink:0 }} />
           </div>
         </div>
 
@@ -314,7 +313,7 @@ export default function GraziePage() {
       </div>
 
       <Link href="/" style={{
-        marginTop:"48px", fontSize:"11px", letterSpacing:"0.2em",
+        fontSize:"11px", letterSpacing:"0.2em",
         textTransform:"uppercase", opacity:0.38, color:COLOR,
         textDecoration:"none", fontFamily:"'FT Aktual', Georgia, serif",
       }}>
@@ -336,7 +335,7 @@ export default function GraziePage() {
         .grazie-btn-red:hover,  .grazie-btn-red:active  { background: #6B1A1A; color: ${BG}; }
         .grazie-btn-blue { color: ${COLOR}; border-color: ${COLOR}; }
         .grazie-btn-blue:hover, .grazie-btn-blue:active { background: ${COLOR}; color: ${BG}; }
-        @media (max-width: 640px) { .grazie-sun { width: 40px !important; } }
+        @media (max-width: 640px) { .grazie-sun { width: 56px !important; } }
       `}</style>
     </div>
   );
