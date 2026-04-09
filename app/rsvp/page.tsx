@@ -251,6 +251,7 @@ function GraziePage({ prenom }: { prenom: string }) {
 }
 
 export default function RSVP() {
+  const [showGrazie, setShowGrazie] = useState(false);
   const [form, setForm] = useState<FormData>({
     jours: [],
     personnes: [personneVide()],
@@ -258,6 +259,10 @@ export default function RSVP() {
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("grazie") === "1") setShowGrazie(true);
+  }, []);
 
   const setNbPersonnes = (n: number) => {
     setForm(f => {
@@ -327,11 +332,9 @@ export default function RSVP() {
     }
   };
 
-  if (status === "success") {
+  if (showGrazie || status === "success") {
     const prenom = form.personnes[0]?.prenom?.trim() || "";
-    return (
-      <GraziePage prenom={prenom} />
-    );
+    return <GraziePage prenom={prenom} />;
   }
 
   return (
