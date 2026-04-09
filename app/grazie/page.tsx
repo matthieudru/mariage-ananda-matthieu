@@ -362,11 +362,10 @@ export default function GraziePage() {
           position: "fixed", inset: 0, zIndex: 50,
           background: BG,
           display: "flex", flexDirection: "column", alignItems: "center",
-          justifyContent: "center",
           overflowY: "auto", padding: "20px 20px 24px",
         }}>
-          {/* Slot BRAVO au-dessus de la carte — hauteur fixe */}
-          <div style={{ width: "100%", display: "flex", alignItems: "flex-end", justifyContent: "center", minHeight: "clamp(80px, 18vh, 140px)", paddingBottom: "24px" }}>
+          {/* Espace au-dessus de la carte : flex:1 → BRAVO centré entre le haut de page et le haut de la carte */}
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
             {won && (
               <div style={{
                 fontSize: "clamp(40px, 8vw, 72px)",
@@ -380,11 +379,11 @@ export default function GraziePage() {
             )}
           </div>
 
-          {/* Carte à gratter — centrée */}
+          {/* Carte à gratter */}
           <ScratchCard onWin={() => setWon(true)} />
 
-          {/* Boutons en dessous */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", width: "100%", paddingTop: "20px" }}>
+          {/* Boutons en dessous : flex:1 → espace symétrique */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", gap: "12px", width: "100%", paddingTop: "20px" }}>
             <button onClick={() => { setShowGame(false); setWon(false); }} className="grazie-btn grazie-btn-blue">
               Fermer
             </button>
