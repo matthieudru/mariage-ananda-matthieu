@@ -292,7 +292,7 @@ export default function Infos() {
         <div className="section-pad" style={{ paddingTop: "36px", paddingBottom: "48px", borderRight: `1px solid rgba(36,59,113,0.15)`, display: "flex", flexDirection: "column", gap: "28px" }}>
           <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", textTransform: "uppercase", lineHeight: 1 }}>Tonnara di Scopello</p>
           {/* Texte + carte à 2/3 du titre, centrés */}
-          <div style={{ maxWidth: "60%", display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div className="tonnara-content" style={{ maxWidth: "60%", display: "flex", flexDirection: "column", gap: "20px" }}>
             <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, textAlign: "justify" }}>
               Le mariage aura lieu le 10.10.26 à la Tonnara di Scopello, une ancienne fabrique de thon du XVIII<sup>e</sup> siècle, située au bord de la mer. Elle se situe à 5 minutes du village de Scopello, 20 minutes de Castellammare et une heure de Palerme.
             </p>
@@ -300,6 +300,7 @@ export default function Infos() {
               href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
               target="_blank"
               rel="noopener noreferrer"
+              className="tonnara-map"
               style={{ display: "block", textDecoration: "none", border: `1px solid rgba(36,59,113,0.15)`, maxWidth: "67%", position: "relative" }}
             >
               <div style={{ position: "relative", width: "100%", paddingBottom: "100%", overflow: "hidden" }}>
@@ -334,7 +335,7 @@ export default function Infos() {
           </div>
         </div>
         {/* Droite : photo pleine hauteur */}
-        <div style={{ position: "relative", overflow: "hidden", height: "100%" }}>
+        <div className="tonnara-photo-col" style={{ position: "relative", overflow: "hidden", height: "100%" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/tonnaradiscoppelo.jpg"
@@ -450,6 +451,7 @@ export default function Infos() {
           font-weight: 400;
           letter-spacing: 0.22em;
           text-transform: uppercase;
+          white-space: nowrap;
           border: 1px solid rgba(243,236,220,0.4);
           padding: 9px 22px;
           min-height: 40px;
@@ -545,12 +547,23 @@ export default function Infos() {
             max-height: 260px !important;
           }
 
-          /* Tonnara mobile */
+          /* Tonnara mobile — pleine largeur, layout vertical */
           .tonnara-grid {
             grid-template-columns: 1fr !important;
+            height: auto !important;
           }
-          .tonnara-grid img {
-            min-height: 260px !important;
+          .tonnara-grid > div:first-child {
+            border-right: none !important;
+          }
+          .tonnara-content {
+            max-width: 100% !important;
+          }
+          .tonnara-map {
+            max-width: 100% !important;
+          }
+          .tonnara-photo-col {
+            height: 65vw !important;
+            min-height: 240px !important;
           }
 
           /* Venir mobile */

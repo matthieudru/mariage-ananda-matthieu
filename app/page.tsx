@@ -121,13 +121,21 @@ export default function Home() {
           color: ${BG};
         }
 
-        .nav-left  { left:  calc(50% - min(44vw, 32vh) - 72px); }
-        .nav-right { right: calc(50% - min(44vw, 32vh) - 72px); }
+        /* Boutons de part et d'autre de l'image, jamais hors écran */
+        .nav-left  { left:  max(16px, calc(50% - min(44vw, 32vh) - 80px)); }
+        .nav-right { right: max(16px, calc(50% - min(44vw, 32vh) - 80px)); }
 
         @media (max-width: 640px) {
           .nav-btn { top: calc(50% + 60px); }
           .nav-left  { left: 16px; }
           .nav-right { right: 16px; }
+        }
+
+        /* Tablette portrait (iPad) : boutons collés aux bords */
+        @media (min-width: 641px) and (max-width: 1024px) {
+          .nav-btn { top: 50%; transform: translateY(-50%); }
+          .nav-left  { left: 20px; }
+          .nav-right { right: 20px; }
         }
       `}</style>
     </div>
