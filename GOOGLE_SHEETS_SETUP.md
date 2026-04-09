@@ -4,7 +4,7 @@
 - Va sur sheets.google.com → Nouveau
 - Nomme-le "RSVP Ananda & Matthieu"
 - En ligne 1, mets ces colonnes :
-  `Date | Prénom | Nom | Email | Jours | Nb personnes | Allergies | Message`
+  `ok `
 
 ## 2. Crée le Google Apps Script
 - Dans le Sheet : Extensions → Apps Script
