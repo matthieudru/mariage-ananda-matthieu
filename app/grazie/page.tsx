@@ -366,7 +366,7 @@ export default function GraziePage() {
           overflowY: "auto", padding: "20px 20px 24px",
         }}>
           {/* Slot BRAVO au-dessus de la carte — hauteur fixe */}
-          <div style={{ width: "100%", display: "flex", alignItems: "flex-end", justifyContent: "center", minHeight: "clamp(52px, 10vh, 88px)", paddingBottom: "16px" }}>
+          <div style={{ width: "100%", display: "flex", alignItems: "flex-end", justifyContent: "center", minHeight: "clamp(80px, 18vh, 140px)", paddingBottom: "24px" }}>
             {won && (
               <div style={{
                 fontSize: "clamp(40px, 8vw, 72px)",
