@@ -9,40 +9,37 @@ const BG = "#f3ecdc";
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbyPWyZHvxo3l6bQGfmeUY5MvkbO1_y9nnEPTdf-6r-JJuzWdt8d1Q_nowH4t0mCW6uQ/exec";
 
 /* ── Mini jeu Soleil ── */
-const GROUND = 80;
-const SUN_SIZE = 48;
-const JUMP_V = -14;
-const GRAVITY = 0.7;
-const GAME_W = 480;
-const GAME_H = 120;
+const SUN_SIZE = 52;
+const JUMP_V = -15;
+const GRAVITY = 0.75;
+const GAME_W = 500;
+const GAME_H = 130;
+const GROUND_Y = GAME_H - 1;
 
-function SunGame() {
-  const [started, setStarted] = useState(false);
+function SunGame({ onClose }: { onClose: () => void }) {
   const [dead, setDead] = useState(false);
   const [score, setScore] = useState(0);
-  const stateRef = useRef({ y: GROUND, vy: 0, obstacles: [] as {x:number,w:number,h:number}[], frame: 0, speed: 4, score: 0, dead: false });
+  const stateRef = useRef({ sunY: GROUND_Y - SUN_SIZE, vy: 0, obstacles: [] as {x:number,w:number,h:number}[], frame: 0, speed: 4.5, score: 0, dead: false });
   const rafRef = useRef<number>(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const sunImg = useRef<HTMLImageElement | null>(null);
+  const faviconImg = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
     const img = new Image();
-    img.src = "/Sun.png";
-    sunImg.current = img;
+    img.src = "/favicon.png";
+    faviconImg.current = img;
   }, []);
 
   const jump = useCallback(() => {
     const s = stateRef.current;
-    if (!started) { setStarted(true); return; }
     if (s.dead) { restart(); return; }
-    if (s.y >= GROUND) s.vy = JUMP_V;
-  }, [started]);
+    if (s.sunY >= GROUND_Y - SUN_SIZE - 2) s.vy = JUMP_V;
+  }, []);
 
   const restart = () => {
-    stateRef.current = { y: GROUND, vy: 0, obstacles: [], frame: 0, speed: 4, score: 0, dead: false };
+    stateRef.current = { sunY: GROUND_Y - SUN_SIZE, vy: 0, obstacles: [], frame: 0, speed: 4.5, score: 0, dead: false };
     setDead(false);
     setScore(0);
-    setStarted(true);
   };
 
   useEffect(() => {
@@ -52,75 +49,102 @@ function SunGame() {
   }, [jump]);
 
   useEffect(() => {
-    if (!started || dead) return;
     const s = stateRef.current;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
 
     const loop = () => {
+      if (s.dead) return;
       s.frame++;
       s.score++;
-      s.speed = 4 + Math.floor(s.score / 300) * 0.5;
+      s.speed = 4.5 + Math.floor(s.score / 200) * 0.4;
 
       // Physics
       s.vy += GRAVITY;
-      s.y -= s.vy;
-      if (s.y >= GROUND) { s.y = GROUND; s.vy = 0; }
+      s.sunY += s.vy;
+      if (s.sunY >= GROUND_Y - SUN_SIZE) { s.sunY = GROUND_Y - SUN_SIZE; s.vy = 0; }
 
-      // Obstacles
-      if (s.frame % Math.max(60, 100 - Math.floor(s.score / 200) * 5) === 0) {
-        const h = 20 + Math.random() * 24;
-        s.obstacles.push({ x: GAME_W, w: 16 + Math.random() * 12, h });
+      // Spawn obstacles
+      const interval = Math.max(55, 90 - Math.floor(s.score / 150) * 5);
+      if (s.frame % interval === 0) {
+        const h = 22 + Math.random() * 28;
+        s.obstacles.push({ x: GAME_W + 10, w: 14 + Math.random() * 10, h });
       }
-      s.obstacles = s.obstacles.filter(o => o.x > -40);
+      s.obstacles = s.obstacles.filter(o => o.x > -50);
       s.obstacles.forEach(o => o.x -= s.speed);
 
       // Collision
-      const sunX = 60, sunY = GAME_H - s.y - SUN_SIZE;
+      const sx = 64, sy = s.sunY;
+      const pad = 8;
       for (const o of s.obstacles) {
-        if (sunX + SUN_SIZE - 8 > o.x + 4 && sunX + 8 < o.x + o.w && sunY + SUN_SIZE - 8 > GAME_H - o.h) {
+        if (sx + SUN_SIZE - pad > o.x + pad && sx + pad < o.x + o.w - pad && sy + SUN_SIZE - pad > GROUND_Y - o.h) {
           s.dead = true;
           setDead(true);
           setScore(s.score);
+          cancelAnimationFrame(rafRef.current);
+          // Draw dead state
+          ctx.clearRect(0, 0, GAME_W, GAME_H);
+          drawScene(ctx, s);
           return;
         }
       }
 
-      // Draw
       ctx.clearRect(0, 0, GAME_W, GAME_H);
-      // Ground line
-      ctx.strokeStyle = "rgba(36,59,113,0.2)";
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(0, GAME_H - 1); ctx.lineTo(GAME_W, GAME_H - 1); ctx.stroke();
-      // Obstacles (small rocks)
-      ctx.fillStyle = "rgba(36,59,113,0.35)";
-      s.obstacles.forEach(o => { ctx.fillRect(o.x, GAME_H - o.h, o.w, o.h); });
-      // Sun
-      if (sunImg.current?.complete) {
-        ctx.drawImage(sunImg.current, sunX, GAME_H - s.y - SUN_SIZE, SUN_SIZE, SUN_SIZE);
-      }
-
+      drawScene(ctx, s);
       setScore(s.score);
       rafRef.current = requestAnimationFrame(loop);
     };
 
+    const drawScene = (ctx: CanvasRenderingContext2D, s: typeof stateRef.current) => {
+      // Ground
+      ctx.strokeStyle = `rgba(36,59,113,0.25)`;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(0, GROUND_Y); ctx.lineTo(GAME_W, GROUND_Y); ctx.stroke();
+      // Obstacles
+      ctx.fillStyle = `rgba(36,59,113,0.4)`;
+      s.obstacles.forEach(o => {
+        ctx.beginPath();
+        ctx.roundRect(o.x, GROUND_Y - o.h, o.w, o.h, 3);
+        ctx.fill();
+      });
+      // Favicon as runner
+      const img = faviconImg.current;
+      if (img && img.complete && img.naturalWidth > 0) {
+        ctx.drawImage(img, 64, s.sunY, SUN_SIZE, SUN_SIZE);
+      } else {
+        // Fallback circle
+        ctx.fillStyle = `rgba(36,59,113,0.6)`;
+        ctx.beginPath();
+        ctx.arc(64 + SUN_SIZE / 2, s.sunY + SUN_SIZE / 2, SUN_SIZE / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    };
+
     rafRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [started, dead]);
+  }, [dead]);
 
   return (
-    <div style={{ marginBottom: "32px", textAlign: "center", userSelect: "none" }}
-      onClick={jump} onTouchStart={(e) => { e.preventDefault(); jump(); }}>
-      <canvas
-        ref={canvasRef}
-        width={GAME_W}
-        height={GAME_H}
-        style={{ display: "block", margin: "0 auto", maxWidth: "100%", cursor: "pointer", touchAction: "none" }}
-      />
-      <p style={{ fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", opacity: 0.35, marginTop: "10px", fontFamily: "'FT Aktual', Georgia, serif" }}>
-        {!started ? "Appuie pour jouer" : dead ? `Score : ${Math.floor(score / 10)} — Appuie pour rejouer` : `Score : ${Math.floor(score / 10)}`}
+    <div style={{ textAlign: "center", userSelect: "none", marginBottom: "32px" }}>
+      <div
+        onClick={jump}
+        onTouchStart={(e) => { e.preventDefault(); jump(); }}
+        style={{ display: "inline-block", cursor: "pointer", touchAction: "none" }}
+      >
+        <canvas
+          ref={canvasRef}
+          width={GAME_W}
+          height={GAME_H}
+          style={{ display: "block", maxWidth: "min(500px, 90vw)", height: "auto", border: `1px solid rgba(36,59,113,0.12)` }}
+        />
+      </div>
+      <p style={{ fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", opacity: 0.35, marginTop: "8px", fontFamily: "'FT Aktual', Georgia, serif" }}>
+        {dead ? `Score : ${Math.floor(score / 10)} — Appuie pour rejouer` : `Score : ${Math.floor(score / 10)} — Espace ou tap pour sauter`}
       </p>
+      <button onClick={onClose} style={{ marginTop: "12px", background: "none", border: "none", fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", opacity: 0.35, cursor: "pointer", fontFamily: "'FT Aktual', Georgia, serif", color: "#243b71" }}>
+        Fermer ×
+      </button>
     </div>
   );
 }
@@ -140,6 +164,65 @@ type FormData = {
   personnes: Personne[];
   message: string;
 };
+
+function GraziePage({ prenom }: { prenom: string }) {
+  const [showGame, setShowGame] = useState(false);
+  return (
+    <div style={{ background: BG, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", fontFamily: "'FT Aktual', Georgia, serif", padding: "60px 24px 48px" }}>
+
+      {/* Centre */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0" }}>
+
+        {/* Jeu */}
+        {showGame && <SunGame onClose={() => setShowGame(false)} />}
+
+        {/* Bouton Jouer */}
+        {!showGame && (
+          <button onClick={() => setShowGame(true)} className="grazie-btn grazie-btn-blue" style={{ marginBottom: "40px" }}>
+            Jouer
+          </button>
+        )}
+
+        {/* Grazie avec soleils */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginBottom: "28px" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/Sun.png" alt="" style={{ width: "clamp(64px, 9vw, 120px)", height: "auto" }} />
+          <p style={{ fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.9, color: COLOR }}>
+            Grazie{prenom ? ` ${prenom}` : ""}
+          </p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/Sun.png" alt="" style={{ width: "clamp(64px, 9vw, 120px)", height: "auto" }} />
+        </div>
+
+        {/* Liste de mariage */}
+        <a href="https://www.ungrandjour.com/fr/ananda-matthieu" target="_blank" rel="noopener noreferrer" className="grazie-btn grazie-btn-red">
+          Liste de mariage
+        </a>
+      </div>
+
+      {/* Retour accueil en bas */}
+      <Link href="/" className="grazie-btn grazie-btn-blue" style={{ marginTop: "40px" }}>
+        ← Retour à l'accueil
+      </Link>
+
+      <style>{`
+        .grazie-btn {
+          display: inline-flex; align-items: center; justify-content: center;
+          text-decoration: none; font-family: 'FT Aktual', Georgia, serif;
+          font-size: clamp(12px, 1.3vw, 15px); font-weight: 400;
+          letter-spacing: 0.2em; text-transform: uppercase;
+          border: 1.5px solid; padding: 15px 0; width: clamp(200px, 20vw, 280px);
+          white-space: nowrap; transition: background 0.2s ease-out, color 0.2s ease-out;
+          cursor: pointer; background: ${BG};
+        }
+        .grazie-btn-red { color: #6B1A1A; border-color: #6B1A1A; }
+        .grazie-btn-red:hover, .grazie-btn-red:active { background: #6B1A1A; color: ${BG}; }
+        .grazie-btn-blue { color: ${COLOR}; border-color: ${COLOR}; }
+        .grazie-btn-blue:hover, .grazie-btn-blue:active { background: ${COLOR}; color: ${BG}; }
+      `}</style>
+    </div>
+  );
+}
 
 export default function RSVP() {
   const [form, setForm] = useState<FormData>({
@@ -221,43 +304,7 @@ export default function RSVP() {
   if (status === "success") {
     const prenom = form.personnes[0]?.prenom?.trim() || "";
     return (
-      <div style={{ background: BG, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'FT Aktual', Georgia, serif", padding: "40px 24px" }}>
-
-        {/* Mini jeu */}
-        <SunGame />
-
-        {/* Grazie */}
-        <div style={{ textAlign: "center", marginBottom: "40px" }}>
-          <p style={{ fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 0.9, color: COLOR }}>
-            Grazie{prenom ? ` ${prenom}` : ""}
-          </p>
-        </div>
-
-        {/* Boutons */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
-          <a href="https://www.ungrandjour.com/fr/ananda-matthieu" target="_blank" rel="noopener noreferrer" className="grazie-btn grazie-btn-red">
-            Liste de mariage
-          </a>
-          <Link href="/" className="grazie-btn grazie-btn-blue">
-            ← Retour à l'accueil
-          </Link>
-        </div>
-
-        <style>{`
-          .grazie-btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            text-decoration: none; font-family: 'FT Aktual', Georgia, serif;
-            font-size: clamp(12px, 1.3vw, 15px); font-weight: 400;
-            letter-spacing: 0.2em; text-transform: uppercase;
-            border: 1.5px solid; padding: 15px 0; width: clamp(200px, 20vw, 280px);
-            white-space: nowrap; transition: background 0.2s ease-out, color 0.2s ease-out;
-          }
-          .grazie-btn-red { color: #6B1A1A; border-color: #6B1A1A; background: ${BG}; }
-          .grazie-btn-red:hover, .grazie-btn-red:active { background: #6B1A1A; color: ${BG}; }
-          .grazie-btn-blue { color: ${COLOR}; border-color: ${COLOR}; background: ${BG}; }
-          .grazie-btn-blue:hover, .grazie-btn-blue:active { background: ${COLOR}; color: ${BG}; }
-        `}</style>
-      </div>
+      <GraziePage prenom={prenom} />
     );
   }
 
