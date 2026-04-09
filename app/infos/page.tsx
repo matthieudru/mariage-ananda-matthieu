@@ -302,7 +302,7 @@ export default function Infos() {
                   src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=13&ie=UTF8&iwloc=B&output=embed"
                   width="100%"
                   height="230"
-                  style={{ border: 0, display: "block" }}
+                  style={{ border: 0, display: "block", filter: "saturate(0.55) brightness(1.08) contrast(0.88)" }}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
