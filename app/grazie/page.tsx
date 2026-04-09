@@ -42,14 +42,13 @@ function buildGrid(): Cell[] {
 /* ─────────────────────────────────────────
    Jeu de grattage
 ───────────────────────────────────────── */
-function ScratchCard() {
+function ScratchCard({ onWin }: { onWin: () => void }) {
   const canvasRef      = useRef<HTMLCanvasElement>(null);
   const fwCanvasRef    = useRef<HTMLCanvasElement>(null);
   const scratchZoneRef = useRef<HTMLDivElement>(null);
   const isDown         = useRef(false);
   const didReveal      = useRef(false);
   const lastCheck      = useRef(0);
-  const [won, setWon]  = useState(false);
   const [grid]         = useState<Cell[]>(() => buildGrid());
 
   /* ── Indices des cellules couple ── */
@@ -263,10 +262,10 @@ function ScratchCard() {
 
     if (allRevealed) {
       didReveal.current = true;
-      setWon(true);
+      onWin();
       setTimeout(() => launchFireworks(), 400);
     }
-  }, [coupleIndices, launchFireworks, setWon]);
+  }, [coupleIndices, launchFireworks, onWin]);
 
   const onMouseDown  = (e: React.MouseEvent) => { isDown.current = true;  doScratch(e.clientX, e.clientY, 20); };
   const onMouseMove  = (e: React.MouseEvent) => { if (isDown.current) doScratch(e.clientX, e.clientY, 20); };
@@ -283,25 +282,6 @@ function ScratchCard() {
         position: "fixed", inset: 0, zIndex: 100,
         pointerEvents: "none", width: "100%", height: "100%",
       }} />
-
-      {/* Bravo — fixed, ne déplace rien */}
-      {won && (
-        <div style={{
-          position: "fixed",
-          top: "10vh",
-          left: 0, right: 0,
-          textAlign: "center",
-          zIndex: 110,
-          pointerEvents: "none",
-          fontSize: "clamp(40px, 8vw, 72px)",
-          color: COLOR,
-          fontFamily: "'Bungee', sans-serif",
-          WebkitTextStroke: "1px rgba(36,59,113,0.3)",
-          animation: "bravoIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both",
-        }}>
-          BRAVO
-        </div>
-      )}
 
       {/* ═══ BILLET — juste la zone de grattage ═══ */}
       <div style={{
@@ -357,6 +337,7 @@ function ScratchCard() {
 ───────────────────────────────────────── */
 export default function GraziePage() {
   const [showGame, setShowGame] = useState(false);
+  const [won,      setWon]      = useState(false);
   const [prenom,   setPrenom]   = useState("");
 
   useEffect(() => {
@@ -380,22 +361,42 @@ export default function GraziePage() {
         <div style={{
           position: "fixed", inset: 0, zIndex: 50,
           background: BG,
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          overflowY: "auto", padding: "20px", gap: "16px",
+          display: "flex", flexDirection: "column", alignItems: "center",
+          overflowY: "auto", padding: "20px 20px 24px",
         }}>
-          <ScratchCard />
-          <button onClick={() => setShowGame(false)} className="grazie-btn grazie-btn-blue" style={{ marginTop: "8px" }}>
-            Fermer
-          </button>
-          <a href="https://www.ungrandjour.com/fr/ananda-matthieu" target="_blank" rel="noopener noreferrer" className="grazie-btn grazie-btn-red">
-            Liste de mariage
-          </a>
+          {/* Espace au-dessus de la carte — BRAVO centré dedans */}
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
+            {won ? (
+              <div style={{
+                fontSize: "clamp(40px, 8vw, 72px)",
+                color: COLOR,
+                fontFamily: "'Bungee', sans-serif",
+                WebkitTextStroke: "1px rgba(36,59,113,0.3)",
+                animation: "bravoIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both",
+              }}>
+                BRAVO
+              </div>
+            ) : <div />}
+          </div>
+
+          {/* Carte à gratter */}
+          <ScratchCard onWin={() => setWon(true)} />
+
+          {/* Boutons en dessous */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", width: "100%" }}>
+            <button onClick={() => { setShowGame(false); setWon(false); }} className="grazie-btn grazie-btn-blue">
+              Fermer
+            </button>
+            <a href="https://www.ungrandjour.com/fr/ananda-matthieu" target="_blank" rel="noopener noreferrer" className="grazie-btn grazie-btn-red">
+              Liste de mariage
+            </a>
+          </div>
         </div>
       )}
 
       <div style={{
         flex: 1, display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center", gap: "32px",
+        alignItems: "center", justifyContent: "space-evenly",
       }}>
         <button onClick={() => setShowGame(true)} className="grazie-btn grazie-btn-blue">
           Jouer
@@ -405,10 +406,10 @@ export default function GraziePage() {
           <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"12px" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/Sun.png" alt="" className="grazie-sun" style={{ width:"clamp(64px,11vw,140px)", height:"auto", flexShrink:0 }} />
-            <div style={{ textAlign:"center" }}>
+            <div className="grazie-names">
               <p style={{ fontSize:"clamp(48px,9vw,110px)", fontWeight:500, letterSpacing:"-0.03em", lineHeight:0.95, color:COLOR }}>Grazie</p>
               {prenom && (
-                <p style={{ fontSize:"clamp(40px,8vw,100px)", fontWeight:500, letterSpacing:"-0.03em", lineHeight:0.95, color:COLOR }}>{prenom}</p>
+                <p className="grazie-prenom" style={{ fontSize:"clamp(40px,8vw,100px)", fontWeight:500, letterSpacing:"-0.03em", lineHeight:0.95, color:COLOR }}>{prenom}</p>
               )}
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -445,6 +446,11 @@ export default function GraziePage() {
         .grazie-btn-blue { color: ${COLOR}; border-color: ${COLOR}; }
         .grazie-btn-blue:hover, .grazie-btn-blue:active { background: ${COLOR}; color: ${BG}; }
         @media (max-width: 640px) { .grazie-sun { width: 56px !important; } }
+        /* Desktop : Grazie + prénom sur la même ligne */
+        @media (min-width: 641px) {
+          .grazie-names { display: flex; align-items: baseline; gap: 0.18em; }
+          .grazie-prenom { font-size: clamp(40px, 8vw, 100px) !important; }
+        }
         @keyframes bravoIn {
           0%   { opacity: 0; transform: scale(0.5); }
           100% { opacity: 1; transform: scale(1); }
