@@ -327,8 +327,8 @@ export default function Infos() {
             </div>
           </div>
         </div>
-        {/* Droite : photo flush droite + haut, s'arrête avec un peu de marge en bas */}
-        <div style={{ paddingBottom: "36px", alignSelf: "stretch", display: "flex", flexDirection: "column" }}>
+        {/* Droite : photo, top aligné sur le texte gauche, flush bottom */}
+        <div style={{ paddingTop: "48px", alignSelf: "stretch", display: "flex", flexDirection: "column" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/tonnaradiscoppelo.jpg"
