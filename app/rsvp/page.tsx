@@ -203,6 +203,7 @@ type FormData = {
   jours: string[];
   personnes: Personne[];
   message: string;
+  absent: boolean;
 };
 
 function GraziePage({ prenom }: { prenom: string }) {
@@ -270,6 +271,7 @@ export default function RSVP() {
     jours: [],
     personnes: [personneVide()],
     message: "",
+    absent: false,
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -300,13 +302,18 @@ export default function RSVP() {
   const toggleJour = (id: string) => {
     setForm(f => ({
       ...f,
+      absent: false,
       jours: f.jours.includes(id) ? f.jours.filter(j => j !== id) : [...f.jours, id],
     }));
   };
 
+  const toggleAbsent = () => {
+    setForm(f => ({ ...f, absent: !f.absent, jours: f.absent ? f.jours : [] }));
+  };
+
   const validate = () => {
     const e: Record<string, string> = {};
-    if (form.jours.length === 0) e.jours = "Choisissez au moins un jour";
+    if (!form.absent && form.jours.length === 0) e.jours = "Choisissez au moins un jour ou confirmez votre absence";
     form.personnes.forEach((p, i) => {
       if (!p.prenom.trim()) e[`prenom_${i}`] = "Requis";
       if (!p.nom.trim()) e[`nom_${i}`] = "Requis";
@@ -325,9 +332,10 @@ export default function RSVP() {
       const params = new URLSearchParams({
         date: new Date().toLocaleString("fr-FR"),
         prenom1: ps[0]?.prenom ?? "", nom1: ps[0]?.nom ?? "", email1: ps[0]?.email ?? "", allergie1: ps[0]?.allergies ?? "",
-        opening:    form.jours.includes("vendredi") ? "Oui" : "Non",
-        wedding:    form.jours.includes("samedi")   ? "Oui" : "Non",
-        afterparty: form.jours.includes("dimanche") ? "Oui" : "Non",
+        absent:     form.absent ? "Oui" : "Non",
+        opening:    !form.absent && form.jours.includes("vendredi") ? "Oui" : "Non",
+        wedding:    !form.absent && form.jours.includes("samedi")   ? "Oui" : "Non",
+        afterparty: !form.absent && form.jours.includes("dimanche") ? "Oui" : "Non",
         nb_personnes: String(ps.length),
         prenom2: ps[1]?.prenom ?? "", nom2: ps[1]?.nom ?? "", enfant2: ps[1] ? (ps[1].enfant ? "Enfant" : "Adulte") : "", email2: ps[1]?.email ?? "", allergie2: ps[1]?.allergies ?? "",
         prenom3: ps[2]?.prenom ?? "", nom3: ps[2]?.nom ?? "", enfant3: ps[2] ? (ps[2].enfant ? "Enfant" : "Adulte") : "", email3: ps[2]?.email ?? "", allergie3: ps[2]?.allergies ?? "",
@@ -456,6 +464,22 @@ export default function RSVP() {
               );
             })}
           </div>
+          <button
+            type="button"
+            onClick={toggleAbsent}
+            style={{
+              marginTop: "12px", width: "100%", padding: "20px 24px",
+              border: `1.5px solid ${form.absent ? COLOR : "rgba(36,59,113,0.25)"}`,
+              background: form.absent ? COLOR : "transparent",
+              color: form.absent ? BG : COLOR,
+              fontFamily: "'FT Aktual', Georgia, serif",
+              cursor: "pointer", transition: "all 0.2s ease-out",
+              WebkitTapHighlightColor: "transparent" as unknown as string,
+              userSelect: "none" as const, textAlign: "center" as const,
+            }}
+          >
+            <span style={{ display: "block", fontSize: "clamp(16px, 1.8vw, 20px)", fontWeight: 500, letterSpacing: "-0.01em" }}>Je ne serai malheureusement pas là</span>
+          </button>
           {errors.jours && <p style={errorStyle}>{errors.jours}</p>}
         </div>
 
@@ -585,7 +609,12 @@ export default function RSVP() {
         </div>
 
         {/* Récap jours */}
-        {form.jours.length > 0 && (
+        {form.absent && (
+          <div style={{ marginBottom: "32px", padding: "20px 24px", border: `1px solid rgba(36,59,113,0.15)`, background: "rgba(36,59,113,0.03)" }}>
+            <p style={{ fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.5, fontWeight: 400 }}>Vous avez indiqué ne pas pouvoir être présent(e)</p>
+          </div>
+        )}
+        {!form.absent && form.jours.length > 0 && (
           <div style={{ marginBottom: "32px", padding: "20px 24px", border: `1px solid rgba(36,59,113,0.15)`, background: "rgba(36,59,113,0.03)" }}>
             <p style={{ fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.5, marginBottom: "12px", fontWeight: 400 }}>Vous serez là</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -614,7 +643,7 @@ export default function RSVP() {
             transition: "background 0.2s ease-out, color 0.2s ease-out", minHeight: "60px",
           }}
         >
-          {status === "loading" ? "Envoi..." : "Confirmer ma présence"}
+          {status === "loading" ? "Envoi..." : form.absent ? "Confirmer mon absence" : "Confirmer ma présence"}
         </button>
 
         {status === "error" && (
