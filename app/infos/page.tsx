@@ -327,13 +327,13 @@ export default function Infos() {
             </div>
           </div>
         </div>
-        {/* Droite : photo flush top, hauteur = contenu gauche */}
-        <div style={{ paddingBottom: "48px", alignSelf: "stretch", display: "flex", flexDirection: "column" }}>
+        {/* Droite : photo rognée exactement à la hauteur de la colonne gauche */}
+        <div style={{ position: "relative", overflow: "hidden" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/tonnaradiscoppelo.jpg"
             alt="Tonnara di Scopello"
-            style={{ width: "100%", flex: 1, objectFit: "cover", objectPosition: "center", display: "block" }}
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
             className="tonnara-photo"
           />
         </div>
