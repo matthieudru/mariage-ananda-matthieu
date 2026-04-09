@@ -311,6 +311,21 @@ export default function Infos() {
             <p style={{ fontSize: "11px", letterSpacing: "0.08em", opacity: 0.45, fontWeight: 400, lineHeight: 1.7, marginTop: "12px" }}>
               Tonnara di Scopello — SP16, Contrada Scopello<br />91014 Castellammare del Golfo TP, Sicile
             </p>
+            <div style={{ borderTop: `1px solid rgba(36,59,113,0.12)`, paddingTop: "16px", marginTop: "8px" }}>
+              <p style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.38, fontWeight: 400, marginBottom: "8px" }}>Cérémonie religieuse</p>
+              <p style={{ fontSize: "clamp(13px, 1.1vw, 15px)", fontWeight: 400, lineHeight: 1.5, marginBottom: "8px" }}>
+                Chiesa Madre San Giovanni Battista<br />
+                <span style={{ opacity: 0.55, fontSize: "11px", letterSpacing: "0.05em" }}>Piazza Madrice, 91014 Castellammare del Golfo TP</span>
+              </p>
+              <a
+                href="https://maps.google.com/?q=Chiesa+Madre+San+Giovanni+Battista,+Piazza+Madrice,+Castellammare+del+Golfo"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: COLOR, opacity: 0.55, textDecoration: "underline", textUnderlineOffset: "3px" }}
+              >
+                Ouvrir dans Maps →
+              </a>
+            </div>
           </div>
         </div>
         {/* Droite : photo avec marge */}
