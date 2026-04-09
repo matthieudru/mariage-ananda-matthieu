@@ -7,15 +7,52 @@ const COLOR = "#243b71";
 const BG    = "#f3ecdc";
 
 /* ─────────────────────────────────────────
-   Jeu de grattage — style billet de loterie
+   Photos de la grille
+   → Ajouter les amis dans FRIEND_PHOTOS
+───────────────────────────────────────── */
+const COUPLE_PHOTO  = "/couple.png";
+const FRIEND_PHOTOS: string[] = [
+  // "/ami1.png",
+  // "/ami2.png",
+  // "/ami3.png",
+  // "/ami4.png",
+  // "/ami5.png",
+  // "/ami6.png",
+  // "/ami7.png",
+];
+const GRID_SIZE    = 10;
+const COUPLE_COUNT = 3;
+
+type Cell = { src: string | null; isCouple: boolean };
+
+function buildGrid(): Cell[] {
+  const cells: Cell[] = [];
+  for (let i = 0; i < COUPLE_COUNT; i++) {
+    cells.push({ src: COUPLE_PHOTO, isCouple: true });
+  }
+  for (let i = 0; i < GRID_SIZE - COUPLE_COUNT; i++) {
+    cells.push({ src: FRIEND_PHOTOS[i] ?? null, isCouple: false });
+  }
+  // Mélange Fisher-Yates
+  for (let i = cells.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cells[i], cells[j]] = [cells[j], cells[i]];
+  }
+  return cells;
+}
+
+/* ─────────────────────────────────────────
+   Jeu de grattage
 ───────────────────────────────────────── */
 function ScratchCard({ onClose }: { onClose: () => void }) {
   const canvasRef      = useRef<HTMLCanvasElement>(null);
   const scratchZoneRef = useRef<HTMLDivElement>(null);
-  const [won,     setWon]     = useState(false);
-  const isDown    = useRef(false);
-  const wonRef    = useRef(false);
-  const lastCheck = useRef(0);
+  const isDown         = useRef(false);
+  const wonRef         = useRef(false);
+  const lastCheck      = useRef(0);
+
+  // Grille mélangée une fois au montage
+  const [grid] = useState<Cell[]>(() => buildGrid());
 
   /* ── Init couche de grattage ── */
   useEffect(() => {
@@ -23,7 +60,6 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
     const zone   = scratchZoneRef.current;
     if (!canvas || !zone) return;
 
-    // Attendre que le layout soit calculé
     requestAnimationFrame(() => {
       const rect = zone.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
@@ -37,38 +73,38 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
       const W = rect.width;
       const H = rect.height;
 
-      // Fond principal — bleu profond
+      // Fond bleu
       ctx.fillStyle = COLOR;
       ctx.fillRect(0, 0, W, H);
 
-      // Hachures diagonales fines
-      ctx.strokeStyle = "rgba(255,255,255,0.06)";
+      // Hachures diagonales
+      ctx.strokeStyle = "rgba(255,255,255,0.05)";
       ctx.lineWidth = 1;
       for (let x = -H; x < W + H; x += 9) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + H, H); ctx.stroke();
       }
 
-      // Grille de points texture
-      ctx.fillStyle = "rgba(255,255,255,0.03)";
-      for (let cx = 8; cx < W; cx += 14) {
-        for (let cy = 8; cy < H; cy += 14) {
-          ctx.beginPath(); ctx.arc(cx, cy, 1.8, 0, Math.PI * 2); ctx.fill();
+      // Grille de points
+      ctx.fillStyle = "rgba(255,255,255,0.025)";
+      for (let cx = 10; cx < W; cx += 16) {
+        for (let cy = 10; cy < H; cy += 16) {
+          ctx.beginPath(); ctx.arc(cx, cy, 2, 0, Math.PI * 2); ctx.fill();
         }
       }
 
-      // Cadre intérieur
-      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      // Cadre interne
+      ctx.strokeStyle = "rgba(255,255,255,0.1)";
       ctx.lineWidth = 1;
       ctx.strokeRect(10, 10, W - 20, H - 20);
 
       // Texte "GRATTEZ ICI"
-      ctx.fillStyle = "rgba(243,236,220,0.35)";
+      ctx.fillStyle = "rgba(243,236,220,0.3)";
       ctx.textAlign = "center";
-      ctx.font = `bold 11px Georgia, serif`;
-      ctx.fillText("GRATTEZ ICI", W / 2, H / 2 - 6);
+      ctx.font = `bold 12px Georgia, serif`;
+      ctx.fillText("GRATTEZ ICI", W / 2, H / 2 - 8);
       ctx.font = `10px Georgia, serif`;
-      ctx.fillStyle = "rgba(243,236,220,0.2)";
-      ctx.fillText("▼", W / 2, H / 2 + 12);
+      ctx.fillStyle = "rgba(243,236,220,0.18)";
+      ctx.fillText("▼", W / 2, H / 2 + 10);
     });
   }, []);
 
@@ -86,7 +122,7 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
     ctx.save();
     ctx.globalCompositeOperation = "destination-out";
     ctx.beginPath();
-    ctx.arc(x, y, 28 * dpr, 0, Math.PI * 2);
+    ctx.arc(x, y, 26 * dpr, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
@@ -102,7 +138,6 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
 
     if (pct > 45) {
       wonRef.current = true;
-      setWon(true);
       setTimeout(() => {
         const ctx2 = canvasRef.current?.getContext("2d");
         if (ctx2 && canvasRef.current)
@@ -111,19 +146,19 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
     }
   }, []);
 
-  /* ── Handlers souris / touch ── */
-  const onMouseDown = (e: React.MouseEvent) => { isDown.current = true;  doScratch(e.clientX, e.clientY); };
-  const onMouseMove = (e: React.MouseEvent) => { if (isDown.current) doScratch(e.clientX, e.clientY); };
-  const onMouseUp   = () => { isDown.current = false; };
-  const onTouchStart = (e: React.TouchEvent) => {
+  /* ── Handlers ── */
+  const onMouseDown  = (e: React.MouseEvent)  => { isDown.current = true;  doScratch(e.clientX, e.clientY); };
+  const onMouseMove  = (e: React.MouseEvent)  => { if (isDown.current) doScratch(e.clientX, e.clientY); };
+  const onMouseUp    = ()                      => { isDown.current = false; };
+  const onTouchStart = (e: React.TouchEvent)  => {
     e.preventDefault(); isDown.current = true;
     doScratch(e.touches[0].clientX, e.touches[0].clientY);
   };
-  const onTouchMove = (e: React.TouchEvent) => {
+  const onTouchMove  = (e: React.TouchEvent)  => {
     e.preventDefault();
     if (isDown.current) doScratch(e.touches[0].clientX, e.touches[0].clientY);
   };
-  const onTouchEnd = () => { isDown.current = false; };
+  const onTouchEnd   = ()                      => { isDown.current = false; };
 
   return (
     <div style={{ textAlign: "center", userSelect: "none", marginBottom: "40px" }}>
@@ -140,13 +175,11 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
         boxShadow: "0 4px 24px rgba(36,59,113,0.15)",
       }}>
 
-        {/* ── Header bleu ── */}
+        {/* Header bleu */}
         <div style={{
           background: COLOR,
           padding: "16px 20px 14px",
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
+          display: "flex", alignItems: "flex-end", justifyContent: "space-between",
         }}>
           <div>
             <div style={{
@@ -172,47 +205,60 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {/* ── Règle ── */}
-        <div style={{
-          padding: "8px 18px",
-          borderBottom: `1px solid rgba(36,59,113,0.12)`,
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}>
+        {/* Règle */}
+        <div style={{ padding: "8px 18px", borderBottom: `1px solid rgba(36,59,113,0.12)` }}>
           <p style={{
             fontSize: "clamp(6px, 1.1vw, 8px)", letterSpacing: "0.18em",
             color: COLOR, opacity: 0.45, textTransform: "uppercase",
             margin: 0, textAlign: "center", lineHeight: 1.6,
           }}>
-            Si vous trouvez 3 fois la même photo, c&apos;est gagné · Tous les jeux sont gagnants
+            Trouvez 3 fois la même photo · Tous les jeux sont gagnants
           </p>
         </div>
 
-        {/* ── Zone de grattage ── */}
-        <div style={{ padding: "14px 16px 10px" }}>
+        {/* Zone de grattage */}
+        <div style={{ padding: "14px 14px 10px" }}>
           <div
             ref={scratchZoneRef}
-            style={{
-              position: "relative",
-              border: `1.5px solid rgba(36,59,113,0.25)`,
-              overflow: "hidden",
-              cursor: "crosshair",
-            }}
+            style={{ position: "relative", overflow: "hidden", cursor: "crosshair" }}
           >
-            {/* Photos révélées dessous */}
-            <div style={{ display: "flex", background: "rgba(36,59,113,0.03)" }}>
-              {[0, 1, 2].map(i => (
-                <div key={i} style={{
-                  flex: 1,
+            {/* Grille 5×2 de photos */}
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
+              gap: "3px",
+              background: "rgba(36,59,113,0.08)",
+            }}>
+              {grid.map((cell, idx) => (
+                <div key={idx} style={{
                   aspectRatio: "3 / 4",
                   overflow: "hidden",
-                  borderRight: i < 2 ? `1px solid rgba(36,59,113,0.1)` : "none",
+                  background: "rgba(243,236,220,0.6)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/jeu%20%C3%A0%20gratter.png"
-                    alt=""
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
+                  {cell.src ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={cell.src}
+                      alt=""
+                      style={{
+                        width: "100%", height: "100%",
+                        objectFit: "cover", display: "block",
+                      }}
+                    />
+                  ) : (
+                    /* Placeholder ami (à remplacer) */
+                    <div style={{
+                      width: "100%", height: "100%",
+                      background: "rgba(36,59,113,0.06)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}>
+                      <svg width="28%" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="8" r="4" fill="rgba(36,59,113,0.15)" />
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="rgba(36,59,113,0.15)" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                      </svg>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -236,7 +282,7 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {/* ── Footer billet ── */}
+        {/* Footer billet */}
         <div style={{
           padding: "8px 18px 12px",
           display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -257,23 +303,10 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
       </div>
       {/* ─── FIN BILLET ─── */}
 
-      {/* Message victoire */}
-      {won && (
-        <p style={{
-          fontSize: "clamp(28px, 5vw, 44px)",
-          fontWeight: 500, letterSpacing: "-0.02em",
-          color: COLOR, marginTop: "22px",
-          fontFamily: "'FT Aktual', Georgia, serif",
-          animation: "scratchWin 0.7s ease-out forwards",
-        }}>
-          C&apos;est gagné&nbsp;!
-        </p>
-      )}
-
       <button
         onClick={onClose}
         style={{
-          marginTop: "14px", background: "none", border: "none",
+          marginTop: "16px", background: "none", border: "none",
           fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase",
           opacity: 0.3, cursor: "pointer",
           fontFamily: "'FT Aktual', Georgia, serif", color: COLOR,
@@ -281,14 +314,6 @@ function ScratchCard({ onClose }: { onClose: () => void }) {
       >
         Fermer ×
       </button>
-
-      <style>{`
-        @keyframes scratchWin {
-          0%   { opacity: 0; transform: translateY(8px) scale(0.95); }
-          60%  { transform: translateY(-2px) scale(1.03); }
-          100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-      `}</style>
     </div>
   );
 }
