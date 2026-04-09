@@ -175,9 +175,9 @@ function HotelRow({ hotel, delay }: { hotel: Hotel; delay: number }) {
 
 const HOTELS: Hotel[] = [
   { nom: "Baglio di Scopello", detail: "Centre du village de Scopello, 5 min de la Tonnara.", booking: "Réservez en direct (pas via Booking) en mentionnant notre mariage pour 5% de remise.", email: "info@hotelbagliodiscopello.it", url: "https://www.hotelbagliodiscopello.com/", photo: "https://www.hotelbagliodiscopello.com/img/about-1.jpg", prix: "130–180€/nuit" },
-  { nom: "Baglio dello Zingaro", detail: "À proximité du lieu du mariage.", booking: "Réservez en direct (pas via Booking) en mentionnant notre mariage pour un prix fixe.", email: "info@bagliodellozingaro.it", url: "https://www.bagliodellozingaro.it/", photo: "/zingaro.jpg", prix: "~120€/nuit" },
-  { nom: "La Tavernetta", detail: "Centre du village de Scopello, 5 min de la Tonnara.", booking: "Réservez en direct en mentionnant notre mariage.", email: "info@albertolatavernetta.it", url: "https://www.albergolatavernetta.it/it/", photo: "/la-tavernetta.jpg", prix: "~250€/nuit" },
-  { nom: "Tenute Plaia", detail: "Sur la route de Scopello, 4 min de la Tonnara.", booking: "Réservez sur leur site avec le code ANDMTE26 pour 12% de remise. Indiquez nos prénoms dans les demandes spéciales lors de la réservation.", email: "info@agriturismotenuteplaia.it", url: "https://www.agriturismotenuteplaia.it/", photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg", prix: "~160€/nuit" },
+  { nom: "Baglio dello Zingaro", detail: "À proximité du lieu du mariage.", booking: "Réservez en direct (pas via Booking) en mentionnant notre mariage pour un prix fixe.", email: "info@bagliodellozingaro.it", url: "https://www.bagliodellozingaro.it/", photo: "/zingaro.jpg", prix: "120€/nuit" },
+  { nom: "La Tavernetta", detail: "Centre du village de Scopello, 5 min de la Tonnara.", booking: "Réservez en direct en mentionnant notre mariage.", email: "info@albertolatavernetta.it", url: "https://www.albergolatavernetta.it/it/", photo: "/la-tavernetta.jpg", prix: "250€/nuit" },
+  { nom: "Tenute Plaia", detail: "Sur la route de Scopello, 4 min de la Tonnara.", booking: "Réservez sur leur site avec le code ANDMTE26 pour 12% de remise. Indiquez nos prénoms dans les demandes spéciales lors de la réservation.", email: "info@agriturismotenuteplaia.it", url: "https://www.agriturismotenuteplaia.it/", photo: "https://www.agriturismotenuteplaia.it/assets/images/slide-3.jpg", prix: "160€/nuit" },
 ];
 
 const MAISONS = [
@@ -289,7 +289,7 @@ export default function Infos() {
       {/* ── TONNARA ── */}
       <section style={{ borderBottom: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 40%", height: "100vh" }} className="tonnara-grid">
         {/* Gauche : titre + texte + carte */}
-        <div className="section-pad" style={{ paddingTop: "48px", paddingBottom: "48px", borderRight: `1px solid rgba(36,59,113,0.15)`, display: "flex", flexDirection: "column", gap: "28px" }}>
+        <div className="section-pad" style={{ paddingTop: "36px", paddingBottom: "48px", borderRight: `1px solid rgba(36,59,113,0.15)`, display: "flex", flexDirection: "column", gap: "28px" }}>
           <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", textTransform: "uppercase", lineHeight: 1 }}>Tonnara di Scopello</p>
           {/* Texte + carte à 2/3 du titre, centrés */}
           <div style={{ maxWidth: "75%", display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -300,7 +300,7 @@ export default function Infos() {
               href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: "block", textDecoration: "none", border: `1px solid rgba(36,59,113,0.15)`, maxWidth: "65%", position: "relative" }}
+              style={{ display: "block", textDecoration: "none", border: `1px solid rgba(36,59,113,0.15)`, maxWidth: "58.5%", position: "relative" }}
             >
               <div style={{ position: "relative", width: "100%", paddingBottom: "100%", overflow: "hidden" }}>
                 <iframe
@@ -314,7 +314,7 @@ export default function Infos() {
                 <span style={{ fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: COLOR, fontWeight: 400 }}>Ouvrir dans Maps →</span>
               </div>
             </a>
-            <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginTop: "4px" }}>
+            <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginTop: "16px" }}>
               Tonnara di Scopello — SP16, Contrada Scopello, 91014 Castellammare del Golfo TP, Sicile
             </p>
             <div style={{ borderTop: `1px solid rgba(36,59,113,0.12)`, paddingTop: "16px", marginTop: "4px" }}>
@@ -333,13 +333,13 @@ export default function Infos() {
             </div>
           </div>
         </div>
-        {/* Droite : photo rognée exactement à la hauteur de la colonne gauche */}
-        <div style={{ position: "relative", overflow: "hidden" }}>
+        {/* Droite : photo rognée à la hauteur du contenu gauche */}
+        <div style={{ padding: "48px 0", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/tonnaradiscoppelo.jpg"
             alt="Tonnara di Scopello"
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
             className="tonnara-photo"
           />
         </div>
