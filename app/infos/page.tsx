@@ -287,7 +287,7 @@ export default function Infos() {
       </section>
 
       {/* ── TONNARA ── */}
-      <section style={{ borderBottom: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 40%", height: "100vh" }} className="tonnara-grid">
+      <section style={{ borderBottom: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 40%", height: "100vh", overflow: "hidden" }} className="tonnara-grid">
         {/* Gauche : titre + texte + carte */}
         <div className="section-pad" style={{ paddingTop: "36px", paddingBottom: "48px", borderRight: `1px solid rgba(36,59,113,0.15)`, display: "flex", flexDirection: "column", gap: "28px" }}>
           <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", textTransform: "uppercase", lineHeight: 1 }}>Tonnara di Scopello</p>
