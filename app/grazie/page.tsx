@@ -336,20 +336,33 @@ export default function GraziePage() {
           </button>
         )}
 
-        <div style={{
-          display: "flex", alignItems: "center",
-          justifyContent: "center", gap: "16px", marginBottom: "28px",
-        }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/Sun.png" alt="" style={{ width: "clamp(64px, 9vw, 120px)", height: "auto" }} />
-          <p style={{
-            fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 500,
-            letterSpacing: "-0.03em", lineHeight: 0.9, color: COLOR,
+        <div style={{ marginBottom: "28px", textAlign: "center", width: "100%" }}>
+          {/* Soleils + texte : côte à côte sur desktop, empilés sur mobile */}
+          <div style={{
+            display: "flex", alignItems: "center",
+            justifyContent: "center", gap: "16px",
           }}>
-            Grazie{prenom ? ` ${prenom}` : ""}
-          </p>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/Sun.png" alt="" style={{ width: "clamp(64px, 9vw, 120px)", height: "auto" }} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Sun.png" alt="" className="grazie-sun" style={{ width: "clamp(48px, 9vw, 120px)", height: "auto", flexShrink: 0 }} />
+            <div style={{ textAlign: "center" }}>
+              <p style={{
+                fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 500,
+                letterSpacing: "-0.03em", lineHeight: 0.95, color: COLOR,
+              }}>
+                Grazie
+              </p>
+              {prenom && (
+                <p style={{
+                  fontSize: "clamp(40px, 8vw, 100px)", fontWeight: 500,
+                  letterSpacing: "-0.03em", lineHeight: 0.95, color: COLOR,
+                }}>
+                  {prenom}
+                </p>
+              )}
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Sun.png" alt="" className="grazie-sun" style={{ width: "clamp(48px, 9vw, 120px)", height: "auto", flexShrink: 0 }} />
+          </div>
         </div>
 
         <a
@@ -388,6 +401,9 @@ export default function GraziePage() {
         .grazie-btn-red:hover,  .grazie-btn-red:active  { background: #6B1A1A; color: ${BG}; }
         .grazie-btn-blue { color: ${COLOR}; border-color: ${COLOR}; }
         .grazie-btn-blue:hover, .grazie-btn-blue:active { background: ${COLOR}; color: ${BG}; }
+        @media (max-width: 640px) {
+          .grazie-sun { width: 40px !important; }
+        }
       `}</style>
     </div>
   );

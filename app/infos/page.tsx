@@ -311,7 +311,7 @@ export default function Infos() {
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
-              <div style={{ position: "absolute", top: "10px", left: "10px", background: "rgba(243,236,220,0.88)", padding: "4px 8px" }}>
+              <div style={{ position: "absolute", top: "10px", left: "10px", background: "rgba(243,236,220,1)", padding: "4px 8px" }}>
                 <span style={{ fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: COLOR, fontWeight: 400 }}>Ouvrir dans Maps →</span>
               </div>
             </a>
@@ -505,6 +505,14 @@ export default function Infos() {
 
         /* ── Mobile ── */
         @media (max-width: 640px) {
+          /* Boutons nav header : plus compacts pour ne pas écraser "← Accueil" */
+          .hero-rsvp {
+            padding: 7px 11px !important;
+            font-size: 10px !important;
+            letter-spacing: 0.12em !important;
+            min-height: 34px !important;
+          }
+
           .section-pad {
             padding-left: 20px;
             padding-right: 20px;
@@ -561,9 +569,10 @@ export default function Infos() {
           .tonnara-map {
             max-width: 100% !important;
           }
+          /* Photo 2:3 portrait sur mobile */
           .tonnara-photo-col {
-            height: 65vw !important;
-            min-height: 240px !important;
+            height: 150vw !important;
+            max-height: 70vh !important;
           }
 
           /* Venir mobile */
