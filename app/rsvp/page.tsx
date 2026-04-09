@@ -540,19 +540,34 @@ export default function RSVP() {
           />
         </div>
 
+        {/* Récap jours */}
+        {form.jours.length > 0 && (
+          <div style={{ marginBottom: "32px", padding: "20px 24px", border: `1px solid rgba(36,59,113,0.15)`, background: "rgba(36,59,113,0.03)" }}>
+            <p style={{ fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.5, marginBottom: "12px", fontWeight: 400 }}>Vous serez là</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              {JOURS.filter(j => form.jours.includes(j.id)).map(j => (
+                <span key={j.id} style={{ fontSize: "clamp(13px, 1.2vw, 15px)", fontWeight: 400, color: COLOR, border: `1px solid ${COLOR}`, padding: "4px 14px", letterSpacing: "0.05em" }}>
+                  {j.label} — {j.sublabel}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Submit */}
         <button
           type="submit"
           disabled={status === "loading"}
           style={{
             width: "100%", padding: "22px",
-            background: status === "loading" ? "rgba(36,59,113,0.5)" : COLOR,
-            color: BG, border: "none",
+            background: status === "loading" ? "rgba(36,59,113,0.5)" : BG,
+            color: status === "loading" ? BG : COLOR,
+            border: `1.5px solid ${status === "loading" ? "rgba(36,59,113,0.5)" : COLOR}`,
             fontFamily: "'FT Aktual', Georgia, serif",
             fontSize: "clamp(14px, 1.4vw, 17px)", fontWeight: 500,
             letterSpacing: "0.18em", textTransform: "uppercase",
             cursor: status === "loading" ? "not-allowed" : "pointer",
-            transition: "background 0.2s ease-out", minHeight: "60px",
+            transition: "background 0.2s ease-out, color 0.2s ease-out", minHeight: "60px",
           }}
         >
           {status === "loading" ? "Envoi..." : "Confirmer ma présence"}
@@ -574,7 +589,7 @@ export default function RSVP() {
       <style>{`
         input::placeholder, textarea::placeholder { color: ${COLOR}; opacity: 0.3; }
         input:focus, textarea:focus { outline: none; border-bottom-color: ${COLOR} !important; }
-        button[type="submit"]:hover:not(:disabled) { background: #1a2d58 !important; }
+        button[type="submit"]:hover:not(:disabled) { background: ${COLOR} !important; color: ${BG} !important; }
         button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
         @media (max-width: 640px) {
           .rsvp-subtitle { display: none !important; }
@@ -587,7 +602,7 @@ export default function RSVP() {
 
 const labelStyle: React.CSSProperties = {
   display: "block", fontSize: "10px", letterSpacing: "0.22em",
-  textTransform: "uppercase", opacity: 0.45, fontWeight: 400, marginBottom: "12px",
+  textTransform: "uppercase", opacity: 0.65, fontWeight: 400, marginBottom: "12px",
 };
 
 const inputStyle = (hasError: boolean): React.CSSProperties => ({
