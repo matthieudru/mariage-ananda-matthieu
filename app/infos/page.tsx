@@ -298,16 +298,13 @@ export default function Infos() {
             style={{ display: "block", textDecoration: "none", borderRadius: "2px", overflow: "hidden", border: `1px solid rgba(36,59,113,0.15)` }}
           >
             <iframe
-              src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              src="https://maps.google.com/maps?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicile&t=&z=13&ie=UTF8&iwloc=B&output=embed"
               width="100%"
-              height="280"
+              height="300"
               style={{ border: 0, display: "block", filter: "grayscale(1) contrast(1.1) opacity(0.85)" }}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
-            <p style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.5, padding: "10px 12px", color: COLOR, fontFamily: "'FT Aktual', Georgia, serif" }}>
-              Ouvrir dans Maps ↗
-            </p>
           </a>
         </div>
         {/* Droite : grande photo */}
@@ -315,7 +312,7 @@ export default function Infos() {
         <img
           src="/scopellopicture.jpg"
           alt="Tonnara di Scopello"
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", minHeight: "480px" }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", minHeight: "560px" }}
         />
       </section>
 
