@@ -300,7 +300,7 @@ export default function Infos() {
               href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: "block", textDecoration: "none", border: `1px solid rgba(36,59,113,0.15)`, maxWidth: "58.5%", position: "relative" }}
+              style={{ display: "block", textDecoration: "none", border: `1px solid rgba(36,59,113,0.15)`, maxWidth: "67%", position: "relative" }}
             >
               <div style={{ position: "relative", width: "100%", paddingBottom: "100%", overflow: "hidden" }}>
                 <iframe
