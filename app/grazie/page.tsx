@@ -264,11 +264,7 @@ function ScratchCard() {
     if (allRevealed) {
       didReveal.current = true;
       setWon(true);
-      setTimeout(() => {
-        const c2 = canvasRef.current?.getContext("2d");
-        if (c2 && canvasRef.current) c2.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        launchFireworks();
-      }, 400);
+      setTimeout(() => launchFireworks(), 400);
     }
   }, [coupleIndices, launchFireworks, setWon]);
 
