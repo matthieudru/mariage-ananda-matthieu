@@ -7,277 +7,212 @@ const COLOR = "#243b71";
 const BG    = "#f3ecdc";
 
 /* ─────────────────────────────────────────
-   Constantes du jeu
+   Jeu de grattage
 ───────────────────────────────────────── */
-const GAME_W   = 500;
-const GAME_H   = 195;
-const SEA_Y    = 150;
-const SUN_R    = 44;               // rayon → 88px de diamètre
-const SUN_X    = 80;
-const GROUND_Y = SEA_Y - SUN_R * 2; // 62
-
-const JUMP_V   = -560;
-const GRAVITY  = 1800;
-const BASE_SPD = 200;
-
-const RATIO_MONTAGNE = 1514 / 819; // ratio naturel des images
-const RATIO_VAGUE    = 1514 / 819;
-
-/* ─────────────────────────────────────────
-   État du jeu
-───────────────────────────────────────── */
-type Rock = { x: number; w: number; h: number };
-type GS   = {
-  sunY: number; vy: number; rocks: Rock[];
-  speed: number; score: number;
-  scoreAccum: number; spawnAccum: number;
-  waveOffset: number; lastTs: number; dead: boolean;
-};
-
-const makeState = (): GS => ({
-  sunY: GROUND_Y, vy: 0, rocks: [],
-  speed: BASE_SPD, score: 0,
-  scoreAccum: 0, spawnAccum: 0,
-  waveOffset: 0, lastTs: 0, dead: false,
-});
-
-/* Chargement fiable d'une image (gère cache + erreurs) */
-function loadImage(src: string): Promise<HTMLImageElement> {
-  return new Promise(resolve => {
-    const img = new Image();
-    let done = false;
-    const finish = () => { if (!done) { done = true; resolve(img); } };
-    img.onload  = finish;
-    img.onerror = finish; // résoudre même en cas d'erreur (fallback dessiné)
-    img.src = src;
-    if (img.complete) finish(); // déjà en cache
-  });
-}
-
-/* ─────────────────────────────────────────
-   Composant SunGame
-───────────────────────────────────────── */
-function SunGame({ onClose }: { onClose: () => void }) {
+function ScratchCard({ onClose }: { onClose: () => void }) {
   const canvasRef  = useRef<HTMLCanvasElement>(null);
-  const stateRef   = useRef<GS>(makeState());
-  const rafRef     = useRef<number>(0);
+  const [won,      setWon]      = useState(false);
+  const isDown     = useRef(false);
+  const wonRef     = useRef(false);
+  const lastCheck  = useRef(0);
 
-  const [loading,   setLoading]   = useState(true);
-  const [dispScore, setDispScore] = useState(0);
-  const [dispDead,  setDispDead]  = useState(false);
-
-  /* ── Pré-chargement de toutes les images AVANT de lancer la boucle ── */
+  /* ── Dessin de la couche de grattage ── */
   useEffect(() => {
-    let cancelled = false;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    Promise.all([
-      loadImage("/anim-sun.jpg"),   // 5 KB  — soleil
-      loadImage("/montagne.png"),   // 214 KB — obstacles
-      loadImage("/vague.png"),      // 245 KB — mer
-    ]).then(([imgSun, imgMont, imgVague]) => {
-      if (cancelled) return;
+    // Taille réelle après layout
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
 
-      const canvas = canvasRef.current;
-      if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width  = rect.width  * dpr;
+    canvas.height = rect.height * dpr;
 
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width  = GAME_W * dpr;
-      canvas.height = GAME_H * dpr;
-      const ctx = canvas.getContext("2d")!;
-      ctx.scale(dpr, dpr);
+    const ctx = canvas.getContext("2d")!;
+    ctx.scale(dpr, dpr);
+    const W = rect.width;
+    const H = rect.height;
 
-      /* ── Spawn obstacle ── */
-      const spawnRock = (s: GS) => {
-        const lvl   = Math.floor(s.score / 15);
-        const baseH = 28 + lvl * 7;
-        const h     = Math.min(baseH + Math.random() * 20, 60);
-        const w     = h * RATIO_MONTAGNE * (0.55 + Math.random() * 0.5);
-        s.rocks.push({ x: GAME_W + 20, w, h });
-      };
+    // Fond doré-brun (couleur couche scratch)
+    ctx.fillStyle = "#9b8866";
+    ctx.fillRect(0, 0, W, H);
 
-      /* ── Dessin ── */
-      const draw = (s: GS) => {
-        ctx.clearRect(0, 0, GAME_W, GAME_H);
-
-        /* Ciel */
-        const sky = ctx.createLinearGradient(0, 0, 0, SEA_Y);
-        sky.addColorStop(0, "#d9cfbc");
-        sky.addColorStop(1, "#f3ecdc");
-        ctx.fillStyle = sky;
-        ctx.fillRect(0, 0, GAME_W, SEA_Y);
-
-        /* ── Montagnes (image ou triangle fallback) ── */
-        for (const rock of s.rocks) {
-          if (imgMont.naturalWidth > 0) {
-            ctx.drawImage(imgMont, rock.x, SEA_Y - rock.h, rock.w, rock.h);
-          } else {
-            ctx.fillStyle = "rgba(36,59,113,0.3)";
-            ctx.beginPath();
-            ctx.moveTo(rock.x, SEA_Y);
-            ctx.lineTo(rock.x + rock.w * 0.5, SEA_Y - rock.h);
-            ctx.lineTo(rock.x + rock.w, SEA_Y);
-            ctx.fill();
-          }
-        }
-
-        /* ── Vagues (image tuilée ou rectangle fallback) ── */
-        const seaH = GAME_H - SEA_Y + 4;
-        if (imgVague.naturalWidth > 0) {
-          const tileW  = seaH * RATIO_VAGUE;
-          const offset = s.waveOffset % tileW;
-          const count  = Math.ceil(GAME_W / tileW) + 2;
-          for (let i = 0; i < count; i++) {
-            ctx.drawImage(imgVague, i * tileW - offset, SEA_Y - 1, tileW, seaH + 2);
-          }
-        } else {
-          ctx.fillStyle = "rgba(36,59,113,0.22)";
-          ctx.fillRect(0, SEA_Y, GAME_W, seaH);
-        }
-
-        /* ── Soleil ──
-           anim-sun.jpg est un JPEG (fond blanc).
-           On utilise globalCompositeOperation='multiply' :
-           blanc × fond = fond (le blanc disparaît),
-           les couleurs du soleil restent visibles.  */
-        if (imgSun.naturalWidth > 0) {
-          const diam = SUN_R * 2;
-          const scale = Math.min(diam / imgSun.naturalWidth, diam / imgSun.naturalHeight);
-          const sw = imgSun.naturalWidth  * scale;
-          const sh = imgSun.naturalHeight * scale;
-          const ox = SUN_X - sw / 2;
-          const oy = s.sunY + SUN_R - sh / 2;
-
-          ctx.save();
-          ctx.globalCompositeOperation = "multiply";
-          ctx.drawImage(imgSun, ox, oy, sw, sh);
-          ctx.restore();
-        } else {
-          ctx.beginPath();
-          ctx.arc(SUN_X, s.sunY + SUN_R, SUN_R, 0, Math.PI * 2);
-          ctx.fillStyle = "#d9943a";
-          ctx.fill();
-        }
-      };
-
-      /* ── Boucle principale (delta time) ── */
-      const loop = (ts: number) => {
-        const s = stateRef.current;
-
-        if (s.lastTs === 0) s.lastTs = ts;
-        const dt = Math.min((ts - s.lastTs) / 1000, 0.05);
-        s.lastTs = ts;
-
-        if (!s.dead) {
-          s.vy         += GRAVITY * dt;
-          s.sunY       += s.vy * dt;
-          if (s.sunY >= GROUND_Y) { s.sunY = GROUND_Y; s.vy = 0; }
-          if (s.sunY  < 0)        { s.sunY = 0;         s.vy = 0; }
-
-          s.waveOffset += 60 * dt;
-
-          s.scoreAccum += dt;
-          if (s.scoreAccum >= 1) {
-            s.score      += Math.floor(s.scoreAccum);
-            s.scoreAccum %= 1;
-            setDispScore(s.score);
-          }
-
-          s.speed = BASE_SPD + s.score * 7;
-
-          s.spawnAccum += dt;
-          const interval = Math.max(1.1, 2.5 - s.score * 0.06);
-          if (s.spawnAccum >= interval) { s.spawnAccum = 0; spawnRock(s); }
-
-          s.rocks.forEach(r => { r.x -= s.speed * dt; });
-          s.rocks = s.rocks.filter(r => r.x + r.w > -10);
-
-          /* Collision */
-          const pad    = 10;
-          const sunL   = SUN_X - SUN_R + pad;
-          const sunRe  = SUN_X + SUN_R - pad;
-          const sunBot = s.sunY + SUN_R * 2 - pad;
-          for (const rock of s.rocks) {
-            if (sunRe <= rock.x + 4 || sunL >= rock.x + rock.w - 4) continue;
-            if (sunBot > SEA_Y - rock.h * 0.85) {
-              s.dead = true; setDispDead(true); setDispScore(s.score); break;
-            }
-          }
-        }
-
-        draw(s);
-        rafRef.current = requestAnimationFrame(loop);
-      };
-
-      setLoading(false);
-      rafRef.current = requestAnimationFrame(loop);
-    });
-
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  /* ── Saut / Restart ── */
-  const jump = useCallback(() => {
-    const s = stateRef.current;
-    if (s.dead) {
-      stateRef.current = makeState();
-      setDispDead(false);
-      setDispScore(0);
-      return;
+    // Hachures légères
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.lineWidth = 1;
+    for (let x = -H; x < W + H; x += 7) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x + H, H);
+      ctx.stroke();
     }
-    if (s.sunY >= GROUND_Y - 8) s.vy = JUMP_V;
+
+    // Points de texture
+    ctx.fillStyle = "rgba(255,255,255,0.04)";
+    for (let cx = 6; cx < W; cx += 12) {
+      for (let cy = 6; cy < H; cy += 12) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Texte "GRATTE"
+    ctx.fillStyle = "rgba(255,255,255,0.22)";
+    ctx.textAlign = "center";
+    ctx.font = `10px Georgia, serif`;
+    ctx.fillText("GRATTE POUR RÉVÉLER", W / 2, H / 2 + 4);
   }, []);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.code === "Space") { e.preventDefault(); jump(); }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [jump]);
+  /* ── Grattage ── */
+  const doScratch = useCallback((clientX: number, clientY: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas || wonRef.current) return;
+    const ctx = canvas.getContext("2d")!;
+    const dpr  = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+
+    const x = (clientX - rect.left) * dpr;
+    const y = (clientY - rect.top)  * dpr;
+
+    ctx.save();
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    ctx.arc(x, y, 26 * dpr, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Vérification victoire max 5×/s
+    const now = Date.now();
+    if (now - lastCheck.current < 200) return;
+    lastCheck.current = now;
+
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let transparent = 0;
+    for (let i = 3; i < data.length; i += 4) {
+      if (data[i] < 128) transparent++;
+    }
+    const pct = (transparent / (canvas.width * canvas.height)) * 100;
+
+    if (pct > 45) {
+      wonRef.current = true;
+      setWon(true);
+      // Effacement complet après délai
+      setTimeout(() => {
+        const ctx2 = canvasRef.current?.getContext("2d");
+        if (ctx2 && canvasRef.current)
+          ctx2.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      }, 500);
+    }
+  }, []);
+
+  /* ── Handlers ── */
+  const onMouseDown = (e: React.MouseEvent) => { isDown.current = true;  doScratch(e.clientX, e.clientY); };
+  const onMouseMove = (e: React.MouseEvent) => { if (isDown.current) doScratch(e.clientX, e.clientY); };
+  const onMouseUp   = () => { isDown.current = false; };
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault(); isDown.current = true;
+    doScratch(e.touches[0].clientX, e.touches[0].clientY);
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault();
+    if (isDown.current) doScratch(e.touches[0].clientX, e.touches[0].clientY);
+  };
+  const onTouchEnd = () => { isDown.current = false; };
 
   return (
     <div style={{ textAlign: "center", userSelect: "none", marginBottom: "40px" }}>
-      <div
-        onClick={jump}
-        onTouchStart={(e) => { e.preventDefault(); jump(); }}
-        style={{
-          display: "inline-block", cursor: "pointer",
-          touchAction: "none", overflow: "hidden",
-          border: `1px solid rgba(36,59,113,0.12)`,
-          width: "min(500px, 90vw)",
-          position: "relative",
-        }}
-      >
-        {/* Canvas toujours dans le DOM pour que canvasRef soit valide */}
+
+      {/* Accroche */}
+      <p style={{
+        fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase",
+        color: COLOR, opacity: 0.4, margin: "0 auto 18px",
+        fontFamily: "'FT Aktual', Georgia, serif", lineHeight: 1.8,
+        maxWidth: "340px",
+      }}>
+        Si tu trouves 3 fois Ananda &amp; Matthieu,<br />
+        ils se marient le 10.10 — tous les jeux sont gagnants
+      </p>
+
+      {/* Carte */}
+      <div style={{
+        position: "relative",
+        display: "inline-block",
+        width: "min(460px, 90vw)",
+        aspectRatio: "460 / 190",
+        border: `1px solid rgba(36,59,113,0.18)`,
+        overflow: "hidden",
+      }}>
+        {/* Couche inférieure : 3 cases prize */}
+        <div style={{
+          position: "absolute", inset: 0,
+          display: "flex",
+          background: BG,
+        }}>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{
+              flex: 1,
+              display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center",
+              gap: "8px",
+              borderRight: i < 2 ? `1px solid rgba(36,59,113,0.1)` : "none",
+            }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/Sun.png" alt="" style={{ width: "clamp(28px, 5vw, 42px)", height: "auto" }} />
+              <div style={{
+                fontSize: "clamp(7px, 1vw, 10px)",
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: COLOR,
+                fontFamily: "'FT Aktual', Georgia, serif",
+                lineHeight: 1.8,
+                textAlign: "center",
+              }}>
+                Ananda<br />&amp; Matthieu
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Canvas scratch par-dessus */}
         <canvas
           ref={canvasRef}
-          style={{ display: "block", width: "100%", aspectRatio: `${GAME_W} / ${GAME_H}` }}
-        />
-        {/* Overlay loading par-dessus */}
-        {loading && (
-          <div style={{
+          style={{
             position: "absolute", inset: 0,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            background: BG,
-          }}>
-            <p style={{ fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.35, fontFamily: "'FT Aktual', Georgia, serif" }}>
-              Chargement…
-            </p>
-          </div>
-        )}
+            width: "100%", height: "100%",
+            cursor: "crosshair",
+            touchAction: "none",
+          }}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          onMouseLeave={onMouseUp}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        />
       </div>
 
-      {!loading && (
+      {/* Message */}
+      {won ? (
+        <p style={{
+          fontSize: "clamp(28px, 5vw, 44px)",
+          fontWeight: 500, letterSpacing: "-0.02em",
+          color: COLOR, marginTop: "20px",
+          fontFamily: "'FT Aktual', Georgia, serif",
+          animation: "scratchWin 0.7s ease-out forwards",
+        }}>
+          C&apos;est gagné&nbsp;!
+        </p>
+      ) : (
         <p style={{
           fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase",
-          opacity: 0.35, marginTop: "8px", fontFamily: "'FT Aktual', Georgia, serif",
+          opacity: 0.3, marginTop: "8px",
+          fontFamily: "'FT Aktual', Georgia, serif",
         }}>
-          {dispDead
-            ? `Score : ${dispScore} — Tap pour rejouer`
-            : `Score : ${dispScore} — Espace ou tap pour sauter`}
+          Gratte la surface
         </p>
       )}
 
@@ -292,6 +227,14 @@ function SunGame({ onClose }: { onClose: () => void }) {
       >
         Fermer ×
       </button>
+
+      <style>{`
+        @keyframes scratchWin {
+          0%   { opacity: 0; transform: translateY(8px) scale(0.95); }
+          60%  { transform: translateY(-2px) scale(1.03); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
     </div>
   );
 }
@@ -320,7 +263,7 @@ export default function GraziePage() {
         flex: 1, display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
       }}>
-        {showGame && <SunGame onClose={() => setShowGame(false)} />}
+        {showGame && <ScratchCard onClose={() => setShowGame(false)} />}
 
         {!showGame && (
           <button
