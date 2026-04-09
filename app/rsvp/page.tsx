@@ -641,8 +641,7 @@ export default function RSVP() {
           /* Citrons : milieu entre bord écran et lettre R/P */
           .rsvp-lemon-left  { margin-right: clamp(4px, 6vw, 16px) !important; }
           .rsvp-lemon-right { margin-left:  clamp(4px, 6vw, 16px) !important; }
-          /* Boutons jours : une colonne, même taille, texte centré */
-          .jours-grid { grid-template-columns: 1fr !important; }
+          /* Boutons jours : garder 2 colonnes comme avant */
         }
       `}</style>
     </div>
