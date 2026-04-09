@@ -300,7 +300,7 @@ export default function Infos() {
               href="https://maps.google.com/?q=Tonnara+di+Scopello,+Castellammare+del+Golfo,+Sicily"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: "block", textDecoration: "none", border: `1px solid rgba(36,59,113,0.15)` }}
+              style={{ display: "block", textDecoration: "none", border: `1px solid rgba(36,59,113,0.15)`, maxWidth: "65%", position: "relative" }}
             >
               <div style={{ position: "relative", width: "100%", paddingBottom: "100%", overflow: "hidden" }}>
                 <iframe
@@ -309,6 +309,9 @@ export default function Infos() {
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
+              </div>
+              <div style={{ position: "absolute", top: "10px", left: "10px", background: "rgba(243,236,220,0.88)", padding: "4px 8px" }}>
+                <span style={{ fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: COLOR, fontWeight: 400 }}>Ouvrir dans Maps →</span>
               </div>
             </a>
             <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginTop: "4px" }}>
