@@ -52,7 +52,12 @@ function ScratchCard() {
   const [won, setWon]  = useState(false);
   const [grid]         = useState<Cell[]>(() => buildGrid());
 
-  /* ── Feu d'artifice ── */
+  /* ── Indices des cellules couple ── */
+  const coupleIndices = grid
+    .map((cell, i) => cell.src === COUPLE_PHOTO ? i : -1)
+    .filter(i => i !== -1);
+
+  /* ── Feu d'artifice (lent) ── */
   const launchFireworks = useCallback(() => {
     const fw = fwCanvasRef.current;
     if (!fw) return;
@@ -76,7 +81,7 @@ function ScratchCard() {
       const by = cy + Math.sin(angle) * ry * (0.8 + Math.random() * 0.5);
       for (let i = 0; i < 18; i++) {
         const a = Math.random() * Math.PI * 2;
-        const spd = 1.2 + Math.random() * 3.5;
+        const spd = 0.5 + Math.random() * 1.8; // plus lent
         particles.push({ x:bx, y:by, vx:Math.cos(a)*spd, vy:Math.sin(a)*spd,
           alpha:1, color:colors[Math.floor(Math.random()*colors.length)], r:2+Math.random()*3 });
       }
@@ -85,10 +90,12 @@ function ScratchCard() {
     let frame = 0;
     function animate() {
       if (!fw) return;
-      if (frame > 140) { ctx.clearRect(0,0,fw.width,fw.height); return; }
+      if (frame > 300) { ctx.clearRect(0,0,fw.width,fw.height); return; } // plus long
       ctx.clearRect(0,0,fw.width,fw.height);
       for (const p of particles) {
-        p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.alpha -= 0.01;
+        p.x += p.vx; p.y += p.vy;
+        p.vy += 0.02; // gravité réduite
+        p.alpha -= 0.004; // disparition lente
         if (p.alpha <= 0) continue;
         ctx.globalAlpha = p.alpha;
         ctx.fillStyle = p.color;
@@ -226,12 +233,35 @@ function ScratchCard() {
 
     if (didReveal.current) return;
     const now = Date.now();
-    if (now - lastCheck.current < 200) return;
+    if (now - lastCheck.current < 250) return;
     lastCheck.current = now;
+
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    let t = 0;
-    for (let i = 3; i < data.length; i += 4) { if (data[i] < 128) t++; }
-    if ((t / (canvas.width * canvas.height)) * 100 > 95) {
+    const cW = canvas.width;
+    const cH = canvas.height;
+    const cellW = cW / COLS;
+    const cellH = cH / ROWS;
+
+    // Vérifie si toutes les cellules couple sont grattées à > 55%
+    const allRevealed = coupleIndices.every(idx => {
+      const col = idx % COLS;
+      const row = Math.floor(idx / COLS);
+      const x0 = Math.floor(col * cellW);
+      const y0 = Math.floor(row * cellH);
+      const x1 = Math.floor((col + 1) * cellW);
+      const y1 = Math.floor((row + 1) * cellH);
+      let transparent = 0;
+      let total = 0;
+      for (let py = y0; py < y1; py++) {
+        for (let px = x0; px < x1; px++) {
+          total++;
+          if (data[(py * cW + px) * 4 + 3] < 128) transparent++;
+        }
+      }
+      return total > 0 && (transparent / total) > 0.55;
+    });
+
+    if (allRevealed) {
       didReveal.current = true;
       setWon(true);
       setTimeout(() => {
@@ -240,7 +270,7 @@ function ScratchCard() {
         launchFireworks();
       }, 400);
     }
-  }, [launchFireworks, setWon]);
+  }, [coupleIndices, launchFireworks, setWon]);
 
   const onMouseDown  = (e: React.MouseEvent) => { isDown.current = true;  doScratch(e.clientX, e.clientY, 20); };
   const onMouseMove  = (e: React.MouseEvent) => { if (isDown.current) doScratch(e.clientX, e.clientY, 20); };
@@ -262,14 +292,13 @@ function ScratchCard() {
       {won && (
         <div style={{
           marginBottom: "16px",
-          fontSize: "clamp(28px, 6vw, 48px)",
-          fontWeight: 500,
-          letterSpacing: "-0.02em",
+          fontSize: "clamp(32px, 7vw, 56px)",
           color: COLOR,
-          fontFamily: "'FT Aktual', Georgia, serif",
+          fontFamily: "'Bungee', sans-serif",
+          WebkitTextStroke: "1px rgba(36,59,113,0.3)",
           animation: "bravoIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both",
         }}>
-          Bravo ! 🎉
+          BRAVO
         </div>
       )}
 
