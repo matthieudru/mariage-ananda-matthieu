@@ -304,7 +304,7 @@ export default function Infos() {
             >
               <div style={{ position: "relative", width: "100%", paddingBottom: "100%", overflow: "hidden" }}>
                 <iframe
-                  src="https://maps.google.com/maps?q=38.0603,12.8253&t=&z=12&ie=UTF8&iwloc=B&output=embed"
+                  src="https://maps.google.com/maps?q=38.0591,12.8270&t=&z=13&ie=UTF8&iwloc=B&output=embed"
                   style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "calc(100% + 50px)", border: 0, display: "block", filter: "saturate(0.55) brightness(1.08) contrast(0.88)" }}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
@@ -333,13 +333,13 @@ export default function Infos() {
             </div>
           </div>
         </div>
-        {/* Droite : photo rognée à la hauteur du contenu gauche */}
-        <div style={{ padding: "48px 0", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
+        {/* Droite : photo pleine hauteur */}
+        <div style={{ position: "relative", overflow: "hidden" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/tonnaradiscoppelo.jpg"
             alt="Tonnara di Scopello"
-            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
             className="tonnara-photo"
           />
         </div>
