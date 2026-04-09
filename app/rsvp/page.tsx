@@ -6,7 +6,7 @@ import Link from "next/link";
 const COLOR = "#243b71";
 const BG = "#f3ecdc";
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbyPWyZHvxo3l6bQGfmeUY5MvkbO1_y9nnEPTdf-6r-JJuzWdt8d1Q_nowH4t0mCW6uQ/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbx6t6UfIk5H44JpvfGcLbd4NOssBiFBiomdW4veoJouONeaGJ6hl-GUzIiddlFIJNI/exec";
 
 /* ── Mini jeu Soleil ── */
 const SUN_R = 26;
