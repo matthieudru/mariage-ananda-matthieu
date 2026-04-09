@@ -340,13 +340,11 @@ export default function RSVP() {
       prenom4: ps[3]?.prenom ?? "", nom4: ps[3]?.nom ?? "", enfant4: ps[3] ? (ps[3].enfant ? "Enfant" : "Adulte") : "", email4: ps[3]?.email ?? "", allergie4: ps[3]?.allergies ?? "",
       message: form.message,
     });
-    // Fire and forget — no-cors ne permet pas de lire la réponse de toute façon
-    fetch(SHEET_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: params.toString(),
-    });
+    // sendBeacon garantit l'envoi même si la fenêtre se ferme immédiatement
+    const sent = navigator.sendBeacon(SHEET_URL, params);
+    if (!sent) {
+      fetch(SHEET_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: params.toString() });
+    }
     setStatus("success");
   };
 
