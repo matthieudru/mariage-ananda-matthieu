@@ -310,7 +310,7 @@ export default function Infos() {
         {/* Droite : grande photo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/scopellopicture.jpg"
+          src="/tonnaradiscoppelo.jpg"
           alt="Tonnara di Scopello"
           style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", minHeight: "560px" }}
         />
