@@ -292,7 +292,7 @@ export default function Infos() {
         <div className="section-pad" style={{ paddingTop: "36px", paddingBottom: "48px", borderRight: `1px solid rgba(36,59,113,0.15)`, display: "flex", flexDirection: "column", gap: "28px" }}>
           <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", textTransform: "uppercase", lineHeight: 1 }}>Tonnara di Scopello</p>
           {/* Texte + carte à 2/3 du titre, centrés */}
-          <div style={{ maxWidth: "75%", display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div style={{ maxWidth: "60%", display: "flex", flexDirection: "column", gap: "20px" }}>
             <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, textAlign: "justify" }}>
               Le mariage aura lieu le 10.10.26 à la Tonnara di Scopello, une ancienne fabrique de thon du XVIII<sup>e</sup> siècle, située au bord de la mer. Elle se situe à 5 minutes du village de Scopello, 20 minutes de Castellammare et une heure de Palerme.
             </p>
