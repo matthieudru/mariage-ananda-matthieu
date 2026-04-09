@@ -9,38 +9,62 @@ const BG = "#f3ecdc";
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbyPWyZHvxo3l6bQGfmeUY5MvkbO1_y9nnEPTdf-6r-JJuzWdt8d1Q_nowH4t0mCW6uQ/exec";
 
 /* ── Mini jeu Soleil ── */
-const SUN_SIZE = 52;
-const JUMP_V = -15;
-const GRAVITY = 0.75;
+const SUN_SIZE = 44;
+const JUMP_V = -14;
+const GRAVITY = 0.72;
 const GAME_W = 500;
-const GAME_H = 130;
-const GROUND_Y = GAME_H - 1;
+const GAME_H = 160;
+const GROUND_Y = GAME_H - 20; // laisse de la place pour le sol
+
+type Mountain = { x: number; peaks: number[] };
+
+function drawMountain(ctx: CanvasRenderingContext2D, m: Mountain, groundY: number) {
+  const nPeaks = m.peaks.length;
+  const segW = 60;
+  ctx.beginPath();
+  ctx.moveTo(m.x, groundY);
+  for (let i = 0; i < nPeaks; i++) {
+    const px = m.x + i * segW + segW / 2;
+    ctx.lineTo(px, groundY - m.peaks[i]);
+  }
+  ctx.lineTo(m.x + nPeaks * segW, groundY);
+  ctx.closePath();
+  ctx.fillStyle = `rgba(36,59,113,0.35)`;
+  ctx.fill();
+}
 
 function SunGame({ onClose }: { onClose: () => void }) {
   const [dead, setDead] = useState(false);
   const [score, setScore] = useState(0);
-  const stateRef = useRef({ sunY: GROUND_Y - SUN_SIZE, vy: 0, obstacles: [] as {x:number,w:number,h:number}[], frame: 0, speed: 4.5, score: 0, dead: false });
+
+  type State = {
+    sunY: number; vy: number;
+    mountains: Mountain[];
+    frame: number; speed: number; score: number; dead: boolean;
+  };
+
+  const makeState = (): State => ({
+    sunY: GROUND_Y - SUN_SIZE, vy: 0, mountains: [], frame: 0, speed: 3.5, score: 0, dead: false
+  });
+
+  const stateRef = useRef<State>(makeState());
   const rafRef = useRef<number>(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const faviconImg = useRef<HTMLImageElement | null>(null);
+  const imgReady = useRef(false);
 
   useEffect(() => {
     const img = new Image();
+    img.onload = () => { imgReady.current = true; };
     img.src = "/favicon.png";
     faviconImg.current = img;
   }, []);
 
   const jump = useCallback(() => {
     const s = stateRef.current;
-    if (s.dead) { restart(); return; }
+    if (s.dead) { stateRef.current = makeState(); setDead(false); setScore(0); return; }
     if (s.sunY >= GROUND_Y - SUN_SIZE - 2) s.vy = JUMP_V;
   }, []);
-
-  const restart = () => {
-    stateRef.current = { sunY: GROUND_Y - SUN_SIZE, vy: 0, obstacles: [], frame: 0, speed: 4.5, score: 0, dead: false };
-    setDead(false);
-    setScore(0);
-  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.code === "Space") { e.preventDefault(); jump(); } };
@@ -49,76 +73,85 @@ function SunGame({ onClose }: { onClose: () => void }) {
   }, [jump]);
 
   useEffect(() => {
-    const s = stateRef.current;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
+    const s = stateRef.current;
+
+    const drawScene = () => {
+      ctx.clearRect(0, 0, GAME_W, GAME_H);
+
+      // Sky gradient
+      const sky = ctx.createLinearGradient(0, 0, 0, GROUND_Y);
+      sky.addColorStop(0, "#e8ddc8");
+      sky.addColorStop(1, "#f3ecdc");
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, GAME_W, GROUND_Y);
+
+      // Ground
+      ctx.fillStyle = `rgba(36,59,113,0.12)`;
+      ctx.fillRect(0, GROUND_Y, GAME_W, GAME_H - GROUND_Y);
+      ctx.strokeStyle = `rgba(36,59,113,0.3)`;
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, GROUND_Y); ctx.lineTo(GAME_W, GROUND_Y); ctx.stroke();
+
+      // Mountains
+      s.mountains.forEach(m => drawMountain(ctx, m, GROUND_Y));
+
+      // Favicon (sun)
+      if (imgReady.current && faviconImg.current) {
+        ctx.drawImage(faviconImg.current, 60, s.sunY, SUN_SIZE, SUN_SIZE);
+      } else {
+        ctx.fillStyle = `rgba(200,150,50,0.9)`;
+        ctx.beginPath();
+        ctx.arc(60 + SUN_SIZE / 2, s.sunY + SUN_SIZE / 2, SUN_SIZE / 2 - 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    };
 
     const loop = () => {
       if (s.dead) return;
       s.frame++;
       s.score++;
-      s.speed = 4.5 + Math.floor(s.score / 200) * 0.4;
+      s.speed = 3.5 + Math.floor(s.score / 250) * 0.4;
 
       // Physics
       s.vy += GRAVITY;
       s.sunY += s.vy;
       if (s.sunY >= GROUND_Y - SUN_SIZE) { s.sunY = GROUND_Y - SUN_SIZE; s.vy = 0; }
 
-      // Spawn obstacles
-      const interval = Math.max(55, 90 - Math.floor(s.score / 150) * 5);
+      // Spawn mountains
+      const interval = Math.max(60, 110 - Math.floor(s.score / 200) * 5);
       if (s.frame % interval === 0) {
-        const h = 22 + Math.random() * 28;
-        s.obstacles.push({ x: GAME_W + 10, w: 14 + Math.random() * 10, h });
+        const nPeaks = 1 + Math.floor(Math.random() * 2);
+        const peaks = Array.from({ length: nPeaks }, () => 28 + Math.random() * 40);
+        s.mountains.push({ x: GAME_W + 10, peaks });
       }
-      s.obstacles = s.obstacles.filter(o => o.x > -50);
-      s.obstacles.forEach(o => o.x -= s.speed);
+      s.mountains = s.mountains.filter(m => m.x + m.peaks.length * 60 > -10);
+      s.mountains.forEach(m => { m.x -= s.speed; });
 
-      // Collision
-      const sx = 64, sy = s.sunY;
-      const pad = 8;
-      for (const o of s.obstacles) {
-        if (sx + SUN_SIZE - pad > o.x + pad && sx + pad < o.x + o.w - pad && sy + SUN_SIZE - pad > GROUND_Y - o.h) {
-          s.dead = true;
-          setDead(true);
-          setScore(s.score);
-          cancelAnimationFrame(rafRef.current);
-          // Draw dead state
-          ctx.clearRect(0, 0, GAME_W, GAME_H);
-          drawScene(ctx, s);
-          return;
+      // Collision — check if sun overlaps any mountain polygon (simplified bbox per segment)
+      const sx = 60, sy = s.sunY, pad = 8;
+      for (const m of s.mountains) {
+        const segW = 60;
+        for (let i = 0; i < m.peaks.length; i++) {
+          const px = m.x + i * segW;
+          const pw = segW;
+          const ph = m.peaks[i];
+          if (sx + SUN_SIZE - pad > px + 8 && sx + pad < px + pw - 8 && sy + SUN_SIZE - pad > GROUND_Y - ph * 0.7) {
+            s.dead = true;
+            setDead(true);
+            setScore(s.score);
+            cancelAnimationFrame(rafRef.current);
+            drawScene();
+            return;
+          }
         }
       }
 
-      ctx.clearRect(0, 0, GAME_W, GAME_H);
-      drawScene(ctx, s);
+      drawScene();
       setScore(s.score);
       rafRef.current = requestAnimationFrame(loop);
-    };
-
-    const drawScene = (ctx: CanvasRenderingContext2D, s: typeof stateRef.current) => {
-      // Ground
-      ctx.strokeStyle = `rgba(36,59,113,0.25)`;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(0, GROUND_Y); ctx.lineTo(GAME_W, GROUND_Y); ctx.stroke();
-      // Obstacles
-      ctx.fillStyle = `rgba(36,59,113,0.4)`;
-      s.obstacles.forEach(o => {
-        ctx.beginPath();
-        ctx.roundRect(o.x, GROUND_Y - o.h, o.w, o.h, 3);
-        ctx.fill();
-      });
-      // Favicon as runner
-      const img = faviconImg.current;
-      if (img && img.complete && img.naturalWidth > 0) {
-        ctx.drawImage(img, 64, s.sunY, SUN_SIZE, SUN_SIZE);
-      } else {
-        // Fallback circle
-        ctx.fillStyle = `rgba(36,59,113,0.6)`;
-        ctx.beginPath();
-        ctx.arc(64 + SUN_SIZE / 2, s.sunY + SUN_SIZE / 2, SUN_SIZE / 2, 0, Math.PI * 2);
-        ctx.fill();
-      }
     };
 
     rafRef.current = requestAnimationFrame(loop);
@@ -126,23 +159,16 @@ function SunGame({ onClose }: { onClose: () => void }) {
   }, [dead]);
 
   return (
-    <div style={{ textAlign: "center", userSelect: "none", marginBottom: "32px" }}>
-      <div
-        onClick={jump}
-        onTouchStart={(e) => { e.preventDefault(); jump(); }}
-        style={{ display: "inline-block", cursor: "pointer", touchAction: "none" }}
-      >
-        <canvas
-          ref={canvasRef}
-          width={GAME_W}
-          height={GAME_H}
-          style={{ display: "block", maxWidth: "min(500px, 90vw)", height: "auto", border: `1px solid rgba(36,59,113,0.12)` }}
-        />
+    <div style={{ textAlign: "center", userSelect: "none", marginBottom: "40px" }}>
+      <div onClick={jump} onTouchStart={(e) => { e.preventDefault(); jump(); }}
+        style={{ display: "inline-block", cursor: "pointer", touchAction: "none", borderRadius: "2px", overflow: "hidden", border: `1px solid rgba(36,59,113,0.12)` }}>
+        <canvas ref={canvasRef} width={GAME_W} height={GAME_H}
+          style={{ display: "block", maxWidth: "min(500px, 88vw)", height: "auto" }} />
       </div>
       <p style={{ fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", opacity: 0.35, marginTop: "8px", fontFamily: "'FT Aktual', Georgia, serif" }}>
-        {dead ? `Score : ${Math.floor(score / 10)} — Appuie pour rejouer` : `Score : ${Math.floor(score / 10)} — Espace ou tap pour sauter`}
+        {dead ? `Score : ${Math.floor(score / 10)} — Tap pour rejouer` : `Score : ${Math.floor(score / 10)} — Espace ou tap pour sauter`}
       </p>
-      <button onClick={onClose} style={{ marginTop: "12px", background: "none", border: "none", fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", opacity: 0.35, cursor: "pointer", fontFamily: "'FT Aktual', Georgia, serif", color: "#243b71" }}>
+      <button onClick={onClose} style={{ marginTop: "10px", background: "none", border: "none", fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.3, cursor: "pointer", fontFamily: "'FT Aktual', Georgia, serif", color: "#243b71" }}>
         Fermer ×
       </button>
     </div>

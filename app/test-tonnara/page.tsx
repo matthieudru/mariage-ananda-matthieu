@@ -124,6 +124,32 @@ export default function TestTonnara() {
         </div>
       </section>
 
+      {/* ── 6 : Prop 3 avec col 1 et 2 échangées : Texte | Carte | Photo ── */}
+      <section style={{ borderTop: border, marginTop: "64px" }}>
+        <Label n={6} desc="Prop 3 inversée : texte centré | carte | photo droite (3 colonnes)" />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderTop: border, minHeight: 420 }}>
+          <div style={{ padding: `40px ${pad}`, borderRight: border, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <Title /><Desc />
+          </div>
+          <div style={{ padding: `40px ${pad}`, borderRight: border, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <MapEmbed h={220} />
+          </div>
+          <Photo />
+        </div>
+      </section>
+
+      {/* ── 7 : Texte + carte empilés dans col étroite (1/3 largeur option 3), photo grande ── */}
+      <section style={{ borderTop: border, marginTop: "64px" }}>
+        <Label n={7} desc="Texte puis carte empilés dans 1/3 gauche (même largeur que col texte prop 3), photo 2/3 droite" />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", borderTop: border, minHeight: 420 }}>
+          <div style={{ padding: `40px ${pad}`, borderRight: border, display: "flex", flexDirection: "column", gap: "24px", justifyContent: "center" }}>
+            <Title /><Desc />
+            <MapEmbed h={180} />
+          </div>
+          <Photo />
+        </div>
+      </section>
+
     </div>
   );
 }
