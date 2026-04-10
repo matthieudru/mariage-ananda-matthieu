@@ -386,7 +386,7 @@ export default function Infos() {
             <div style={{ borderTop: `1px solid rgba(36,59,113,0.12)`, paddingTop: "20px", marginTop: "20px" }}>
               <p style={{ fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 400, opacity: 0.38, marginBottom: "10px" }}>Navette le soir du mariage</p>
               <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
-                Une navette sera organisée pour les invités logés à Scopello ou à proximité de la Tonnara. Nous vous conseillons de vous loger dans ce secteur pour en profiter.
+                Une navette sera organisée pour les invités logés à Scopello ou à proximité de la Tonnara. Nous vous conseillons de dormir dans ce secteur pour en profiter.
               </p>
             </div>
           </div>
