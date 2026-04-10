@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     description: "Tonnara di Scopello · 10 octobre 2026",
     url: "https://www.anandamatthieu.it",
     siteName: "Ananda & Matthieu",
-    images: [{ url: "https://www.anandamatthieu.it/NEW_V1.jpg", width: 1200, height: 800 }],
+    images: [{ url: "https://www.anandamatthieu.it/whatsappicon.jpg", width: 1200, height: 800 }],
     locale: "fr_FR",
     type: "website",
   },
