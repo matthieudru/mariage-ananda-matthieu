@@ -413,7 +413,7 @@ export default function Infos() {
             <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", lineHeight: 1, textTransform: "uppercase" }}>Maison</p>
           </Reveal>
           <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.55, lineHeight: 1.8, fontWeight: 400, marginTop: "16px", maxWidth: "600px" }}>
-            Si votre hébergement se trouve à plus de 10 minutes en voiture de la Tonnara, nous vous recommandons de louer une voiture pour plus de praticité pendant le week-end.
+            Si votre hébergement se trouve à plus de 10 minutes en voiture de la Tonnara, nous vous recommandons de louer une voiture pendant le week-end.
           </p>
         </div>
         {MAISONS.map((h, i) => (
