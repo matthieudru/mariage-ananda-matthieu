@@ -366,13 +366,28 @@ export default function Infos() {
             <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginBottom: "24px" }}>
               La Tonnara di Scopello se trouve à 40 minutes de route de l'aéroport de Palerme. Il est facile de louer une voiture directement depuis l'aéroport.
             </p>
-            <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: "40px", flexWrap: "wrap", marginBottom: "28px" }}>
               {[{ nom: "AVIS", code: "T069423" }, { nom: "SIXT", code: "19451327" }].map(car => (
                 <div key={car.nom}>
                   <p style={{ fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 400, opacity: 0.38, marginBottom: "6px" }}>{car.nom}</p>
                   <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", fontWeight: 400 }}>Code promo : {car.code}</p>
                 </div>
               ))}
+            </div>
+            <div style={{ borderTop: `1px solid rgba(36,59,113,0.12)`, paddingTop: "20px" }}>
+              <p style={{ fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 400, opacity: 0.38, marginBottom: "10px" }}>Transfert aéroport</p>
+              <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginBottom: "10px" }}>
+                Si vous préférez ne pas louer de voiture, Roberto de Trinacria Service propose des transferts depuis l'aéroport de Palerme.
+              </p>
+              <a href="https://wa.me/393289547111" target="_blank" rel="noopener noreferrer" style={{ fontSize: "clamp(14px, 1.2vw, 16px)", fontWeight: 400, color: COLOR, textDecoration: "underline", textUnderlineOffset: "3px" }}>
+                +39 328 954 7111 (WhatsApp)
+              </a>
+            </div>
+            <div style={{ borderTop: `1px solid rgba(36,59,113,0.12)`, paddingTop: "20px", marginTop: "20px" }}>
+              <p style={{ fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 400, opacity: 0.38, marginBottom: "10px" }}>Navette le soir du mariage</p>
+              <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
+                Une navette sera organisée pour les invités logés à Scopello ou à proximité de la Tonnara. Nous vous conseillons de vous loger dans ce secteur pour en profiter.
+              </p>
             </div>
           </div>
         </div>
@@ -397,6 +412,9 @@ export default function Infos() {
           <Reveal>
             <p style={{ fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 500, letterSpacing: "-0.01em", lineHeight: 1, textTransform: "uppercase" }}>Maison</p>
           </Reveal>
+          <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.55, lineHeight: 1.8, fontWeight: 400, marginTop: "16px", maxWidth: "600px" }}>
+            Si votre hébergement se trouve à plus de 10 minutes en voiture de la Tonnara, nous vous recommandons de louer une voiture pour plus de praticité pendant le week-end.
+          </p>
         </div>
         {MAISONS.map((h, i) => (
           <HotelRow key={h.nom} hotel={h} delay={i * 50} />
