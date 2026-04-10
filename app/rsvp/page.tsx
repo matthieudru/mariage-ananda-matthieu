@@ -347,7 +347,7 @@ export default function RSVP() {
                     );
                   })}
                 </div>
-                {p.enfant && <p style={{ fontSize: "11px", color: "#8B1515", letterSpacing: "0.05em" }}>Pas d'enfant le soir du mariage.</p>}
+                {p.enfant && <p style={{ fontSize: "13px", color: "#8B1515", letterSpacing: "0.05em" }}>Pas d'enfant le soir du mariage.</p>}
               </div>
             )}
 
