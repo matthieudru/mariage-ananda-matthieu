@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 const COLOR = "#243b71";
 const BG = "#f3ecdc";
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbx6t6UfIk5H44JpvfGcLbd4NOssBiFBiomdW4veoJouONeaGJ6hl-GUzIiddlFIJNI/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbzRGZKd3NRuGud5qXpYh85ynf6zaapXMidYYl5yNx6lmaNwYuM2Vev3-NS2-M_iz5HC/exec";
 
 const JOURS = [
   { id: "vendredi", label: "Vendredi 9", sublabel: "The Opening" },
