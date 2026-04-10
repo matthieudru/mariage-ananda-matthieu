@@ -354,8 +354,8 @@ export default function Infos() {
         <div style={{ borderTop: `1px solid rgba(36,59,113,0.15)`, display: "grid", gridTemplateColumns: "1fr 1fr" }} className="venir-grid">
           <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px", borderRight: `1px solid rgba(36,59,113,0.15)` }}>
             <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Avion</p>
-            <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400 }}>
-              Le meilleur moyen pour rejoindre Scopello est d'atterrir à l'aéroport de Palerme.
+            <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, maxWidth: "90%" }}>
+              Le meilleur moyen pour rejoindre Scopello est d'atterrir à l'aéroport de Palerme.<br />
               Il y a des vols directs depuis Marseille avec Ryanair ou Transavia,
               et depuis Paris avec Transavia, EasyJet ou Air France.
               L'aéroport de Palerme se situe ensuite à 40 minutes de voiture de Scopello.
@@ -363,7 +363,7 @@ export default function Infos() {
           </div>
           <div className="section-pad" style={{ paddingTop: "32px", paddingBottom: "40px" }}>
             <p style={{ fontSize: "clamp(22px, 3vw, 42px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "16px" }}>Voiture</p>
-            <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginBottom: "24px" }}>
+            <p style={{ fontSize: "clamp(14px, 1.2vw, 16px)", opacity: 0.62, lineHeight: 1.8, fontWeight: 400, marginBottom: "24px", maxWidth: "90%" }}>
               La Tonnara di Scopello se trouve à 40 minutes de route de l'aéroport de Palerme. Il est facile de louer une voiture directement depuis l'aéroport.
             </p>
             <div style={{ display: "flex", gap: "40px", flexWrap: "wrap", marginBottom: "28px" }}>
